@@ -1,0 +1,111 @@
+[ {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "bool",
+  "bool" : true,
+  "text" : null,
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "date",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : 1262322000000,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "doubleNumber",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : 5.67
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "enumeration",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : null,
+  "intNumber" : 1,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "floatNumber",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : 5.67,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "integerNumber",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : null,
+  "intNumber" : 45,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "longNumber",
+  "bool" : null,
+  "text" : null,
+  "longNumber" : 18,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "setTexts",
+  "bool" : null,
+  "text" : "setOne",
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "setTexts",
+  "bool" : null,
+  "text" : "setTwo",
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+}, {
+  "id" : null,
+  "version" : 0,
+  "pluginResource" : null,
+  "columnName" : "text",
+  "bool" : null,
+  "text" : "myText",
+  "longNumber" : null,
+  "intNumber" : null,
+  "floatNumber" : null,
+  "doubleNumber" : null
+} ]

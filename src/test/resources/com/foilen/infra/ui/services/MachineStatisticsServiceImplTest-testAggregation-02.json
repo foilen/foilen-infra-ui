@@ -1,0 +1,125 @@
+[ {
+  "id" : null,
+  "machineInternalId" : null,
+  "timestamp" : null,
+  "cpuUsed" : 150,
+  "cpuTotal" : 1000,
+  "memoryUsed" : 1972293140,
+  "memoryTotal" : 2098184192,
+  "memorySwapUsed" : 0,
+  "memorySwapTotal" : 0,
+  "fs" : [ {
+    "path" : "/",
+    "usedSpace" : 16421138432,
+    "totalSpace" : 42137632768,
+    "root" : true
+  } ],
+  "networks" : [ {
+    "interfaceName" : "eth0",
+    "inBytes" : 203,
+    "outBytes" : 12
+  }, {
+    "interfaceName" : "eth1",
+    "inBytes" : 0,
+    "outBytes" : 0
+  }, {
+    "interfaceName" : "lo",
+    "inBytes" : 2012,
+    "outBytes" : 0
+  } ],
+  "aggregationsForHour" : 2,
+  "aggregationsForDay" : 0
+}, {
+  "id" : null,
+  "machineInternalId" : null,
+  "timestamp" : null,
+  "cpuUsed" : 251,
+  "cpuTotal" : 1000,
+  "memoryUsed" : 1972293140,
+  "memoryTotal" : 2098184192,
+  "memorySwapUsed" : 0,
+  "memorySwapTotal" : 0,
+  "fs" : [ {
+    "path" : "/",
+    "usedSpace" : 16421138432,
+    "totalSpace" : 42137632768,
+    "root" : true
+  } ],
+  "networks" : [ {
+    "interfaceName" : "eth0",
+    "inBytes" : 203,
+    "outBytes" : 12
+  }, {
+    "interfaceName" : "eth1",
+    "inBytes" : 0,
+    "outBytes" : 0
+  }, {
+    "interfaceName" : "lo",
+    "inBytes" : 2012,
+    "outBytes" : 0
+  } ],
+  "aggregationsForHour" : 1,
+  "aggregationsForDay" : 0
+}, {
+  "id" : null,
+  "machineInternalId" : null,
+  "timestamp" : null,
+  "cpuUsed" : 843,
+  "cpuTotal" : 1000,
+  "memoryUsed" : 1972293140,
+  "memoryTotal" : 2098184192,
+  "memorySwapUsed" : 0,
+  "memorySwapTotal" : 0,
+  "fs" : [ {
+    "path" : "/",
+    "usedSpace" : 16421138432,
+    "totalSpace" : 42137632768,
+    "root" : true
+  } ],
+  "networks" : [ {
+    "interfaceName" : "eth0",
+    "inBytes" : 203,
+    "outBytes" : 12
+  }, {
+    "interfaceName" : "eth1",
+    "inBytes" : 0,
+    "outBytes" : 0
+  }, {
+    "interfaceName" : "lo",
+    "inBytes" : 2012,
+    "outBytes" : 0
+  } ],
+  "aggregationsForHour" : 1,
+  "aggregationsForDay" : 0
+}, {
+  "id" : null,
+  "machineInternalId" : null,
+  "timestamp" : null,
+  "cpuUsed" : 275,
+  "cpuTotal" : 1000,
+  "memoryUsed" : 1972293140,
+  "memoryTotal" : 2098184192,
+  "memorySwapUsed" : 0,
+  "memorySwapTotal" : 0,
+  "fs" : [ {
+    "path" : "/",
+    "usedSpace" : 16421138432,
+    "totalSpace" : 42137632768,
+    "root" : true
+  } ],
+  "networks" : [ {
+    "interfaceName" : "eth0",
+    "inBytes" : 203,
+    "outBytes" : 12
+  }, {
+    "interfaceName" : "eth1",
+    "inBytes" : 0,
+    "outBytes" : 0
+  }, {
+    "interfaceName" : "lo",
+    "inBytes" : 2012,
+    "outBytes" : 0
+  } ],
+  "aggregationsForHour" : 1,
+  "aggregationsForDay" : 0
+} ]

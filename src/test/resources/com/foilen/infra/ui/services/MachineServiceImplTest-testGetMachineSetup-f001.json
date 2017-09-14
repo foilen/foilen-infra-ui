@@ -1,0 +1,93 @@
+{
+  "uiApiBaseUrl" : "https://infra.example.com",
+  "uiApiCert" : null,
+  "uiApiUserId" : "_SET_",
+  "uiApiUserKey" : "_SET_",
+  "machineName" : "f001.node.example.com",
+  "unixUsers" : [ {
+    "resourceEditorName" : "Unix User",
+    "id" : 2001,
+    "name" : "indirectlyattached",
+    "homeFolder" : "/home/indirectlyattached",
+    "shell" : "/bin/bash",
+    "hashedPassword" : null,
+    "resourceDescription" : "/home/indirectlyattached",
+    "resourceName" : "indirectlyattached",
+    "resourceCategory" : "INFRASTRUCTURE"
+  }, {
+    "resourceEditorName" : "Unix User",
+    "id" : 2002,
+    "name" : "f1",
+    "homeFolder" : "/home/f1",
+    "shell" : "/bin/bash",
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "resourceDescription" : "/home/f1",
+    "resourceName" : "f1",
+    "resourceCategory" : "INFRASTRUCTURE"
+  }, {
+    "resourceEditorName" : "Unix User",
+    "id" : 2004,
+    "name" : "f12",
+    "homeFolder" : "/home/f12",
+    "shell" : "/bin/bash",
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "resourceDescription" : "/home/f12",
+    "resourceName" : "f12",
+    "resourceCategory" : "INFRASTRUCTURE"
+  } ],
+  "applications" : [ {
+    "resourceEditorName" : null,
+    "name" : "f1",
+    "description" : "Attached to machine f001",
+    "applicationDefinition" : {
+      "from" : "ubuntu:16.04",
+      "buildSteps" : [ ],
+      "portsExposed" : { },
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "runAs" : 2002,
+      "ip" : null,
+      "workingDirectory" : null,
+      "command" : null,
+      "services" : [ ],
+      "containerUsersToChangeId" : [ ],
+      "assetsPathAndContent" : [ ],
+      "assetsBundles" : [ ],
+      "hostToIpMapping" : [ ],
+      "portsRedirect" : [ ],
+      "portsEndpoint" : { },
+      "_nextAssetId" : 1
+    },
+    "domainNames" : [ ],
+    "resourceDescription" : "Attached to machine f001",
+    "resourceName" : "f1",
+    "resourceCategory" : "INFRASTRUCTURE"
+  }, {
+    "resourceEditorName" : null,
+    "name" : "f1indirect",
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "applicationDefinition" : {
+      "from" : "ubuntu:16.04",
+      "buildSteps" : [ ],
+      "portsExposed" : { },
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "runAs" : 2001,
+      "ip" : null,
+      "workingDirectory" : null,
+      "command" : null,
+      "services" : [ ],
+      "containerUsersToChangeId" : [ ],
+      "assetsPathAndContent" : [ ],
+      "assetsBundles" : [ ],
+      "hostToIpMapping" : [ ],
+      "portsRedirect" : [ ],
+      "portsEndpoint" : { },
+      "_nextAssetId" : 1
+    },
+    "domainNames" : [ ],
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceName" : "f1indirect",
+    "resourceCategory" : "INFRASTRUCTURE"
+  } ]
+}

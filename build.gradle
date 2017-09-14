@@ -1,0 +1,87 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+  dependencies {
+    classpath 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
+  }
+}
+plugins {
+    id 'org.springframework.boot' version '1.5.7.RELEASE'
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+
+group = 'com.foilen'
+version = System.getenv('VERSION')?:'master-SNAPSHOT'
+
+repositories {
+  mavenLocal()
+  jcenter()
+  mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencyManagement {
+  imports {
+    mavenBom 'io.spring.platform:platform-bom:Brussels-SR5'
+  }
+}
+
+eclipse {
+  classpath {
+    downloadSources = true
+    downloadJavadoc = true
+  }
+}
+
+dependencies {
+
+  // Internal API
+  compile "com.foilen:foilen-infra-api:$foilenInfraApiVersion"
+  compile "com.foilen:foilen-infra-plugin-core-system-common:$foilenInfraPluginVersion"
+
+  // Databases
+  compile "mysql:mysql-connector-java"
+  compile "org.springframework.boot:spring-boot-starter-data-jpa"
+  compile "org.springframework.boot:spring-boot-starter-jdbc"
+  
+  // Emails
+  compile 'com.sun.mail:javax.mail'
+  compile 'javax.activation:activation'
+
+  // Web
+  compile "com.foilen:foilen-login-api:$foilenLoginApiVersion"
+  compile "org.springframework.boot:spring-boot-starter-freemarker"
+  compile "org.springframework.boot:spring-boot-starter-web"
+  compile "org.webjars:bootstrap:3.3.7-1"
+
+  // Spring
+  compile "org.springframework:spring-context"
+  compile "org.springframework.retry:spring-retry"
+  compile 'org.springframework.security:spring-security-web'
+
+  // Misc
+  compile "args4j:args4j:$argsVersion"
+  compile "com.foilen:jl-smalltools:$smalltoolsVersion"
+  compile 'org.quartz-scheduler:quartz'
+
+  // Test
+  testCompile "com.foilen:foilen-infra-plugin-core-system-junits:$foilenInfraPluginVersion"
+  testCompile "com.h2database:h2"
+  testCompile 'junit:junit'
+  testCompile "org.springframework:spring-test"
+  testCompile "org.springframework.boot:spring-boot-starter-test"
+}
+
+springBoot {
+  mainClass = 'com.foilen.infra.ui.InfraUiApp'
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '4.1' }

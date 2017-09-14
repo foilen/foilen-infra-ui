@@ -1,0 +1,31 @@
+[ {
+  "id" : null,
+  "timestamp" : null,
+  "txId" : null,
+  "explicitChange" : true,
+  "type" : "LINK",
+  "action" : "DELETE",
+  "userType" : "SYSTEM",
+  "userName" : null,
+  "resourceFirstType" : "Dns Entry",
+  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceSecondType" : "Dns Entry",
+  "resourceSecond" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d2.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : \"Manual DnsEntry\",\n  \"resourceName\" : \"d2.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "linkType" : "USES",
+  "tagName" : null
+}, {
+  "id" : null,
+  "timestamp" : null,
+  "txId" : null,
+  "explicitChange" : true,
+  "type" : "TAG",
+  "action" : "DELETE",
+  "userType" : "SYSTEM",
+  "userName" : null,
+  "resourceFirstType" : null,
+  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceSecondType" : null,
+  "resourceSecond" : null,
+  "linkType" : null,
+  "tagName" : "super"
+} ]
