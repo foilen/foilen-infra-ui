@@ -135,25 +135,27 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         columnSearches.add(columnSearch);
     }
 
-    private void applyChanges(String txId, AuditUserType userType, String userName, boolean explicitChange, ChangesContext changes, Queue<IPResource> addedResources,
-            Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources, Map<Long, List<Tuple3<IPResource, String, IPResource>>> deletedResourcePreviousLinksByResourceId,
-            Set<Long> removedResourcesInThisTransaction) {
+    private void applyChanges(String txId, AuditUserType userType, String userName, boolean explicitChange, ChangesContext changes, //
+            Queue<IPResource> addedResources, Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources,
+            Map<Long, List<Tuple3<IPResource, String, IPResource>>> deletedResourcePreviousLinksByResourceId, //
+            Set<Long> removedResourcesInThisTransaction, Queue<Long> resourcesNeedRefresh) {
 
-        logger.debug("State before applying changes. Has {} updates, {} deletions, {} addition", updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size());
-        logger.debug("[APPLY] Resources: has {} updates, {} deletions, {} addition ; Links: has {} deletions, {} addition ; Tags: has {} deletions, {} addition", //
-                changes.getResourcesToUpdate().size(), changes.getResourcesToDelete().size(), changes.getResourcesToAdd().size(), //
+        logger.debug("State before applying changes. Has {} updates, {} deletions, {} addition, {} refreshes", updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size(),
+                resourcesNeedRefresh.size());
+        logger.debug("[APPLY] Resources: has {} updates, {} deletions, {} addition, {} refreshes ; Links: has {} deletions, {} addition ; Tags: has {} deletions, {} addition", //
+                changes.getResourcesToUpdate().size(), changes.getResourcesToDelete().size(), changes.getResourcesToAdd().size(), changes.getResourcesToRefresh().size(), //
                 changes.getLinksToDelete().size(), changes.getLinksToAdd().size(), //
                 changes.getTagsToDelete().size(), changes.getTagsToAdd().size() //
         );
 
         // Delete
-        Set<Long> updatedIds = new HashSet<>();
+        Set<Long> toRefreshIds = new HashSet<>();
         for (Long id : changes.getResourcesToDelete()) {
 
             if (removedResourcesInThisTransaction.add(id)) {
                 logger.debug("[APPLY] Delete resource {}", id);
             } else {
-                logger.debug("[APPLY] Delete resource {}. Already deleted in this transaction. Skipping", id);
+                logger.debug("[APPLY-SKIP] Delete resource {}. Already deleted in this transaction. Skipping", id);
 
                 continue;
             }
@@ -165,11 +167,12 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             auditingService.resourceDelete(txId, explicitChange, userType, userName, resource);
 
             deletedResources.add(resource);
+            resourcesNeedRefresh.remove(id);
             deletedResourcePreviousLinks.addAll(linkFindAllRelatedByResource(id));
             Set<Long> idsToUpdate = new HashSet<>();
             idsToUpdate.addAll(linkFindAllByFromResource(resource).stream().map(it -> it.getB().getInternalId()).collect(Collectors.toList()));
             idsToUpdate.addAll(linkFindAllByToResource(resource).stream().map(it -> it.getA().getInternalId()).collect(Collectors.toList()));
-            markAllTransientLinkedResourcesToUpdate(updatedIds, idsToUpdate);
+            markAllTransientLinkedResourcesToUpdate(toRefreshIds, idsToUpdate);
             pluginResourceColumnSearchDao.deleteByPluginResourceId(id);
             pluginResourceTagDao.deleteByPluginResourceId(id);
             pluginResourceLinkDao.deleteByPluginResourceId(id);
@@ -185,7 +188,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 String linkType = link.getB();
                 if (pluginResourceLinkDao.deleteByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromId, linkType, toId) > 0) {
                     auditingService.linkDelete(txId, explicitChange, userType, userName, fromResource.get(), linkType, toResource.get());
-                    markAllTransientLinkedResourcesToUpdate(updatedIds, Arrays.asList(fromId, toId));
+                    markAllTransientLinkedResourcesToUpdate(toRefreshIds, Arrays.asList(fromId, toId));
+                } else {
+                    logger.debug("[APPLY-SKIP] Delete link {}. Skipped since does not exists", link);
                 }
             }
         }
@@ -197,7 +202,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 String tagName = tag.getB();
                 if (pluginResourceTagDao.deleteByPluginResourceIdAndTagName(internalId, tagName) > 0) {
                     auditingService.tagDelete(txId, explicitChange, userType, userName, resource.get(), tagName);
-                    updatedIds.add(internalId);
+                    toRefreshIds.add(internalId);
+                } else {
+                    logger.debug("[APPLY-SKIP] Delete tag {}. Skipped since does not exists", tag);
                 }
             }
         }
@@ -217,12 +224,13 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             addedResources.add(pluginResource.loadResource(resource.getClass()));
             resource.setInternalId(pluginResource.getId());
             updateColumnSearches(resource);
+            resourcesNeedRefresh.remove(resource.getInternalId());
 
             // Add the direct links for update notification
             Set<Long> idsToUpdate = new HashSet<>();
             idsToUpdate.addAll(linkFindAllByFromResource(resource).stream().map(it -> it.getB().getInternalId()).collect(Collectors.toList()));
             idsToUpdate.addAll(linkFindAllByToResource(resource).stream().map(it -> it.getA().getInternalId()).collect(Collectors.toList()));
-            markAllTransientLinkedResourcesToUpdate(updatedIds, idsToUpdate);
+            markAllTransientLinkedResourcesToUpdate(toRefreshIds, idsToUpdate);
 
         }
         for (Tuple3<IPResource, String, IPResource> link : changes.getLinksToAdd()) {
@@ -236,9 +244,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 throw new ResourceNotFoundException(link.getC());
             }
 
-            // Add if not present
             Long fromId = fromResource.get().getInternalId();
             Long toId = toResource.get().getInternalId();
+            // Add if not present
             String linkType = link.getB();
             if (pluginResourceLinkDao.findByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromId, linkType, toId) == null) {
                 // Add
@@ -246,7 +254,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 PluginResource toPluginResource = pluginResourceDao.findOne(toId);
                 pluginResourceLinkDao.save(new PluginResourceLink(fromPluginResource, linkType, toPluginResource));
                 auditingService.linkAdd(txId, explicitChange, userType, userName, fromResource.get(), linkType, toResource.get());
-                markAllTransientLinkedResourcesToUpdate(updatedIds, Arrays.asList(fromId, toId));
+                markAllTransientLinkedResourcesToUpdate(toRefreshIds, Arrays.asList(fromId, toId));
+            } else {
+                logger.debug("[APPLY-SKIP] Add link {}. Skipped since does not exists", link);
             }
 
         }
@@ -266,13 +276,19 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 PluginResource pluginResource = pluginResourceDao.findOne(pluginResourceId);
                 pluginResourceTagDao.save(new PluginResourceTag(tagName, pluginResource));
                 auditingService.tagAdd(txId, explicitChange, userType, userName, loadResource(pluginResource), tagName);
-                updatedIds.add(pluginResourceId);
+                toRefreshIds.add(pluginResourceId);
+            } else {
+                logger.debug("[APPLY-SKIP] Add tag {}. Skipped since does not exists", tag);
             }
         }
-        updatedIds.removeAll(removedResourcesInThisTransaction);
-        updatedResourcesPrevious.addAll(updatedIds.stream().map(it -> resourceFind(it).get()).collect(Collectors.toList()));
+        toRefreshIds.removeAll(removedResourcesInThisTransaction);
+        toRefreshIds.forEach(toRefreshId -> {
+            if (idNotInAnyQueues(toRefreshId, addedResources, updatedResourcesPrevious, deletedResources, resourcesNeedRefresh)) {
+                resourcesNeedRefresh.add(toRefreshId);
+            }
+        });
 
-        Set<Long> updatedIdSeconds = new HashSet<>();
+        Set<Long> toRefreshIdsSeconds = new HashSet<>();
         // Update
         for (Tuple2<Long, IPResource> update : changes.getResourcesToUpdate()) {
 
@@ -284,8 +300,10 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 throw new ResourceNotFoundException(update.getA());
             }
             IPResource previousResource = previousResourceOptional.get();
-            if (updatedIds.add(previousResource.getInternalId())) {
+            // Add if not already in the list
+            if (!updatedResourcesPrevious.stream().filter(it -> previousResource.getInternalId().equals(it.getInternalId())).findAny().isPresent()) {
                 updatedResourcesPrevious.add(previousResource);
+                resourcesNeedRefresh.remove(previousResource.getInternalId());
             }
 
             // Get the next resource (might not exists)
@@ -311,18 +329,40 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             updatedResourcesPrevious.addAll(linkFindAllByFromResource(updatedResource).stream().map(it -> it.getB()).collect(Collectors.toList()));
             updatedResourcesPrevious.addAll(linkFindAllByToResource(updatedResource).stream().map(it -> it.getA()).collect(Collectors.toList()));
             // Add all the transient managed resources links for update notification
-            markAllTransientLinkedResourcesToUpdate(updatedIdSeconds, Arrays.asList(updatedResource.getInternalId()));
+            markAllTransientLinkedResourcesToUpdate(toRefreshIdsSeconds, Arrays.asList(updatedResource.getInternalId()));
         }
 
-        updatedIdSeconds.removeAll(updatedIds);
-        updatedResourcesPrevious.addAll(updatedIdSeconds.stream().map(it -> resourceFind(it).get()).collect(Collectors.toList()));
+        // Refreshes
+        for (Long id : changes.getResourcesToRefresh()) {
+            logger.debug("[APPLY] Refresh resource {}", id);
+            if (idNotInAnyQueues(id, addedResources, updatedResourcesPrevious, deletedResources, resourcesNeedRefresh)) {
+                resourcesNeedRefresh.add(id);
+            } else {
+                logger.debug("[APPLY-SKIP] Refresh resource {}. Already waiting for a refresh in any category", id);
+            }
+        }
+
+        toRefreshIdsSeconds.removeAll(toRefreshIds);
+        toRefreshIdsSeconds.forEach(toRefreshId -> {
+            if (idNotInAnyQueues(toRefreshId, addedResources, updatedResourcesPrevious, deletedResources, resourcesNeedRefresh)) {
+                resourcesNeedRefresh.add(toRefreshId);
+            }
+        });
 
         // Cleanup lists
         removedResourcesInThisTransaction.addAll(deletedResources.stream().map(IPResource::getInternalId).collect(Collectors.toSet()));
         updatedResourcesPrevious.removeIf(it -> removedResourcesInThisTransaction.contains(it.getInternalId()));
 
         changes.clear();
-        logger.debug("State after applying changes. Has {} updates, {} deletions, {} addition", updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size());
+        logger.debug("State after applying changes. Has {} updates, {} deletions, {} addition, {} refreshes", updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size(),
+                resourcesNeedRefresh.size());
+    }
+
+    private boolean idNotInAnyQueues(Long id, Queue<IPResource> addedResources, Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources, Queue<Long> resourcesNeedRefresh) {
+        return !resourcesNeedRefresh.contains(id) //
+                && !addedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
+                && !updatedResourcesPrevious.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
+                && !deletedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -362,31 +402,33 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
         logger.info("----- [changesExecute] Begin -----");
 
+        long maxTime = System.currentTimeMillis() + 15000;
+
         try {
 
             Queue<IPResource> addedResources = new LinkedBlockingQueue<>();
             Queue<IPResource> deletedResources = new LinkedBlockingQueue<>();
             Map<Long, List<Tuple3<IPResource, String, IPResource>>> deletedResourcePreviousLinksByResourceId = new LinkedHashMap<>();
             Queue<IPResource> updatedResourcesPrevious = new LinkedBlockingQueue<>();
+            Queue<Long> resourcesNeedRefresh = new LinkedBlockingQueue<>();
             Set<Long> removedResourcesInThisTransaction = new LinkedHashSet<>();
 
-            long globalLoopCount = 0;
             Map<Class<?>, List<UpdateEventContext>> updateEventContextsByResourceType = ipPluginService.getUpdateEvents().stream() //
                     .collect(Collectors.groupingBy(it -> it.getUpdateEventHandler().supportedClass()));
 
             // Apply the changes
             applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
-                    removedResourcesInThisTransaction);
+                    removedResourcesInThisTransaction, resourcesNeedRefresh);
             explicitChange = false;
 
-            while ((!addedResources.isEmpty() || !updatedResourcesPrevious.isEmpty() || !deletedResources.isEmpty()) && globalLoopCount < 100) {
-                ++globalLoopCount;
+            while (System.currentTimeMillis() < maxTime && (!addedResources.isEmpty() || !updatedResourcesPrevious.isEmpty() || !deletedResources.isEmpty() || !resourcesNeedRefresh.isEmpty())) {
 
-                logger.debug("Update events loop {}. Has {} updates, {} deletions, {} addition", globalLoopCount, updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size());
+                logger.debug("Update events loop. Has {} updates, {} deletions, {} addition, {} refreshes", updatedResourcesPrevious.size(), deletedResources.size(), addedResources.size(),
+                        resourcesNeedRefresh.size());
 
                 // Process all updates
                 IPResource itemPrevious;
-                while ((itemPrevious = updatedResourcesPrevious.poll()) != null) {
+                while (System.currentTimeMillis() < maxTime && (itemPrevious = updatedResourcesPrevious.poll()) != null) {
                     Optional<IPResource> currentResourceOptional = resourceFind(itemPrevious.getInternalId());
                     if (!currentResourceOptional.isPresent()) {
                         throw new ResourceNotFoundException(itemPrevious);
@@ -400,14 +442,14 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                             UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
                             updateEventHandler.updateHandler(commonServicesContext, changes, itemPrevious, currentResource);
                             applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
-                                    removedResourcesInThisTransaction);
+                                    removedResourcesInThisTransaction, resourcesNeedRefresh);
                         }
                     }
                 }
 
                 // Process all deletes
                 IPResource item;
-                while ((item = deletedResources.poll()) != null) {
+                while (System.currentTimeMillis() < maxTime && (item = deletedResources.poll()) != null) {
                     List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
                     if (eventContexts != null) {
                         logger.debug("[UPDATE EVENT] Processing {} deleted handlers", eventContexts.size());
@@ -416,13 +458,13 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                             UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
                             updateEventHandler.deleteHandler(commonServicesContext, changes, item, deletedResourcePreviousLinksByResourceId.get(item.getInternalId()));
                             applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
-                                    removedResourcesInThisTransaction);
+                                    removedResourcesInThisTransaction, resourcesNeedRefresh);
                         }
                     }
                 }
 
                 // Process all adds
-                while ((item = addedResources.poll()) != null) {
+                while (System.currentTimeMillis() < maxTime && (item = addedResources.poll()) != null) {
                     List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
                     if (eventContexts != null) {
                         logger.debug("[UPDATE EVENT] Processing {} added handlers", eventContexts.size());
@@ -431,19 +473,41 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                             UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
                             updateEventHandler.addHandler(commonServicesContext, changes, item);
                             applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
-                                    removedResourcesInThisTransaction);
+                                    removedResourcesInThisTransaction, resourcesNeedRefresh);
+                        }
+                    }
+                }
+
+                // Process all refreshes
+                Long id;
+                while (System.currentTimeMillis() < maxTime && (id = resourcesNeedRefresh.poll()) != null) {
+                    Optional<IPResource> optionalResource = resourceFind(id);
+                    if (optionalResource.isPresent()) {
+                        item = optionalResource.get();
+                        List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
+                        if (eventContexts != null) {
+                            logger.debug("[UPDATE EVENT] Processing {} refresh handlers", eventContexts.size());
+                            for (UpdateEventContext eventContext : eventContexts) {
+                                logger.debug("[UPDATE EVENT] Processing {} refresh handler", eventContext.getUpdateHandlerName());
+                                UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
+                                updateEventHandler.checkAndFix(commonServicesContext, changes, item);
+                                applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
+                                        removedResourcesInThisTransaction, resourcesNeedRefresh);
+                            }
                         }
                     }
                 }
 
                 // Apply any pending changes
-                applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
-                        removedResourcesInThisTransaction);
+                if (System.currentTimeMillis() < maxTime) {
+                    applyChanges(txId, userType, userName, explicitChange, changes, addedResources, updatedResourcesPrevious, deletedResources, deletedResourcePreviousLinksByResourceId,
+                            removedResourcesInThisTransaction, resourcesNeedRefresh);
+                }
 
             }
 
-            if (!addedResources.isEmpty() || !updatedResourcesPrevious.isEmpty() || !deletedResources.isEmpty()) {
-                throw new InfiniteUpdateLoop("Iterated " + globalLoopCount + " times and there are always changes");
+            if (!addedResources.isEmpty() || !updatedResourcesPrevious.isEmpty() || !deletedResources.isEmpty() || !resourcesNeedRefresh.isEmpty()) {
+                throw new InfiniteUpdateLoop("Iterated for too long and there are always changes");
             }
 
             // Complete the transaction

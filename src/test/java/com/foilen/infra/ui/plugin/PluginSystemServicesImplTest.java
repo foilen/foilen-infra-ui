@@ -51,10 +51,10 @@ public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest 
 
     @Override
     @Before
-    public void createFakeData() {
+    public void beforeEach() {
         fakeDataService.clearAll();
         UnixUserAvailableIdHelper.init(ipResourceService);
-        super.createFakeData();
+        super.beforeEach();
     }
 
     @Override

@@ -30,21 +30,6 @@ import com.foilen.smalltools.spring.resourceresolver.BundleResourceResolver;
 @ComponentScan({ "com.foilen.infra.ui.web" })
 public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
 
-    @Bean
-    public AddUserDetailsModelExtension addUserDetailsModelExtension() {
-        return new AddUserDetailsModelExtension();
-    }
-
-    @Bean
-    public AddVisualModelExtension addVisualModelExtension() {
-        return new AddVisualModelExtension();
-    }
-
-    @Bean
-    public RemoveModelOnRedirection removeModelOnRedirection() {
-        return new RemoveModelOnRedirection();
-    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(addUserDetailsModelExtension());
@@ -84,6 +69,21 @@ public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
 
         );
 
+    }
+
+    @Bean
+    public AddUserDetailsModelExtension addUserDetailsModelExtension() {
+        return new AddUserDetailsModelExtension();
+    }
+
+    @Bean
+    public AddVisualModelExtension addVisualModelExtension() {
+        return new AddVisualModelExtension();
+    }
+
+    @Bean
+    public RemoveModelOnRedirection removeModelOnRedirection() {
+        return new RemoveModelOnRedirection();
     }
 
 }
