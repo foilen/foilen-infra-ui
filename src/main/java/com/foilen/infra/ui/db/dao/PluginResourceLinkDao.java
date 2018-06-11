@@ -37,9 +37,9 @@ public interface PluginResourceLinkDao extends JpaRepository<PluginResourceLink,
 
     List<PluginResourceLink> findAllByFromPluginResourceIdAndLinkType(long fromPluginResourceId, String linkType);
 
-    List<PluginResourceLink> findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceType(long fromPluginResourceId, String linkType, String toResourceType);
+    List<PluginResourceLink> findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceTypeIn(long fromPluginResourceId, String linkType, List<String> toResourceType);
 
-    List<PluginResourceLink> findAllByFromPluginResourceTypeAndLinkTypeAndToPluginResourceId(String fromResourceType, String linkType, long toPluginResourceId);
+    List<PluginResourceLink> findAllByFromPluginResourceTypeInAndLinkTypeAndToPluginResourceId(List<String> fromResourceTypes, String linkType, long toPluginResourceId);
 
     List<PluginResourceLink> findAllByLinkTypeAndToPluginResourceId(String linkType, long toPluginResourceId);
 

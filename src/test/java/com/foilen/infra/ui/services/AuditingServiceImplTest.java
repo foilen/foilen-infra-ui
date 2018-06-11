@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.foilen.infra.plugin.v1.core.base.editors.ManualDnsEntryEditor;
-import com.foilen.infra.plugin.v1.core.base.resources.DnsEntry;
-import com.foilen.infra.plugin.v1.core.base.resources.model.DnsEntryType;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
+import com.foilen.infra.resource.dns.DnsEntry;
+import com.foilen.infra.resource.dns.ManualDnsEntryEditor;
+import com.foilen.infra.resource.dns.model.DnsEntryType;
 import com.foilen.infra.ui.db.dao.AuditItemDao;
 import com.foilen.infra.ui.db.domain.audit.AuditItem;
 import com.foilen.infra.ui.test.AbstractSpringTests;

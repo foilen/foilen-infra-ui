@@ -22,13 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foilen.infra.api.model.MachineSetup;
-import com.foilen.infra.plugin.v1.core.base.resources.Application;
-import com.foilen.infra.plugin.v1.core.base.resources.Machine;
-import com.foilen.infra.plugin.v1.core.base.resources.UnixUser;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
+import com.foilen.infra.resource.application.Application;
+import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 import com.foilen.smalltools.tools.StringTools;
 

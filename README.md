@@ -2,9 +2,9 @@
 
 The UI to manage the infrastructure of multiple Linux machines.
 
-# Bootstrap a cluster
+# Bootstrap a cluster TODO FIX
 
-## Configuration file
+## Configuration file TODO FIX
 
 You need to create a json configuration file that maps the object InfraUiConfig.
 

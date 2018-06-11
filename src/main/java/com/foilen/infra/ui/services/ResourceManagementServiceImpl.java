@@ -45,7 +45,6 @@ import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.UpdateEventContext;
 import com.foilen.infra.plugin.v1.core.eventhandler.UpdateEventHandler;
 import com.foilen.infra.plugin.v1.core.exception.InfiniteUpdateLoop;
-import com.foilen.infra.plugin.v1.core.exception.ProblemException;
 import com.foilen.infra.plugin.v1.core.exception.ResourceNotFoundException;
 import com.foilen.infra.plugin.v1.core.exception.ResourceNotFromRepositoryException;
 import com.foilen.infra.plugin.v1.core.exception.ResourcePrimaryKeyCollisionException;
@@ -68,6 +67,8 @@ import com.foilen.infra.ui.db.domain.plugin.PluginResourceLink;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceTag;
 import com.foilen.login.spring.client.security.FoilenAuthentication;
 import com.foilen.smalltools.JavaEnvironmentValues;
+import com.foilen.smalltools.exception.SmallToolsException;
+import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
@@ -101,6 +102,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     @Autowired
     private SecurityService securityService;
 
+    private Map<Class<? extends IPResource>, List<Class<?>>> allClassesByResourceClass = new HashMap<>();
     private Map<Class<? extends IPResource>, IPResourceDefinition> resourceDefinitionByResourceClass = new HashMap<>();
     private Map<String, IPResourceDefinition> resourceDefinitionByResourceType = new HashMap<>();
 
@@ -358,13 +360,6 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 resourcesNeedRefresh.size());
     }
 
-    private boolean idNotInAnyQueues(Long id, Queue<IPResource> addedResources, Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources, Queue<Long> resourcesNeedRefresh) {
-        return !resourcesNeedRefresh.contains(id) //
-                && !addedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
-                && !updatedResourcesPrevious.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
-                && !deletedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent();
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void changesExecute(ChangesContext changes) {
@@ -525,20 +520,23 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public <T extends IPResource> IPResourceQuery<T> createResourceQuery(Class<T> resourceClass) {
-        IPResourceDefinition resourceDefinition = getResourceDefinition(resourceClass);
-        if (resourceDefinition == null) {
-            throw new ProblemException("Resource class " + resourceClass + " is unknown");
+        List<IPResourceDefinition> resourceDefinitions = getResourceDefinitions(resourceClass);
+
+        if (resourceDefinitions.isEmpty()) {
+            throw new SmallToolsException("Resource class " + resourceClass.getName() + " is unknown");
         }
-        return new IPResourceQuery<>(resourceDefinition);
+
+        return new IPResourceQuery<>(resourceDefinitions);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends IPResource> IPResourceQuery<T> createResourceQuery(String resourceType) {
         IPResourceDefinition resourceDefinition = resourceDefinitionByResourceType.get(resourceType);
         if (resourceDefinition == null) {
-            throw new ProblemException("Resource type " + resourceType + " is unknown");
+            throw new SmallToolsException("Resource type " + resourceType + " is unknown");
         }
-        return new IPResourceQuery<>(resourceDefinition);
+        return (IPResourceQuery<T>) createResourceQuery(resourceDefinition.getResourceClass());
     }
 
     private String generateInParameters(int size) {
@@ -579,6 +577,22 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         return Collections.unmodifiableList(resourceDefinitionByResourceType.values().stream().collect(Collectors.toList()));
     }
 
+    protected List<IPResourceDefinition> getResourceDefinitions(Class<? extends IPResource> resourceClass) {
+        return allClassesByResourceClass.entrySet().stream() //
+                .filter(it -> it.getValue().contains(resourceClass)) //
+                .map(it -> resourceDefinitionByResourceClass.get(it.getKey())) //
+                .filter(it -> it != null) //
+                .collect(Collectors.toList());
+
+    }
+
+    private boolean idNotInAnyQueues(Long id, Queue<IPResource> addedResources, Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources, Queue<Long> resourcesNeedRefresh) {
+        return !resourcesNeedRefresh.contains(id) //
+                && !addedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
+                && !updatedResourcesPrevious.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
+                && !deletedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent();
+    }
+
     @Override
     public boolean linkExistsByFromResourceAndLinkTypeAndToResource(IPResource fromResource, String linkType, IPResource toResource) {
         return pluginResourceLinkDao.countByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromResource.getInternalId(), linkType, toResource.getInternalId()) > 0;
@@ -616,8 +630,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         if (fromResource.getInternalId() == null) {
             throw new ResourceNotFromRepositoryException(fromResource);
         }
-        String toResourceType = getResourceDefinition(toResourceClass).getResourceType();
-        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceType(fromResource.getInternalId(), linkType, toResourceType).stream() //
+        List<IPResourceDefinition> ipResourceDefinitions = getResourceDefinitions(toResourceClass);
+        List<String> toResourceTypes = ipResourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
+        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceTypeIn(fromResource.getInternalId(), linkType, toResourceTypes).stream() //
                 .map(it -> (R) loadResource(it.getToPluginResource())) //
                 .collect(Collectors.toList());
     }
@@ -628,8 +643,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         if (toResource.getInternalId() == null) {
             throw new ResourceNotFromRepositoryException(toResource);
         }
-        String fromResourceType = getResourceDefinition(fromResourceClass).getResourceType();
-        return pluginResourceLinkDao.findAllByFromPluginResourceTypeAndLinkTypeAndToPluginResourceId(fromResourceType, linkType, toResource.getInternalId()).stream() //
+        List<IPResourceDefinition> ipResourceDefinitions = getResourceDefinitions(fromResourceClass);
+        List<String> fromResourceTypes = ipResourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
+        return pluginResourceLinkDao.findAllByFromPluginResourceTypeInAndLinkTypeAndToPluginResourceId(fromResourceTypes, linkType, toResource.getInternalId()).stream() //
                 .map(it -> (R) loadResource(it.getFromPluginResource())) //
                 .collect(Collectors.toList());
     }
@@ -708,6 +724,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     public void resourceAdd(IPResourceDefinition resourceDefinition) {
         resourceDefinitionByResourceClass.put(resourceDefinition.getResourceClass(), resourceDefinition);
         resourceDefinitionByResourceType.put(resourceDefinition.getResourceType(), resourceDefinition);
+
+        allClassesByResourceClass.put(resourceDefinition.getResourceClass(), ReflectionTools.allTypes(resourceDefinition.getResourceClass()));
     }
 
     @Override
@@ -791,9 +809,9 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             return new ArrayList<>();
         }
 
-        IPResourceDefinition resourceDefinition = query.getResourceDefinition();
+        List<IPResourceDefinition> resourceDefinitions = query.getResourceDefinitions();
 
-        String selectSql = "SELECT DISTINCT r.id, r.value_json";
+        String selectSql = "SELECT DISTINCT r.id, r.type, r.value_json";
         StringBuilder fromSql = new StringBuilder(" FROM plugin_resource r");
 
         // Add the restrictions
@@ -801,9 +819,14 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         List<Object> parameters = new ArrayList<>();
 
         // Right type
-        String resourceType = query.getResourceDefinition().getResourceType();
-        restrictions.add("r.type = ?");
-        parameters.add(resourceType);
+        String t = "?";
+        for (int i = 1; i < resourceDefinitions.size(); ++i) {
+            t += ",?";
+        }
+        restrictions.add("r.type IN (" + t + ")");
+        for (IPResourceDefinition resourceDefinition : resourceDefinitions) {
+            parameters.add(resourceDefinition.getResourceType());
+        }
 
         // Right ids
         if (query.getIdsIn() != null) {
@@ -823,7 +846,12 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
+            List<String> resourceTypes = resourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
 
             if (Set.class.isAssignableFrom(propertyType)) {
                 // All the values
@@ -833,7 +861,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                         searchCount = resourceFindAllAppendSql( //
                                 fromSql, restrictions, parameters, //
                                 searchCount, //
-                                resourceType, propertyName, nextPropertyValue.getClass(), nextPropertyValue);
+                                resourceTypes, propertyName, nextPropertyValue.getClass(), nextPropertyValue);
                     }
                 }
 
@@ -846,7 +874,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 searchCount = resourceFindAllAppendSql( //
                         fromSql, restrictions, parameters, //
                         searchCount, //
-                        resourceType, propertyName, propertyType, propertyValue);
+                        resourceTypes, propertyName, propertyType, propertyValue);
             }
         }
 
@@ -855,7 +883,12 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
+            List<String> resourceTypes = resourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
 
             if (Set.class.isAssignableFrom(propertyType)) {
                 // All the values
@@ -865,7 +898,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                         searchCount = resourceFindAllAppendSql( //
                                 fromSql, restrictions, parameters, //
                                 searchCount, //
-                                resourceType, propertyName, nextPropertyValue.getClass(), nextPropertyValue);
+                                resourceTypes, propertyName, nextPropertyValue.getClass(), nextPropertyValue);
                     }
                 }
 
@@ -875,13 +908,15 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         }
 
         // Like
-        for (
-
-        Entry<String, String> entry : query.getPropertyLike().entrySet()) {
+        for (Entry<String, String> entry : query.getPropertyLike().entrySet()) {
             String propertyName = entry.getKey();
             String propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
 
             String searchAlias = "se" + searchCount++;
             String searchRestriction;
@@ -909,7 +944,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
 
             String searchAlias = "se" + searchCount++;
             String searchRestriction;
@@ -947,7 +986,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
 
             String searchAlias = "se" + searchCount++;
             String searchRestriction;
@@ -985,7 +1028,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
 
             String searchAlias = "se" + searchCount++;
             String searchRestriction;
@@ -1023,7 +1070,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             String propertyName = entry.getKey();
             Object propertyValue = entry.getValue();
 
-            Class<?> propertyType = resourceDefinition.getPropertyType(propertyName);
+            // Get the first property type with that name
+            IPResourceDefinition mainResourceDefinition = resourceDefinitions.stream() //
+                    .filter(it -> it.getPropertyType(propertyName) != null) //
+                    .findFirst().get();
+            Class<?> propertyType = mainResourceDefinition.getPropertyType(propertyName);
 
             String searchAlias = "se" + searchCount++;
             String searchRestriction;
@@ -1098,11 +1149,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             @SuppressWarnings("unchecked")
             @Override
             public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-                IPResourceDefinition resourceDefinition = getResourceDefinition(resourceType);
+                IPResourceDefinition resourceDefinition = getResourceDefinition(rs.getString(2));
                 if (resourceDefinition == null) {
                     return null;
                 }
-                T resource = (T) JsonTools.readFromString(rs.getString(2), resourceDefinition.getResourceClass());
+                T resource = (T) JsonTools.readFromString(rs.getString(3), resourceDefinition.getResourceClass());
                 resource.setInternalId(rs.getLong(1));
                 return resource;
             }
@@ -1115,7 +1166,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     protected int resourceFindAllAppendSql( //
             StringBuilder fromSql, List<String> restrictions, List<Object> parameters, //
             int searchCount, //
-            String resourceType, String propertyName, Class<?> propertyType, Object propertyValue) {
+            List<String> resourceTypes, String propertyName, Class<?> propertyType, Object propertyValue) {
         String searchAlias = "se" + searchCount++;
         String searchRestriction;
         if (Boolean.class.isAssignableFrom(propertyType) || propertyType.equals(boolean.class)) {
@@ -1145,7 +1196,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             searchRestriction = searchAlias + ".text = ?";
         } else {
             // Unknown type
-            logger.error("Search: Unknown column type {} for type {} and property {}", propertyType.getName(), resourceType, propertyName);
+            logger.error("Search: Unknown column type {} for types {} and property {}", propertyType.getName(), resourceTypes, propertyName);
             return searchCount;
         }
 

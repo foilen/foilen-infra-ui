@@ -19,8 +19,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.foilen.infra.plugin.v1.core.base.resources.Machine;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
+import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.ui.db.dao.UserDao;
 import com.foilen.infra.ui.db.domain.user.ApiUser;
 import com.foilen.infra.ui.db.domain.user.User;

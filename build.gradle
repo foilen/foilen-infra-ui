@@ -41,11 +41,29 @@ eclipse {
   }
 }
 
+configurations {
+	testCompile.extendsFrom compileOnly
+}
+
 dependencies {
 
   // Internal API
   compile "com.foilen:foilen-infra-api:$foilenInfraApiVersion"
-  compile "com.foilen:foilen-infra-plugin-core-system-common:$foilenInfraPluginVersion"
+  compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraPluginVersion"
+
+  // Resources
+  compileOnly "com.foilen:foilen-infra-resource-application:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-dns:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-domain:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-example:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-example-failing:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-infraconfig:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-machine:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-mariadb:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-webcertificate:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-website:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-unixuser:0.1.0"
 
   // Databases
   compile "mysql:mysql-connector-java"
@@ -73,7 +91,7 @@ dependencies {
   compile 'org.quartz-scheduler:quartz'
 
   // Test
-  testCompile "com.foilen:foilen-infra-plugin-core-system-junits:$foilenInfraPluginVersion"
+  testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
   testCompile "com.h2database:h2"
   testCompile 'junit:junit'
   testCompile "org.springframework:spring-test"
@@ -84,4 +102,4 @@ springBoot {
   mainClass = 'com.foilen.infra.ui.InfraUiApp'
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '4.1' }
+task wrapper(type: Wrapper) { gradleVersion = '4.7' }

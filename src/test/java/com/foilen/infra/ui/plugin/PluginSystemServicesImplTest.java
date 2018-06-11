@@ -18,10 +18,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.foilen.infra.plugin.core.system.junits.AbstractIPResourceServiceTest;
-import com.foilen.infra.plugin.v1.core.base.resources.helper.UnixUserAvailableIdHelper;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
+import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
 import com.foilen.infra.ui.InfraUiSpringConfig;
 import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.test.AlertNotificationServiceStub;

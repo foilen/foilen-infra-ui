@@ -28,8 +28,8 @@ import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
-import com.foilen.infra.plugin.v1.model.junit.JunitResource;
-import com.foilen.infra.plugin.v1.model.junit.JunitResourceEnum;
+import com.foilen.infra.resource.example.JunitResource;
+import com.foilen.infra.resource.example.JunitResourceEnum;
 import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
 import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
@@ -66,7 +66,6 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
     @Override
     @Before
     public void createFakeData() {
-        JunitsHelper.addResourcesDefinition(internalServicesContext);
         super.createFakeData();
         JunitsHelper.createFakeData(commonServicesContext, internalServicesContext);
     }
