@@ -5,4 +5,4 @@ COPY app/ /app
 EXPOSE 8080
 
 WORKDIR /app
-ENTRYPOINT ["java", "-jar", "/app/foilen-infra-ui.jar"]
+ENTRYPOINT ["/app/bin/foilen-infra-ui"]

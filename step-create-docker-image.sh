@@ -11,9 +11,15 @@ DOCKER_BUILD=$RUN_PATH/build/docker
 rm -rf $DOCKER_BUILD
 mkdir -p $DOCKER_BUILD/app
 
-cp -v build/libs/foilen-infra-ui-$VERSION.jar $DOCKER_BUILD/app/foilen-infra-ui.jar
+cp -v build/distributions/foilen-infra-ui-$VERSION.zip $DOCKER_BUILD/app/foilen-infra-ui.zip
 cp -v docker-release/* $DOCKER_BUILD
 echo -n $VERSION > $DOCKER_BUILD/app/version.txt
+
+cd $DOCKER_BUILD/app
+unzip foilen-infra-ui.zip
+rm foilen-infra-ui.zip
+mv foilen-infra-ui-$VERSION/* .
+rm -rf foilen-infra-ui-$VERSION
 
 echo ----[ Docker image folder content ]----
 find $DOCKER_BUILD

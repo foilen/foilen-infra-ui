@@ -48,3 +48,9 @@ Some configuration options can be overridden with the environment variables:
 
 * `MYSQL_PORT_3306_TCP_ADDR` : To change `mysqlHostName`
 * `MYSQL_PORT_3306_TCP_PORT` : To change `mysqlPort`
+
+## Plugin
+
+Can set a plugin folder in environment PLUGINS_JARS .
+*TODO*
+

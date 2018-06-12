@@ -98,8 +98,12 @@ dependencies {
   testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
-springBoot {
-  mainClass = 'com.foilen.infra.ui.InfraUiApp'
+apply plugin: 'application'
+
+mainClassName = 'com.foilen.infra.ui.InfraUiApp'
+
+startScripts {
+  unixStartScriptGenerator.template = resources.text.fromFile('scripts/customUnixStartScript.txt')
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '4.7' }
