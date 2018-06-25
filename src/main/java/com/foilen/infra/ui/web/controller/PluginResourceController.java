@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,14 +72,14 @@ public class PluginResourceController extends AbstractBasics {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping("create/{editorName}")
+    @GetMapping("create/{editorName}")
     public ModelAndView create(@PathVariable("editorName") String editorName) {
         ModelAndView modelAndView = new ModelAndView("pluginresources/create");
         modelAndView.addObject("editorName", editorName);
         return modelAndView;
     }
 
-    @RequestMapping("createPageDefinition/{editorName}")
+    @GetMapping("createPageDefinition/{editorName}")
     public ModelAndView createPageDefinition(@PathVariable("editorName") String editorName, HttpServletRequest httpServletRequest) {
         ModelAndView modelAndView = new ModelAndView("pluginresources/resource");
 
@@ -120,7 +121,7 @@ public class PluginResourceController extends AbstractBasics {
                 });
     }
 
-    @RequestMapping("edit/{resourceId}")
+    @GetMapping("edit/{resourceId}")
     public ModelAndView edit(@PathVariable("resourceId") long resourceId) {
 
         ModelAndView modelAndView = new ModelAndView("pluginresources/edit");
@@ -150,7 +151,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @RequestMapping("editPageDefinition/{editorName}/{resourceId}")
+    @GetMapping("editPageDefinition/{editorName}/{resourceId}")
     public ModelAndView editPageDefinition(@PathVariable("editorName") String editorName, @PathVariable("resourceId") long resourceId, HttpServletRequest httpServletRequest) {
         ModelAndView modelAndView = new ModelAndView("pluginresources/resource");
 
@@ -199,7 +200,7 @@ public class PluginResourceController extends AbstractBasics {
         return modelAndView;
     }
 
-    @RequestMapping("list")
+    @GetMapping("list")
     public ModelAndView list() {
         ModelAndView modelAndView = new ModelAndView("pluginresources/list");
 
@@ -217,7 +218,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @ResponseBody
-    @RequestMapping("suggest/{resourceType}")
+    @GetMapping("suggest/{resourceType}")
     public List<ResourceSuggestResponse> suggest(@PathVariable("resourceType") Class<? extends IPResource> resourceType) {
         return resourceService.resourceFindAll( //
                 resourceService.createResourceQuery(resourceType) //

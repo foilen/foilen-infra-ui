@@ -12,6 +12,7 @@ package com.foilen.infra.ui.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,7 +36,7 @@ public class MachineGraphicsController {
     private SecurityService securityService;
 
     @ResponseBody
-    @RequestMapping("graphCpu/{name:.+}")
+    @GetMapping("graphCpu/{name:.+}")
     public Chart graphCpu(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -45,7 +46,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphDisk/{name:.+}")
+    @GetMapping("graphDisk/{name:.+}")
     public Chart graphDisk(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -55,7 +56,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphMemory/{name:.+}")
+    @GetMapping("graphMemory/{name:.+}")
     public Chart graphMemory(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -65,7 +66,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphNetwork/{name:.+}")
+    @GetMapping("graphNetwork/{name:.+}")
     public Chart graphNetwork(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -74,14 +75,14 @@ public class MachineGraphicsController {
         return machineStatisticsService.getNetworkChart(name);
     }
 
-    @RequestMapping("list")
+    @GetMapping("list")
     public ModelAndView listGraphs(Authentication authentication) {
         ModelAndView modelAndView = new ModelAndView("machineGraphics/list");
         modelAndView.addObject("machines", machineService.listMonitor(authentication.getName()));
         return modelAndView;
     }
 
-    @RequestMapping("view/{name:.+}")
+    @GetMapping("view/{name:.+}")
     public ModelAndView view(Authentication authentication, @PathVariable String name) {
         ModelAndView modelAndView = new ModelAndView("machineGraphics/view");
         modelAndView.addObject("machineName", name);

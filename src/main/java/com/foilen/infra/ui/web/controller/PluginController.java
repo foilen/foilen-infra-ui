@@ -11,6 +11,7 @@ package com.foilen.infra.ui.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,7 +24,7 @@ public class PluginController {
     @Autowired
     private IPPluginService ipPluginService;
 
-    @RequestMapping("list")
+    @GetMapping("list")
     public ModelAndView list() {
         ModelAndView modelAndView = new ModelAndView("plugin/list");
         modelAndView.addObject("availables", ipPluginService.getAvailablePlugins());
