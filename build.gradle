@@ -49,7 +49,7 @@ dependencies {
 
   // Internal API
   compile "com.foilen:foilen-infra-api:$foilenInfraApiVersion"
-  compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraPluginVersion"
+  compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraSystemVersion"
 
   // Resources
   compileOnly "com.foilen:foilen-infra-resource-application:0.1.0"
@@ -61,9 +61,9 @@ dependencies {
   compileOnly "com.foilen:foilen-infra-resource-machine:0.1.0"
   compileOnly "com.foilen:foilen-infra-resource-mariadb:0.1.0"
   compileOnly "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
+  compileOnly "com.foilen:foilen-infra-resource-unixuser:0.1.0"
   compileOnly "com.foilen:foilen-infra-resource-webcertificate:0.1.0"
   compileOnly "com.foilen:foilen-infra-resource-website:0.1.0"
-  compileOnly "com.foilen:foilen-infra-resource-unixuser:0.1.0"
 
   // Databases
   compile "mysql:mysql-connector-java"

@@ -54,3 +54,18 @@ Some configuration options can be overridden with the environment variables:
 Can set a plugin folder in environment PLUGINS_JARS .
 *TODO*
 
+# Development
+
+## Local in Eclipse
+
+To be able to execute the application in Eclipse, you first need to download all the plugins jars:
+
+```bash
+./download-local-plugins-jars.sh
+```
+
+Then, run *InfraUiApp - LOCAL.launch*
+
+## Local in Docker
+
+Simply execute `./test-ui-local.sh` .
