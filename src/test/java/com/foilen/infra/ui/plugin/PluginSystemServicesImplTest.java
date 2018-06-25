@@ -36,7 +36,7 @@ public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest 
     public static void updateProperties() {
         System.setProperty("MODE", "JUNIT");
         System.setProperty("infraUi.csrfSalt", "aaaaaa");
-        System.setProperty("infraUi.baseUrl", "http://ui.example.com");
+        System.setProperty("infraUi.baseUrl", "https://infra.example.com");
     }
 
     @Autowired
