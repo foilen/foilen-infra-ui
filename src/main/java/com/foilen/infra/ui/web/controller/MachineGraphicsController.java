@@ -35,7 +35,7 @@ public class MachineGraphicsController {
     private SecurityService securityService;
 
     @ResponseBody
-    @RequestMapping("graphCpu/{name}")
+    @RequestMapping("graphCpu/{name:.+}")
     public Chart graphCpu(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -45,7 +45,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphDisk/{name}")
+    @RequestMapping("graphDisk/{name:.+}")
     public Chart graphDisk(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -55,7 +55,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphMemory/{name}")
+    @RequestMapping("graphMemory/{name:.+}")
     public Chart graphMemory(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -65,7 +65,7 @@ public class MachineGraphicsController {
     }
 
     @ResponseBody
-    @RequestMapping("graphNetwork/{name}")
+    @RequestMapping("graphNetwork/{name:.+}")
     public Chart graphNetwork(Authentication authentication, @PathVariable String name) {
         if (!securityService.canMonitorMachine(authentication.getName(), name)) {
             throw new UiException("error.forbidden");
@@ -81,7 +81,7 @@ public class MachineGraphicsController {
         return modelAndView;
     }
 
-    @RequestMapping("view/{name}")
+    @RequestMapping("view/{name:.+}")
     public ModelAndView view(Authentication authentication, @PathVariable String name) {
         ModelAndView modelAndView = new ModelAndView("machineGraphics/view");
         modelAndView.addObject("machineName", name);
