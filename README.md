@@ -37,8 +37,6 @@ Here is an example of the content:
 	},
 	"loginCookieSignatureSalt" : "fa7c8c64f538931381e245661"
 }
-loginBaseUrl" : "http://login.example.com"
-}
 ```
 
 You can then specify the full path of that file as the *configFile* argument when launching the app or as the
@@ -69,3 +67,9 @@ Then, run *InfraUiApp - LOCAL.launch*
 ## Local in Docker
 
 Simply execute `./test-ui-local.sh` .
+
+## TEST in Docker
+
+Simply execute `./test-ui-test.sh` .
+
+When done, cleanup by stoping the DB: `docker stop infra_ui_db` .
