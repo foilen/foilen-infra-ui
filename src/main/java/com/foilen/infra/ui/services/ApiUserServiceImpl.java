@@ -31,7 +31,7 @@ import com.foilen.smalltools.tuple.Tuple2;
 public class ApiUserServiceImpl extends AbstractBasics implements ApiUserService {
 
     private static final int MACHINE_EXPIRE_DAYS = 30;
-    private static final int MACHINE_REFRESH_BEFORE_EXPIRE_DAYS = MACHINE_EXPIRE_DAYS / 3;
+    private static final int MACHINE_REFRESH_BEFORE_EXPIRE_DAYS = MACHINE_EXPIRE_DAYS / 3; // 1/3 of the expiration time
 
     @Autowired
     private ApiUserDao apiUserDao;

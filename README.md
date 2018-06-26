@@ -2,9 +2,18 @@
 
 The UI to manage the infrastructure of multiple Linux machines.
 
-# Bootstrap a cluster TODO FIX
+# Usage
 
-## Configuration file TODO FIX
+# Configuration environment
+
+Some configuration options can be overridden with the environment variables:
+
+* `CONFIG_FILE` : The path to the config file
+* `PLUGINS_JARS` : The path to the jars containing the plugings
+* `MYSQL_PORT_3306_TCP_ADDR` : To change `mysqlHostName` (used by Docker Links)
+* `MYSQL_PORT_3306_TCP_PORT` : To change `mysqlPort` (used by Docker Links)
+
+## Configuration file
 
 You need to create a json configuration file that maps the object InfraUiConfig.
 
@@ -42,16 +51,6 @@ Here is an example of the content:
 You can then specify the full path of that file as the *configFile* argument when launching the app or as the
 *CONFIG_FILE* environment variable.
 
-Some configuration options can be overridden with the environment variables:
-
-* `MYSQL_PORT_3306_TCP_ADDR` : To change `mysqlHostName`
-* `MYSQL_PORT_3306_TCP_PORT` : To change `mysqlPort`
-
-## Plugin
-
-Can set a plugin folder in environment PLUGINS_JARS .
-*TODO*
-
 # Development
 
 ## Local in Eclipse
@@ -72,4 +71,4 @@ Simply execute `./test-ui-local.sh` .
 
 Simply execute `./test-ui-test.sh` .
 
-When done, cleanup by stoping the DB: `docker stop infra_ui_db` .
+When done, cleanup by stopping the DB: `docker stop infra_ui_db` .

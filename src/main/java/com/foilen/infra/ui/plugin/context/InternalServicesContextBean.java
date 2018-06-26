@@ -20,10 +20,9 @@ import com.foilen.infra.plugin.v1.core.service.internal.InternalIPResourceServic
 public class InternalServicesContextBean extends InternalServicesContext {
 
     @Autowired
-    private InternalIPResourceService internalIPResourceService;
-
-    @Autowired
     private InternalChangeService internalChangeService;
+    @Autowired
+    private InternalIPResourceService internalIPResourceService;
 
     public InternalServicesContextBean() {
         super(null, null);
