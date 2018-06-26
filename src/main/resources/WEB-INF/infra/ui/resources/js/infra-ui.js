@@ -114,8 +114,40 @@ function updateResourceEditor() {
 
 jQuery(document).ready(updateResourceEditor);
 
+//Create/Edit ListInputTextFieldPageItem
+function updateListInputTextFieldPageItem(listBlock) {
+  var fieldName = listBlock.data('fieldName');
+  
+  jQuery('.buttonDelete', listBlock).click(function() {
+    jQuery(this).parent().remove();
+    return false;
+  });
+  
+  
+  // Controls
+  jQuery('.buttonAdd', listBlock).click(function() {
+    var newItem = jQuery('.template', listBlock).clone();
+    var newItemId = fieldName + '[' + new Date().getTime() + ']';
+    newItem.attr('id', newItemId);
+    newItem.removeClass('template');
+    jQuery('input', newItem).attr('name', newItemId);
+    newItem.insertBefore(jQuery('.controls', listBlock));
+    
+    // Hook delete
+    jQuery('.buttonDelete', newItem).click(function() {
+      jQuery(this).parent().remove();
+      return false;
+    });
+    
+    return false;
+  });
+}
+
 // Create/Edit resources (single one)
 function updateResourceFieldPageItems() {
+  jQuery('.ListInputTextFieldPageItem').each(function() {
+    updateListInputTextFieldPageItem(jQuery(this));
+  });
   jQuery('.ResourceFieldPageItem').each(function() {
     updateResourceFieldPageItem(jQuery(this));
   });
