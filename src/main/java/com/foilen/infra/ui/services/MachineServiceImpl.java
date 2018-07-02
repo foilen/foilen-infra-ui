@@ -86,7 +86,7 @@ public class MachineServiceImpl implements MachineService {
         unixUsers.addAll(unixUsersUsedByApplications);
 
         Collections.sort(applications);
-        Collections.sort(unixUsers, (a, b) -> Integer.compare(a.getId(), b.getId()));
+        Collections.sort(unixUsers, (a, b) -> Long.compare(a.getId(), b.getId()));
 
         return machineSetup;
     }
