@@ -18,22 +18,11 @@ public interface MachineService {
     /**
      * Get the machine setup.
      *
-     * @param name
+     * @param machineName
      *            the machine's name
-     * @return the machine setup
+     * @return the machine setup or null if not present
      */
-    MachineSetup getMachineSetup(String name);
-
-    /**
-     * Get the machine setup.
-     *
-     * @param userId
-     *            the user id
-     * @param name
-     *            the machine's name
-     * @return the machine setup
-     */
-    MachineSetup getMachineSetup(String userId, String name);
+    MachineSetup getMachineSetup(String machineName);
 
     /**
      * List the machines that the user can edit.
@@ -54,22 +43,15 @@ public interface MachineService {
     List<String> listMonitor(String userId);
 
     /**
-     * Check if the machine exists.
-     *
-     * @param name
-     *            the machine's name
-     * @return true if it exists
-     */
-    boolean machineExists(String name);
-
-    /**
      * Update the public ip on the machine.
      *
-     * @param name
+     * @param userId
+     *            the user id
+     * @param machineName
      *            the machine's name
      * @param ipPublic
      *            the public ip
      */
-    void updateIpIfAvailable(String name, String ipPublic);
+    void updateIpIfAvailable(String userId, String machineName, String ipPublic);
 
 }

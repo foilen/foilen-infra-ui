@@ -17,10 +17,12 @@ public interface ApiResourceManagementService {
     /**
      * Apply the changes as the currently logged in user.
      *
+     * @param userId
+     *            the user id
      * @param changesRequest
      *            the changes to make
      * @return the result
      */
-    ResponseWithStatus applyChanges(ChangesRequest changesRequest);
+    ResponseWithStatus applyChanges(String userId, ChangesRequest changesRequest);
 
 }

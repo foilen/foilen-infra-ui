@@ -99,8 +99,6 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     private PluginResourceTagDao pluginResourceTagDao;
     @Autowired
     private IPPluginService ipPluginService;
-    @Autowired
-    private SecurityService securityService;
 
     private Map<Class<? extends IPResource>, List<Class<?>>> allClassesByResourceClass = new HashMap<>();
     private Map<Class<? extends IPResource>, IPResourceDefinition> resourceDefinitionByResourceClass = new HashMap<>();
@@ -805,9 +803,6 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public <T extends IPResource> List<T> resourceFindAll(IPResourceQuery<T> query) {
-        if (!securityService.isAdmin()) {
-            return new ArrayList<>();
-        }
 
         List<IPResourceDefinition> resourceDefinitions = query.getResourceDefinitions();
 

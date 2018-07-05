@@ -79,28 +79,34 @@ public class ApiUser implements java.io.Serializable {
         return admin;
     }
 
-    public void setAdmin(boolean admin) {
+    public ApiUser setAdmin(boolean admin) {
         this.admin = admin;
+        return this;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public ApiUser setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+        return this;
     }
 
-    public void setDescription(String description) {
+    public ApiUser setDescription(String description) {
         this.description = description;
+        return this;
     }
 
-    public void setExpireOn(Date expireOn) {
+    public ApiUser setExpireOn(Date expireOn) {
         this.expireOn = expireOn;
+        return this;
     }
 
-    public void setUserHashedKey(String userHashedKey) {
+    public ApiUser setUserHashedKey(String userHashedKey) {
         this.userHashedKey = userHashedKey;
+        return this;
     }
 
-    public void setUserId(String userId) {
+    public ApiUser setUserId(String userId) {
         this.userId = userId;
+        return this;
     }
 
 }

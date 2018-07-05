@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ import com.foilen.infra.plugin.v1.core.visual.PageDefinition;
 import com.foilen.infra.plugin.v1.core.visual.editor.ResourceEditor;
 import com.foilen.infra.plugin.v1.core.visual.pageItem.field.HiddenFieldPageItem;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
+import com.foilen.infra.ui.services.EntitlementService;
 import com.foilen.infra.ui.web.controller.response.ResourceSuggestResponse;
 import com.foilen.infra.ui.web.controller.response.ResourceUpdateResponse;
 import com.foilen.mvc.ui.UiSuccessErrorView;
@@ -61,6 +63,8 @@ public class PluginResourceController extends AbstractBasics {
     private CommonServicesContext commonServicesContext;
     @Autowired
     private ConversionService conversionService;
+    @Autowired
+    private EntitlementService entitlementService;
     @Autowired
     private IPResourceService resourceService;
     @Autowired
@@ -110,11 +114,12 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @PostMapping("delete")
-    public ModelAndView delete(@RequestParam("resourceId") long resourceId, RedirectAttributes redirectAttributes) {
+    public ModelAndView delete(Authentication authentication, @RequestParam("resourceId") long resourceId, RedirectAttributes redirectAttributes) {
         return new UiSuccessErrorView(redirectAttributes) //
                 .setSuccessViewName("redirect:/pluginresources/list") //
                 .setErrorViewName("redirect:/pluginresources/list") //
                 .execute((ui, modelAndView) -> {
+                    entitlementService.canDeleteResourcesOrFailUi(authentication.getName());
                     ChangesContext changes = new ChangesContext(resourceService);
                     changes.resourceDelete(resourceId);
                     internalChangeService.changesExecute(changes);
@@ -122,9 +127,11 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("edit/{resourceId}")
-    public ModelAndView edit(@PathVariable("resourceId") long resourceId) {
+    public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") long resourceId) {
 
         ModelAndView modelAndView = new ModelAndView("pluginresources/edit");
+
+        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
         Optional<IPResource> resourceOptional = resourceService.resourceFind(resourceId);
         if (resourceOptional.isPresent()) {
@@ -152,8 +159,11 @@ public class PluginResourceController extends AbstractBasics {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @GetMapping("editPageDefinition/{editorName}/{resourceId}")
-    public ModelAndView editPageDefinition(@PathVariable("editorName") String editorName, @PathVariable("resourceId") long resourceId, HttpServletRequest httpServletRequest) {
+    public ModelAndView editPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, @PathVariable("resourceId") long resourceId,
+            HttpServletRequest httpServletRequest) {
         ModelAndView modelAndView = new ModelAndView("pluginresources/resource");
+
+        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
         Optional editorOptional = ipPluginService.getResourceEditorByName(editorName);
 
@@ -201,7 +211,10 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("list")
-    public ModelAndView list() {
+    public ModelAndView list(Authentication authentication) {
+
+        entitlementService.isAdminOrFailUi(authentication.getName());
+
         ModelAndView modelAndView = new ModelAndView("pluginresources/list");
 
         List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
@@ -219,7 +232,10 @@ public class PluginResourceController extends AbstractBasics {
 
     @ResponseBody
     @GetMapping("suggest/{resourceType}")
-    public List<ResourceSuggestResponse> suggest(@PathVariable("resourceType") Class<? extends IPResource> resourceType) {
+    public List<ResourceSuggestResponse> suggest(Authentication authentication, @PathVariable("resourceType") Class<? extends IPResource> resourceType) {
+
+        entitlementService.isAdminOrFailUi(authentication.getName());
+
         return resourceService.resourceFindAll( //
                 resourceService.createResourceQuery(resourceType) //
         ).stream() //
@@ -231,7 +247,9 @@ public class PluginResourceController extends AbstractBasics {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @ResponseBody
     @PostMapping("update")
-    public ResourceUpdateResponse update(@RequestParam Map<String, String> formValues, Locale locale) {
+    public ResourceUpdateResponse update(Authentication authentication, @RequestParam Map<String, String> formValues, Locale locale) {
+
+        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
         ResourceUpdateResponse resourceUpdateResponse = new ResourceUpdateResponse();
 

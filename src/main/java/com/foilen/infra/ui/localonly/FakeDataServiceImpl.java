@@ -30,6 +30,7 @@ import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.resource.unixuser.UnixUserEditor;
 import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
+import com.foilen.infra.ui.db.dao.ApiMachineUserDao;
 import com.foilen.infra.ui.db.dao.ApiUserDao;
 import com.foilen.infra.ui.db.dao.AuditItemDao;
 import com.foilen.infra.ui.db.dao.MachineStatisticsDao;
@@ -38,6 +39,8 @@ import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.dao.PluginResourceLinkDao;
 import com.foilen.infra.ui.db.dao.PluginResourceTagDao;
 import com.foilen.infra.ui.db.dao.UserDao;
+import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
+import com.foilen.infra.ui.db.domain.user.ApiUser;
 import com.foilen.infra.ui.db.domain.user.User;
 import com.foilen.infra.ui.services.MachineStatisticsService;
 import com.foilen.smalltools.systemusage.results.NetworkInfo;
@@ -50,12 +53,23 @@ public class FakeDataServiceImpl implements FakeDataService {
     public static final String USER_ID_USER = "222222";
     public static final String USER_ID_TEST_1 = "333333";
 
+    public static final String API_USER_MACHINE_ID_F001 = "MF001";
+    public static final String API_USER_MACHINE_ID_F002 = "MF002";
+
+    public static final String API_USER_ID_ADMIN = "AADMIN";
+    public static final String API_USER_ID_USER = "AUSER";
+
+    public static final String API_PASSWORD = "01234567";
+    public static final String API_PASSWORD_HASH = "$2a$13$CXFWBseE7qnfRndtunCj/OoQgLLz7AOe2e3aNdNFwmqkTQfoduVMy";
+
     public static final String PASSWORD_HASH_QWERTY = "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.";
 
     private final static Logger logger = LoggerFactory.getLogger(FakeDataServiceImpl.class);
 
     @Autowired
     private ApiUserDao apiUserDao;
+    @Autowired
+    private ApiMachineUserDao apiMachineUserDao;
     @Autowired
     private AuditItemDao auditItemDao;
     @Autowired
@@ -82,6 +96,7 @@ public class FakeDataServiceImpl implements FakeDataService {
 
         logger.info("Begin CLEAR ALL");
 
+        apiMachineUserDao.deleteAll();
         apiUserDao.deleteAll();
         auditItemDao.deleteAll();
 
@@ -149,6 +164,9 @@ public class FakeDataServiceImpl implements FakeDataService {
         changes.resourceAdd(new Machine("f001.node.example.com"));
         changes.resourceAdd(new Machine("f002.node.example.com"));
         internalChangeService.changesExecute(changes);
+
+        apiMachineUserDao.saveAndFlush(new ApiMachineUser(API_USER_MACHINE_ID_F001, API_PASSWORD, API_PASSWORD_HASH, "f001.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
+        apiMachineUserDao.saveAndFlush(new ApiMachineUser(API_USER_MACHINE_ID_F002, API_PASSWORD, API_PASSWORD_HASH, "f002.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
     }
 
     public void createMachineStatistics() {
@@ -239,6 +257,9 @@ public class FakeDataServiceImpl implements FakeDataService {
         userDao.saveAndFlush(new User(USER_ID_USER, false));
         userDao.saveAndFlush(new User(USER_ID_TEST_1, false));
         userDao.saveAndFlush(new User("444444", false));
+
+        apiUserDao.saveAndFlush(new ApiUser(API_USER_ID_ADMIN, API_PASSWORD_HASH, "An admin").setAdmin(true));
+        apiUserDao.saveAndFlush(new ApiUser(API_USER_ID_USER, API_PASSWORD_HASH, "A normal user"));
     }
 
     protected UnixUser findUnixUser(String name) {

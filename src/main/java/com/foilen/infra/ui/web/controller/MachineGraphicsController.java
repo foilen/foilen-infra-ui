@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.foilen.chart.Chart;
+import com.foilen.infra.ui.services.EntitlementService;
 import com.foilen.infra.ui.services.MachineService;
 import com.foilen.infra.ui.services.MachineStatisticsService;
-import com.foilen.infra.ui.services.SecurityService;
-import com.foilen.mvc.ui.UiException;
 
 @Controller
 @RequestMapping("machineGraphics")
@@ -33,14 +32,13 @@ public class MachineGraphicsController {
     @Autowired
     private MachineStatisticsService machineStatisticsService;
     @Autowired
-    private SecurityService securityService;
+    private EntitlementService entitlementService;
 
     @ResponseBody
     @GetMapping("graphCpu/{name:.+}")
     public Chart graphCpu(Authentication authentication, @PathVariable String name) {
-        if (!securityService.canMonitorMachine(authentication.getName(), name)) {
-            throw new UiException("error.forbidden");
-        }
+
+        entitlementService.canMonitorMachineOrFailUi(authentication.getName(), name);
 
         return machineStatisticsService.getCpuChart(name);
     }
@@ -48,9 +46,8 @@ public class MachineGraphicsController {
     @ResponseBody
     @GetMapping("graphDisk/{name:.+}")
     public Chart graphDisk(Authentication authentication, @PathVariable String name) {
-        if (!securityService.canMonitorMachine(authentication.getName(), name)) {
-            throw new UiException("error.forbidden");
-        }
+
+        entitlementService.canMonitorMachineOrFailUi(authentication.getName(), name);
 
         return machineStatisticsService.getDiskChart(name);
     }
@@ -58,9 +55,8 @@ public class MachineGraphicsController {
     @ResponseBody
     @GetMapping("graphMemory/{name:.+}")
     public Chart graphMemory(Authentication authentication, @PathVariable String name) {
-        if (!securityService.canMonitorMachine(authentication.getName(), name)) {
-            throw new UiException("error.forbidden");
-        }
+
+        entitlementService.canMonitorMachineOrFailUi(authentication.getName(), name);
 
         return machineStatisticsService.getMemoryChart(name);
     }
@@ -68,9 +64,8 @@ public class MachineGraphicsController {
     @ResponseBody
     @GetMapping("graphNetwork/{name:.+}")
     public Chart graphNetwork(Authentication authentication, @PathVariable String name) {
-        if (!securityService.canMonitorMachine(authentication.getName(), name)) {
-            throw new UiException("error.forbidden");
-        }
+
+        entitlementService.canMonitorMachineOrFailUi(authentication.getName(), name);
 
         return machineStatisticsService.getNetworkChart(name);
     }

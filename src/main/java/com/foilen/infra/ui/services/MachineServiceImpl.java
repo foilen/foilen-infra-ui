@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class MachineServiceImpl implements MachineService {
     @Autowired
     private IPResourceService ipResourceService;
     @Autowired
-    private SecurityService securityService;
+    private EntitlementService entitlementService;
 
     @Value("${infraUi.baseUrl}")
     private String uiApiBaseUrl;
@@ -92,17 +93,8 @@ public class MachineServiceImpl implements MachineService {
     }
 
     @Override
-    public MachineSetup getMachineSetup(String userId, String name) {
-        if (securityService.canManageMachine(userId)) {
-            return getMachineSetup(name);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public List<String> list(String userId) {
-        if (securityService.canManageMachine(userId)) {
+        if (entitlementService.canManageAllMachines(userId)) {
             return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //
                     .map(it -> it.getName()) //
                     .collect(Collectors.toList());
@@ -113,7 +105,7 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public List<String> listMonitor(String userId) {
-        if (securityService.canManageMachine(userId)) {
+        if (entitlementService.canManageAllMachines(userId)) {
             return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //
                     .map(it -> it.getName()) //
                     .collect(Collectors.toList());
@@ -124,14 +116,11 @@ public class MachineServiceImpl implements MachineService {
     }
 
     @Override
-    public boolean machineExists(String machineName) {
-        Optional<Machine> machineOptional = ipResourceService.resourceFind(ipResourceService.createResourceQuery(Machine.class) //
-                .propertyEquals(Machine.PROPERTY_NAME, machineName));
-        return machineOptional.isPresent();
-    }
+    public void updateIpIfAvailable(String userId, String machineName, String ipPublic) {
 
-    @Override
-    public void updateIpIfAvailable(String machineName, String ipPublic) {
+        if (!entitlementService.canManageMachine(userId, machineName)) {
+            throw new AccessDeniedException("Cannot manage the machine");
+        }
 
         // Get the machine if present
         Optional<Machine> machineOptional = ipResourceService.resourceFind(ipResourceService.createResourceQuery(Machine.class) //

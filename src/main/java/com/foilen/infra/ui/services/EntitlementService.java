@@ -11,25 +11,25 @@ package com.foilen.infra.ui.services;
 
 import java.util.List;
 
-public interface SecurityService {
+public interface EntitlementService {
 
-    boolean canCreateResource(String userId, Class<?> resourceType);
+    void canDeleteResourcesOrFailUi(String userId);
 
-    boolean canCreateResource(String userId, String resourceType);
+    boolean canGetSetupForMachine(String userId, String machineName);
 
-    boolean canManageMachine(String userId);
+    boolean canManageAllMachines(String userId);
 
     boolean canManageMachine(String userId, String machineName);
 
-    boolean canManageResource(String userId, Class<?> resourceType, String resourceName);
-
-    boolean canManageResource(String userId, String resourceType, String resourceName);
-
     boolean canMonitorMachine(String userId, String machineName);
 
-    boolean isAdmin();
+    void canMonitorMachineOrFailUi(String userId, String machineName);
+
+    void canUpdateResourcesOrFailUi(String userId);
 
     boolean isAdmin(String userId);
+
+    void isAdminOrFailUi(String userId);
 
     /**
      * Get the list of machines names where the user can install resources.

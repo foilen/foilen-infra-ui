@@ -50,7 +50,7 @@ public class ApiUserServiceImpl extends AbstractBasics implements ApiUserService
 
     @Override
     public ApiUser findByUserIdAndActive(String userId) {
-        return apiUserDao.findByUserIdAndExpireOnAfter(userId, new Date());
+        return apiUserDao.findByUserIdAndActive(userId, new Date());
     }
 
     protected Tuple2<String, String> genIdAndKey() {

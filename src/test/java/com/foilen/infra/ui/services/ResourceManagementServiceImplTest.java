@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -33,10 +32,7 @@ import com.foilen.infra.resource.example.JunitResourceEnum;
 import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
 import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
-import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
-import com.foilen.login.spring.client.security.FoilenAuthentication;
-import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
 import com.foilen.smalltools.test.asserts.AssertTools;
 
 public class ResourceManagementServiceImplTest extends AbstractSpringTests {
@@ -47,8 +43,6 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
     private InternalChangeService internalChangeService;
     @Autowired
     private InternalServicesContext internalServicesContext;
-    @Autowired
-    private IPResourceService ipResourceService;
     @Autowired
     private PluginResourceDao pluginResourceDao;
     @Autowired
@@ -106,33 +100,6 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
             it.setPluginResource(null);
         });
         AssertTools.assertJsonComparison("PluginResourceServiceImplTest-testCreateResource-expected.json", getClass(), columnSearches);
-    }
-
-    @Test
-    public void testSecurity_Admin() {
-        // Set admin
-        SecurityContextHolder.getContext().setAuthentication(new FoilenAuthentication(new FoilenLoginUserDetails(FakeDataServiceImpl.USER_ID_ADMIN, "")));
-
-        // Check
-        List<JunitResource> resources = ipResourceService.resourceFindAll(resourceService.createResourceQuery(JunitResource.class));
-        Assert.assertEquals(6, resources.size());
-    }
-
-    @Test
-    public void testSecurity_Anyone() {
-        // Set anyone
-        SecurityContextHolder.getContext().setAuthentication(new FoilenAuthentication(new FoilenLoginUserDetails(FakeDataServiceImpl.USER_ID_TEST_1, "")));
-
-        // Check
-        List<JunitResource> resources = ipResourceService.resourceFindAll(resourceService.createResourceQuery(JunitResource.class));
-        Assert.assertEquals(0, resources.size());
-    }
-
-    @Test
-    public void testSecurity_NoUser() {
-        // Check
-        List<JunitResource> resources = ipResourceService.resourceFindAll(resourceService.createResourceQuery(JunitResource.class));
-        Assert.assertEquals(6, resources.size());
     }
 
 }

@@ -39,6 +39,8 @@ public class ApiUserServiceImplTest extends AbstractSpringTests {
     @Test
     public void testMachineApi() {
 
+        apiMachineUserDao.deleteAll();
+
         String m1Name = "f001.node.example.com";
         String m2Name = "f002.node.example.com";
 

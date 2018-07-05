@@ -23,116 +23,119 @@ import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
-import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 import com.google.common.base.Strings;
 
 @Service
-public class ApiResourceManagementServiceImpl extends AbstractBasics implements ApiResourceManagementService {
+public class ApiResourceManagementServiceImpl extends AbstractApiService implements ApiResourceManagementService {
 
     @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
     private IPResourceService resourceService;
     @Autowired
-    private SecurityService securityService;
+    private EntitlementService entitlementService;
 
     @Override
-    public ResponseWithStatus applyChanges(ChangesRequest changesRequest) {
+    public ResponseWithStatus applyChanges(String userId, ChangesRequest changesRequest) {
         ResponseWithStatus response = new ResponseWithStatus();
 
-        if (!securityService.isAdmin()) {
-            response.getErrors().add("You are not an admin");
+        if (!entitlementService.isAdmin(userId)) {
+            response.addError("You are not an admin");
             return response;
         }
 
-        // Translate request to change context
-        ChangesContext changesContext = new ChangesContext(resourceService);
-        AtomicInteger position = new AtomicInteger();
-        changesRequest.getResourcesToAdd().forEach(it -> {
-            IPResource resource = convert("resourcesToAdd", position.getAndIncrement(), it, response);
-            if (resource != null) {
-                changesContext.resourceAdd(resource);
-            }
-        });
-        position.set(0);
-        changesRequest.getResourcesToUpdate().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource resourcePk = getPersistedResourceByPk("resourcesToUpdate.resourcePk", posContext, it.getResourcePk(), response);
-            IPResource resource = convert("resourcesToUpdate.updatedResource", posContext, it.getUpdatedResource(), response);
-            if (resourcePk != null && resource != null) {
-                changesContext.resourceUpdate(resourcePk, resource);
-            }
-        });
-        position.set(0);
-        changesRequest.getResourcesToDeletePk().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource resourcePk = getPersistedResourceByPk("resourcesToDeletePk", posContext, it, response);
-            if (resourcePk != null) {
-                changesContext.resourceDelete(resourcePk);
-            }
-        });
+        wrapExecution(response, () -> {
 
-        position.set(0);
-        changesRequest.getLinksToAdd().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource fromResourcePk = convert("linksToAdd.fromResourcePk", posContext, it.getFromResourcePk(), response);
-            String linkType = it.getLinkType();
-            if (Strings.isNullOrEmpty(linkType)) {
-                response.addError("[linksToAdd.linkType/" + posContext + "] Is mandatory");
-            }
-            IPResource toResourcePk = convert("linksToAdd.toResourcePk", posContext, it.getToResourcePk(), response);
-            if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
-                changesContext.linkAdd(fromResourcePk, linkType, toResourcePk);
-            }
-        });
-        position.set(0);
-        changesRequest.getLinksToDelete().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource fromResourcePk = convert("linksToDelete.fromResourcePk", posContext, it.getFromResourcePk(), response);
-            String linkType = it.getLinkType();
-            if (Strings.isNullOrEmpty(linkType)) {
-                response.addError("[linksToAdd.linkType/" + posContext + "] Is mandatory");
-            }
-            IPResource toResourcePk = convert("linksToDelete.toResourcePk", posContext, it.getToResourcePk(), response);
-            if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
-                changesContext.linkDelete(fromResourcePk, linkType, toResourcePk);
-            }
-        });
+            // Translate request to change context
+            ChangesContext changesContext = new ChangesContext(resourceService);
+            AtomicInteger position = new AtomicInteger();
+            changesRequest.getResourcesToAdd().forEach(it -> {
+                IPResource resource = convert("resourcesToAdd", position.getAndIncrement(), it, response);
+                if (resource != null) {
+                    changesContext.resourceAdd(resource);
+                }
+            });
+            position.set(0);
+            changesRequest.getResourcesToUpdate().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource resourcePk = getPersistedResourceByPk("resourcesToUpdate.resourcePk", posContext, it.getResourcePk(), response);
+                IPResource resource = convert("resourcesToUpdate.updatedResource", posContext, it.getUpdatedResource(), response);
+                if (resourcePk != null && resource != null) {
+                    changesContext.resourceUpdate(resourcePk, resource);
+                }
+            });
+            position.set(0);
+            changesRequest.getResourcesToDeletePk().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource resourcePk = getPersistedResourceByPk("resourcesToDeletePk", posContext, it, response);
+                if (resourcePk != null) {
+                    changesContext.resourceDelete(resourcePk);
+                }
+            });
 
-        position.set(0);
-        changesRequest.getTagsToAdd().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource resourcePk = convert("tagsToAdd.resourcePk", posContext, it.getResourcePk(), response);
-            String tagName = it.getTagName();
-            if (Strings.isNullOrEmpty(tagName)) {
-                response.addError("[tagsToAdd.tagName/" + posContext + "] Is mandatory");
-            }
-            if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
-                changesContext.tagAdd(resourcePk, tagName);
-            }
-        });
-        position.set(0);
-        changesRequest.getTagsToDelete().forEach(it -> {
-            int posContext = position.getAndIncrement();
-            IPResource resourcePk = convert("tagsToDelete.resourcePk", posContext, it.getResourcePk(), response);
-            String tagName = it.getTagName();
-            if (Strings.isNullOrEmpty(tagName)) {
-                response.addError("[tagsToDelete.tagName/" + posContext + "] Is mandatory");
-            }
-            if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
-                changesContext.tagDelete(resourcePk, tagName);
-            }
-        });
+            position.set(0);
+            changesRequest.getLinksToAdd().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource fromResourcePk = convert("linksToAdd.fromResourcePk", posContext, it.getFromResourcePk(), response);
+                String linkType = it.getLinkType();
+                if (Strings.isNullOrEmpty(linkType)) {
+                    response.addError("[linksToAdd.linkType/" + posContext + "] Is mandatory");
+                }
+                IPResource toResourcePk = convert("linksToAdd.toResourcePk", posContext, it.getToResourcePk(), response);
+                if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
+                    changesContext.linkAdd(fromResourcePk, linkType, toResourcePk);
+                }
+            });
+            position.set(0);
+            changesRequest.getLinksToDelete().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource fromResourcePk = convert("linksToDelete.fromResourcePk", posContext, it.getFromResourcePk(), response);
+                String linkType = it.getLinkType();
+                if (Strings.isNullOrEmpty(linkType)) {
+                    response.addError("[linksToAdd.linkType/" + posContext + "] Is mandatory");
+                }
+                IPResource toResourcePk = convert("linksToDelete.toResourcePk", posContext, it.getToResourcePk(), response);
+                if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
+                    changesContext.linkDelete(fromResourcePk, linkType, toResourcePk);
+                }
+            });
 
-        // If no errors, execute
-        if (response.isSuccess()) {
-            try {
-                internalChangeService.changesExecute(changesContext);
-            } catch (Exception e) {
-                response.addError("Problem executing the update: " + e.getMessage());
+            position.set(0);
+            changesRequest.getTagsToAdd().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource resourcePk = convert("tagsToAdd.resourcePk", posContext, it.getResourcePk(), response);
+                String tagName = it.getTagName();
+                if (Strings.isNullOrEmpty(tagName)) {
+                    response.addError("[tagsToAdd.tagName/" + posContext + "] Is mandatory");
+                }
+                if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
+                    changesContext.tagAdd(resourcePk, tagName);
+                }
+            });
+            position.set(0);
+            changesRequest.getTagsToDelete().forEach(it -> {
+                int posContext = position.getAndIncrement();
+                IPResource resourcePk = convert("tagsToDelete.resourcePk", posContext, it.getResourcePk(), response);
+                String tagName = it.getTagName();
+                if (Strings.isNullOrEmpty(tagName)) {
+                    response.addError("[tagsToDelete.tagName/" + posContext + "] Is mandatory");
+                }
+                if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
+                    changesContext.tagDelete(resourcePk, tagName);
+                }
+            });
+
+            // If no errors, execute
+            if (response.isSuccess()) {
+                try {
+                    internalChangeService.changesExecute(changesContext);
+                } catch (Exception e) {
+                    response.addError("Problem executing the update: " + e.getMessage());
+                }
             }
-        }
+
+        });
 
         return response;
     }

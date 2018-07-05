@@ -12,6 +12,8 @@ package com.foilen.infra.ui.db.dao;
 import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.foilen.infra.ui.db.domain.user.ApiUser;
@@ -23,6 +25,7 @@ public interface ApiUserDao extends JpaRepository<ApiUser, Long> {
 
     ApiUser findByUserId(String userId);
 
-    ApiUser findByUserIdAndExpireOnAfter(String userId, Date expiredOnAfter);
+    @Query("SELECT au FROM ApiUser au WHERE au.userId = :userId AND (au.expireOn IS NULL OR au.expireOn > :expiredOnAfter)")
+    ApiUser findByUserIdAndActive(@Param("userId") String userId, @Param("expiredOnAfter") Date expiredOnAfter);
 
 }

@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Order(1)
-public class ApiWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+public class ApiWebSecurityMysqlConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;

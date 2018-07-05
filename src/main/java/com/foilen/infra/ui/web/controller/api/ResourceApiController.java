@@ -10,6 +10,7 @@
 package com.foilen.infra.ui.web.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,8 @@ public class ResourceApiController {
     private ApiResourceManagementService apiResourceManagementService;
 
     @PostMapping("applyChanges")
-    public ResponseWithStatus applyChanges(@RequestBody ChangesRequest changesRequest) {
-        return apiResourceManagementService.applyChanges(changesRequest);
+    public ResponseWithStatus applyChanges(Authentication authentication, @RequestBody ChangesRequest changesRequest) {
+        return apiResourceManagementService.applyChanges(authentication.getName(), changesRequest);
     }
 
 }

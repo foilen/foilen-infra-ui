@@ -11,13 +11,21 @@ package com.foilen.infra.ui.web.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class ApiSecurityConfig {
 
+    @Profile({ "JUNIT", "LOCAL" })
     @Bean
-    public ApiWebSecurityConfigurer apiWebSecurityConfigurer() {
-        return new ApiWebSecurityConfigurer();
+    public ApiWebSecurityH2Configurer apiWebSecurityH2Configurer() {
+        return new ApiWebSecurityH2Configurer();
+    }
+
+    @Profile({ "TEST", "PROD" })
+    @Bean
+    public ApiWebSecurityMysqlConfigurer apiWebSecurityMysqlConfigurer() {
+        return new ApiWebSecurityMysqlConfigurer();
     }
 
 }
