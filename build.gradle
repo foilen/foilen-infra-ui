@@ -79,6 +79,7 @@ dependencies {
   compile "org.springframework.boot:spring-boot-starter-freemarker"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.webjars:bootstrap:3.3.7-1"
+  compile "org.webjars:typeaheadjs:0.11.1"
 
   // Spring
   compile "org.springframework:spring-context"
