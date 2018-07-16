@@ -231,7 +231,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @ResponseBody
-    @GetMapping("suggest/{resourceType}")
+    @GetMapping("suggest/{resourceType:.+}")
     public List<ResourceSuggestResponse> suggest(Authentication authentication, @PathVariable("resourceType") Class<? extends IPResource> resourceType) {
 
         entitlementService.isAdminOrFailUi(authentication.getName());
