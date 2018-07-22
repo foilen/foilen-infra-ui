@@ -58,14 +58,15 @@ public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
                         .setGenerateGzip(true) //
                         .addBundleResource("all.css", "/META-INF/resources/webjars/bootstrap/3.3.7-1/css/bootstrap.css") //
                         .addBundleResource("all.css", "/META-INF/resources/webjars/bootstrap/3.3.7-1/css/bootstrap-theme.css") //
-                        .addBundleResource("all.css", "/WEB-INF/infra/ui/resources/css/infra-ui.css") //
+                        .addBundleResource("all.css", "/WEB-INF/infra/ui/resources/css/infra.css") //
                         .addBundleResource("all.css", "/WEB-INF/infra/ui/resources/css/glyphicons.css") //
                         .addBundleResource("all.css", "/WEB-INF/infra/ui/resources/css/glyphicons-bootstrap.css") //
                         .addBundleResource("all.js", "/META-INF/resources/webjars/jquery/1.11.1/jquery.js") //
                         .addBundleResource("all.js", "/META-INF/resources/webjars/bootstrap/3.3.7-1/js/bootstrap.js") //
                         .addBundleResource("all.js", "/META-INF/resources/webjars/typeaheadjs/0.11.1/typeahead.jquery.js") //
                         .addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/Chart.bundle.js") //
-                        .addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra-ui.js") //
+                        .addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra.js") //
+                        .addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra-charts.js") //
                         .primeCache() //
 
         );

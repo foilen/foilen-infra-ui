@@ -48,6 +48,7 @@ import com.foilen.infra.ui.services.EntitlementService;
 import com.foilen.infra.ui.web.controller.response.ResourceSuggestResponse;
 import com.foilen.infra.ui.web.controller.response.ResourceUpdateResponse;
 import com.foilen.mvc.ui.UiSuccessErrorView;
+import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tuple.Tuple2;
@@ -58,6 +59,7 @@ import com.google.common.base.Strings;
 public class PluginResourceController extends AbstractBasics {
 
     public static final String RESOURCE_ID_FIELD = "_resourceId";
+    public static final String VIEW_BASE_PATH = "pluginresources";
 
     @Autowired
     private CommonServicesContext commonServicesContext;
@@ -78,14 +80,21 @@ public class PluginResourceController extends AbstractBasics {
 
     @GetMapping("create/{editorName}")
     public ModelAndView create(@PathVariable("editorName") String editorName) {
-        ModelAndView modelAndView = new ModelAndView("pluginresources/create");
-        modelAndView.addObject("editorName", editorName);
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/create");
+
+        Optional<ResourceEditor<?>> editor = ipPluginService.getResourceEditorByName(editorName);
+
+        if (editor.isPresent()) {
+            modelAndView.addObject("editorName", editorName);
+            modelAndView.addObject("resourceType", editor.get().getForResourceType().getName());
+        }
+
         return modelAndView;
     }
 
     @GetMapping("createPageDefinition/{editorName}")
     public ModelAndView createPageDefinition(@PathVariable("editorName") String editorName, HttpServletRequest httpServletRequest) {
-        ModelAndView modelAndView = new ModelAndView("pluginresources/resource");
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
         Optional<ResourceEditor<?>> editor = ipPluginService.getResourceEditorByName(editorName);
 
@@ -113,11 +122,33 @@ public class PluginResourceController extends AbstractBasics {
         return modelAndView;
     }
 
+    @GetMapping("createPageDefinitionByType/{resourceType:.*}")
+    public ModelAndView createPageDefinitionByType(@PathVariable("resourceType") String resourceType, HttpServletRequest httpServletRequest) {
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
+
+        Class<?> resourceClass = ReflectionTools.safelyGetClass(resourceType);
+        if (resourceClass == null) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", "error.editorNotFound");
+        }
+        @SuppressWarnings("unchecked")
+        List<String> editors = ipPluginService.getResourceEditorNamesByResourceType((Class<? extends IPResource>) resourceClass);
+
+        if (editors.isEmpty()) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", "error.editorNotFound");
+        } else {
+            return createPageDefinition(editors.get(0), httpServletRequest);
+        }
+
+        return modelAndView;
+    }
+
     @PostMapping("delete")
     public ModelAndView delete(Authentication authentication, @RequestParam("resourceId") long resourceId, RedirectAttributes redirectAttributes) {
         return new UiSuccessErrorView(redirectAttributes) //
-                .setSuccessViewName("redirect:/pluginresources/list") //
-                .setErrorViewName("redirect:/pluginresources/list") //
+                .setSuccessViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
+                .setErrorViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .execute((ui, modelAndView) -> {
                     entitlementService.canDeleteResourcesOrFailUi(authentication.getName());
                     ChangesContext changes = new ChangesContext(resourceService);
@@ -129,7 +160,7 @@ public class PluginResourceController extends AbstractBasics {
     @GetMapping("edit/{resourceId}")
     public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") long resourceId) {
 
-        ModelAndView modelAndView = new ModelAndView("pluginresources/edit");
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/edit");
 
         entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
@@ -148,6 +179,7 @@ public class PluginResourceController extends AbstractBasics {
 
             modelAndView.addObject("editorName", editorName);
             modelAndView.addObject("resourceId", resourceId);
+            modelAndView.addObject("resourceType", resource.getClass().getName());
 
             modelAndView.addObject("resourceName", resource.getResourceName());
 
@@ -161,7 +193,7 @@ public class PluginResourceController extends AbstractBasics {
     @GetMapping("editPageDefinition/{editorName}/{resourceId}")
     public ModelAndView editPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, @PathVariable("resourceId") long resourceId,
             HttpServletRequest httpServletRequest) {
-        ModelAndView modelAndView = new ModelAndView("pluginresources/resource");
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
         entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
@@ -215,7 +247,7 @@ public class PluginResourceController extends AbstractBasics {
 
         entitlementService.isAdminOrFailUi(authentication.getName());
 
-        ModelAndView modelAndView = new ModelAndView("pluginresources/list");
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/list");
 
         List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
         Map<String, List<?>> resourcesByType = new HashMap<>();
@@ -242,6 +274,12 @@ public class PluginResourceController extends AbstractBasics {
                 .map(it -> new ResourceSuggestResponse(it.getInternalId(), it.getResourceName(), it.getResourceDescription())) //
                 .sorted((a, b) -> a.getName().compareTo(b.getName())) //
                 .collect(Collectors.toList());
+    }
+
+    @ResponseBody
+    @GetMapping("suggestEditor/{resourceType:.+}")
+    public List<String> suggestEditor(@PathVariable("resourceType") Class<? extends IPResource> resourceType) {
+        return ipPluginService.getResourceEditorNamesByResourceType(resourceType);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -291,7 +329,7 @@ public class PluginResourceController extends AbstractBasics {
                     resource = (IPResource) resourceType.newInstance();
                 } catch (Exception e) {
                     logger.error("Could not create an empty resource of type {}", resourceType, e);
-                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", null, locale));
+                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", new Object[] { e.getMessage() }, locale));
                     return resourceUpdateResponse;
                 }
             }
@@ -331,7 +369,7 @@ public class PluginResourceController extends AbstractBasics {
                     return resourceUpdateResponse;
                 } catch (Exception e) {
                     logger.error("Problem saving the resource", e);
-                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", null, locale));
+                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", new Object[] { e.getMessage() }, locale));
                     return resourceUpdateResponse;
                 }
 
@@ -354,7 +392,7 @@ public class PluginResourceController extends AbstractBasics {
                     return resourceUpdateResponse;
                 } catch (Exception e) {
                     logger.error("Problem saving the resource", e);
-                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", null, locale));
+                    resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", new Object[] { e.getMessage() }, locale));
                     return resourceUpdateResponse;
                 }
 
@@ -363,6 +401,7 @@ public class PluginResourceController extends AbstractBasics {
             }
 
             // Redirect url
+            resourceUpdateResponse.setSuccessResource(resource);
             resourceUpdateResponse.setSuccessResourceId(internalId);
 
         } else {
@@ -371,4 +410,5 @@ public class PluginResourceController extends AbstractBasics {
 
         return resourceUpdateResponse;
     }
+
 }
