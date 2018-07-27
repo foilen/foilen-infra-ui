@@ -21,7 +21,7 @@ docker run -ti \
   --volume $FOLDER_PLUGINS_JARS:/plugins \
   foilen/foilen-infra-system-app-test-docker:0.4.6 \
   download-latest-plugins \
-  /plugins application domain dns infraconfig machine mariadb unixuser webcertificate website
+  /plugins application domain dns infraconfig letsencrypt machine mariadb unixuser webcertificate website
 
 # Download H2 Driver
 if [ ! -f $FOLDER_PLUGINS_JARS/h2.jar ] ; then
