@@ -42,7 +42,7 @@ public class TimerExecutionRunnable extends AbstractBasics implements Runnable {
             ChangesContext changes = new ChangesContext(commonServicesContext.getResourceService());
             timer.getTimerEventHandler().timerHandler(commonServicesContext, changes, timer);
             internalServicesContext.getInternalChangeService().changesExecute(changes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("Problem executing the timer", e);
         } finally {
             nameThread.revert();
