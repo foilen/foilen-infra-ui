@@ -79,12 +79,17 @@ public class MachineServiceImpl implements MachineService {
         machineSetup.setUnixUsers(unixUsers);
 
         // Add any missing users that are used by the applications
-        Set<UnixUser> unixUsersUsedByApplications = new HashSet<>();
+        Set<UnixUser> additionnalUnixUsers = new HashSet<>();
         for (Application application : applications) {
-            unixUsersUsedByApplications.addAll(ipResourceService.linkFindAllByFromResourceAndLinkTypeAndToResourceClass(application, LinkTypeConstants.RUN_AS, UnixUser.class));
+            additionnalUnixUsers.addAll(ipResourceService.linkFindAllByFromResourceAndLinkTypeAndToResourceClass(application, LinkTypeConstants.RUN_AS, UnixUser.class));
         }
-        unixUsersUsedByApplications.removeAll(unixUsers);
-        unixUsers.addAll(unixUsersUsedByApplications);
+        additionnalUnixUsers.removeAll(unixUsers);
+
+        // Add unix users that must be on all machines
+        additionnalUnixUsers.addAll(ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(UnixUser.class) //
+                .propertyEquals(UnixUser.PROPERTY_NAME, "infra_docker_manager")));// TODO Do not hardcode the docker manager unix user name
+
+        unixUsers.addAll(additionnalUnixUsers);
 
         Collections.sort(applications);
         Collections.sort(unixUsers, (a, b) -> Long.compare(a.getId(), b.getId()));
