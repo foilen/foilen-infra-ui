@@ -19,7 +19,7 @@ docker run -ti \
   --env PLUGINS_JARS=/plugins \
   --user $USER_ID \
   --volume $FOLDER_PLUGINS_JARS:/plugins \
-  foilen/foilen-infra-system-app-test-docker:0.4.6 \
+  foilen/foilen-infra-system-app-test-docker:latest \
   download-latest-plugins \
   /plugins application domain dns infraconfig letsencrypt machine mariadb unixuser webcertificate website
 
