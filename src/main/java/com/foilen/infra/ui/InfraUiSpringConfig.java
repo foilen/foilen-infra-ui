@@ -28,11 +28,9 @@ import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.localonly.LocalLaunchService;
 import com.foilen.infra.ui.visual.MenuEntry;
-import com.foilen.smalltools.spring.messagesource.UsageMonitoringMessageSource;
 import com.foilen.smalltools.spring.security.CookiesGeneratedCsrfTokenRepository;
 import com.foilen.smalltools.tools.AssertTools;
 import com.foilen.smalltools.tools.CharsetTools;
-import com.foilen.smalltools.tools.FileTools;
 
 @Configuration
 @ComponentScan({ "com.foilen.infra.ui.config", //
@@ -61,23 +59,11 @@ public class InfraUiSpringConfig {
 
         @Bean
         public MessageSource messageSource() {
-
-            if (FileTools.exists("src/main/resources/WEB-INF/infra/ui/messages/")) {
-                ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-                messageSource.setCacheSeconds(60);
-                messageSource.setDefaultEncoding(CharsetTools.UTF_8.name());
-                messageSource.setUseCodeAsDefaultMessage(true);
-
-                messageSource.setParentMessageSource(new UsageMonitoringMessageSource("src/main/resources/WEB-INF/infra/ui/messages/messages"));
-
-                return messageSource;
-            } else {
-                ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-                messageSource.setBasename("classpath:/WEB-INF/infra/ui/messages/messages");
-                messageSource.setDefaultEncoding(CharsetTools.UTF_8.name());
-                messageSource.setUseCodeAsDefaultMessage(true);
-                return messageSource;
-            }
+            ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+            messageSource.setBasename("classpath:/WEB-INF/infra/ui/messages/messages");
+            messageSource.setDefaultEncoding(CharsetTools.UTF_8.name());
+            messageSource.setUseCodeAsDefaultMessage(true);
+            return messageSource;
         }
 
     }
@@ -118,6 +104,7 @@ public class InfraUiSpringConfig {
         // Infrastructure
         MenuEntry child = menuEntry.addChild("infrastructure");
         child.addChild("machineGraphics").setUri("/machineGraphics/list").addUriStartsWith("/machineGraphics/");
+        child.addChild("machineBootstrap").setUri("/machineBootstrap/list").addUriStartsWith("/machineBootstrap/");
 
         // Plugins
         menuEntry.addChild("plugin").setUri("/plugin/list").addUriStartsWith("/plugin/");

@@ -109,6 +109,15 @@ public class MachineServiceImpl implements MachineService {
     }
 
     @Override
+    public List<Machine> listMachines(String userId) {
+        if (entitlementService.canManageAllMachines(userId)) {
+            return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class));
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public List<String> listMonitor(String userId) {
         if (entitlementService.canManageAllMachines(userId)) {
             return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //

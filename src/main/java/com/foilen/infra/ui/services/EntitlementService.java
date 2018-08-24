@@ -17,6 +17,8 @@ public interface EntitlementService {
 
     boolean canGetSetupForMachine(String userId, String machineName);
 
+    void canGetSetupForMachineOrFailUi(String userId, String machineName);
+
     boolean canManageAllMachines(String userId);
 
     boolean canManageMachine(String userId, String machineName);

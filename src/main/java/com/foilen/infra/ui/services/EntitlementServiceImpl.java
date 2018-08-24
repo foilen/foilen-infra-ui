@@ -48,6 +48,13 @@ public class EntitlementServiceImpl implements EntitlementService {
     }
 
     @Override
+    public void canGetSetupForMachineOrFailUi(String userId, String machineName) {
+        if (!isAdminOrMachine(userId, machineName)) {
+            throw new UiException("error.forbidden");
+        }
+    }
+
+    @Override
     public boolean canManageAllMachines(String userId) {
         return isAdmin(userId);
     }
