@@ -41,4 +41,17 @@ public interface ApiMachineManagementService {
      */
     ResponseMachineSetup getMachineSetup(String userId, String machineName);
 
+    /**
+     * Get the Machine Setup if the currently logged in user can.
+     *
+     * @param userId
+     *            the user
+     * @param machineName
+     *            the name of the machine
+     * @param ipPublic
+     *            (Optional) the IP of the machine if known
+     * @return the setup
+     */
+    ResponseMachineSetup getMachineSetup(String userId, String machineName, String ipPublic);
+
 }

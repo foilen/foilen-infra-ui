@@ -33,6 +33,8 @@ public interface EntitlementService {
 
     void isAdminOrFailUi(String userId);
 
+    boolean isTheMachine(String userId, String machineName);
+
     /**
      * Get the list of machines names where the user can install resources.
      *

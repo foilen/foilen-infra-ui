@@ -31,11 +31,12 @@ import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
+import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.StringTools;
 
 @Service
 @Transactional
-public class MachineServiceImpl implements MachineService {
+public class MachineServiceImpl extends AbstractBasics implements MachineService {
 
     @Autowired
     private ApiUserService apiUserService;
@@ -146,6 +147,7 @@ public class MachineServiceImpl implements MachineService {
         // Change the ip if different
         Machine machine = machineOptional.get();
         if (!StringTools.safeEquals(ipPublic, machine.getPublicIp())) {
+            logger.info("Updating machine {} IP to {}", machineName, ipPublic);
             ChangesContext changes = new ChangesContext(ipResourceService);
             machine.setPublicIp(ipPublic);
             changes.resourceUpdate(machine.getInternalId(), machine);

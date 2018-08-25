@@ -11,6 +11,8 @@ package com.foilen.infra.ui.web.controller.api;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.MimeTypeUtils;
@@ -25,10 +27,12 @@ import com.foilen.infra.api.model.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.infra.api.response.ResponseWithStatus;
 import com.foilen.infra.ui.services.ApiMachineManagementService;
+import com.foilen.smalltools.tools.AbstractBasics;
+import com.google.common.base.Strings;
 
 @RequestMapping(value = "api/machine", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
-public class MachineApiController {
+public class MachineApiController extends AbstractBasics {
 
     @Autowired
     private ApiMachineManagementService apiMachineManagementService;
@@ -39,8 +43,15 @@ public class MachineApiController {
     }
 
     @GetMapping("{machineName:.+}/setup")
-    public ResponseMachineSetup setup(Authentication authentication, @PathVariable String machineName) {
-        return apiMachineManagementService.getMachineSetup(authentication.getName(), machineName);
+    public ResponseMachineSetup setup(HttpServletRequest httpServletRequest, Authentication authentication, @PathVariable String machineName) {
+        String ip = httpServletRequest.getHeader("HTTP_X_FORWARDED_FOR");
+        if (Strings.isNullOrEmpty(ip)) {
+            ip = httpServletRequest.getRemoteAddr();
+            logger.debug("IP from remote address {}", ip);
+        } else {
+            logger.debug("IP from HTTP_X_FORWARDED_FOR {}", ip);
+        }
+        return apiMachineManagementService.getMachineSetup(authentication.getName(), machineName, ip);
     }
 
 }

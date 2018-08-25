@@ -46,6 +46,11 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
 
     @Override
     public ResponseMachineSetup getMachineSetup(String userId, String machineName) {
+        return getMachineSetup(userId, machineName, null);
+    }
+
+    @Override
+    public ResponseMachineSetup getMachineSetup(String userId, String machineName, String ipPublic) {
 
         ResponseMachineSetup response = new ResponseMachineSetup();
 
@@ -54,6 +59,12 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
             return response;
         }
 
+        // Update the IP if is the machine
+        if (ipPublic != null && entitlementService.isTheMachine(userId, machineName)) {
+            machineService.updateIpIfAvailable(userId, machineName, ipPublic);
+        }
+
+        // Get the machine setup
         wrapExecution(response, () -> {
             response.setItem(machineService.getMachineSetup(machineName));
             if (response.getItem() == null) {

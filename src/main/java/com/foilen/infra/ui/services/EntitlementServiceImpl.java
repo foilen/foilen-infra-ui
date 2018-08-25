@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.ui.db.dao.ApiMachineUserDao;
 import com.foilen.infra.ui.db.dao.UserDao;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 import com.foilen.infra.ui.db.domain.user.ApiUser;
@@ -28,6 +29,8 @@ import com.foilen.smalltools.tools.StringTools;
 @Service
 public class EntitlementServiceImpl implements EntitlementService {
 
+    @Autowired
+    private ApiMachineUserDao apiMachineUserDao;
     @Autowired
     private ApiUserService apiUserService;
     @Autowired
@@ -117,6 +120,12 @@ public class EntitlementServiceImpl implements EntitlementService {
 
         User user = userDao.findByUserId(userId);
         return user != null && user.isAdmin();
+    }
+
+    @Override
+    public boolean isTheMachine(String userId, String machineName) {
+        ApiMachineUser apiMachineUser = apiMachineUserDao.findByUserId(userId);
+        return apiMachineUser != null && StringTools.safeEquals(machineName, apiMachineUser.getMachineName());
     }
 
     @Override

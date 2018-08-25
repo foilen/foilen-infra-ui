@@ -19,6 +19,8 @@ import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 @Service
 public interface ApiMachineUserDao extends JpaRepository<ApiMachineUser, Long> {
 
+    ApiMachineUser findByUserId(String userId);
+
     ApiMachineUser findFirstByMachineNameAndExpireOnAfterOrderByExpireOnDesc(String machineName, Date expireAfter);
 
 }
