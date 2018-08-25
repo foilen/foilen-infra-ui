@@ -12,6 +12,7 @@ package com.foilen.infra.ui.services;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +25,7 @@ import com.foilen.smalltools.test.asserts.AssertTools;
 public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
 
     private static final String MACHINE_NAME = "f001.node.example.com";
+
     @Autowired
     private ApiMachineManagementService apiMachineManagementService;
 
@@ -96,6 +98,40 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
     @Test
     public void testGetMachineSetup_OK_User_Admin() {
         testGetMachineSetup_OK(FakeDataServiceImpl.USER_ID_ADMIN);
+    }
+
+    @Test
+    public void testIsIp4AndPublic() {
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("167.99.185.12"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("138.197.169.2"));
+
+        // Not IPv4
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("138.197.169.2.3"));
+
+        // 127.0.0.0 to 127.255.255.255
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("127.0.0.1"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("127.3.0.1"));
+
+        // 10.0.0.0 to 10.255.255.255
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("10.0.0.1"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("10.3.0.1"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("11.3.0.1"));
+
+        // 169.254.0.0 to 169.254.255.255
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("169.253.0.1"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("169.254.0.1"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("169.254.10.10"));
+
+        // 172.16.0.0 to 172.31.255.255
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("172.15.0.7"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("172.17.0.7"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("172.32.0.7"));
+
+        // 192.168.0.0 to 192.168.255.255
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("192.167.0.2"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("192.168.0.2"));
+        Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("192.168.200.2"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("192.169.200.2"));
     }
 
 }

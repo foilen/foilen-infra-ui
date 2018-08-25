@@ -44,12 +44,12 @@ public class MachineApiController extends AbstractBasics {
 
     @GetMapping("{machineName:.+}/setup")
     public ResponseMachineSetup setup(HttpServletRequest httpServletRequest, Authentication authentication, @PathVariable String machineName) {
-        String ip = httpServletRequest.getHeader("HTTP_X_FORWARDED_FOR");
+        String ip = httpServletRequest.getHeader("X-Forwarded-For");
         if (Strings.isNullOrEmpty(ip)) {
             ip = httpServletRequest.getRemoteAddr();
             logger.debug("IP from remote address {}", ip);
         } else {
-            logger.debug("IP from HTTP_X_FORWARDED_FOR {}", ip);
+            logger.debug("IP from X-Forwarded-For {}", ip);
         }
         return apiMachineManagementService.getMachineSetup(authentication.getName(), machineName, ip);
     }
