@@ -37,7 +37,7 @@ _EOFF
 _EOF
 chmod +x $FOLDER_DATA/createDb.sh
 
-if ! docker ps | grep infra_ui_db ; then
+if ! docker ps | grep $INSTANCE ; then
 	echo '###[ Start mariadb ]###'
 	docker run \
 	  --rm \
