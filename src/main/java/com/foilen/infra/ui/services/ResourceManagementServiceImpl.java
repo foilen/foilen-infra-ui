@@ -214,7 +214,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             logger.debug("[APPLY] Add resource {}", resource);
             // Check if already exists
             if (resourceFindByPk(resource).isPresent()) {
-                throw new ResourcePrimaryKeyCollisionException();
+                throw new ResourcePrimaryKeyCollisionException(resource);
             }
 
             auditingService.resourceAdd(txId, explicitChange, userType, userName, resource);
