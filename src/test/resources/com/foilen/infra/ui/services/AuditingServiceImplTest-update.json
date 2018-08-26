@@ -8,9 +8,9 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Dns Entry",
-  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d1.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : \"Manual DnsEntry\",\n  \"resourceName\" : \"d1.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d1.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : \"Manual DnsEntry\",\n  \"resourceName\" : \"d1.example.com / A\",\n  \"type\" : \"A\"\n}",
   "resourceSecondType" : "Dns Entry",
-  "resourceSecond" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceSecond" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
   "linkType" : null,
   "tagName" : null
 }, {
@@ -23,7 +23,7 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Domain",
-  "resourceFirst" : "{\n  \"name\" : \"d1.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d1.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d1.example.com\",\n  \"reverseName\" : \"com.example.d1\"\n}",
+  "resourceFirst" : "{\n  \"meta\" : { },\n  \"name\" : \"d1.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d1.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d1.example.com\",\n  \"reverseName\" : \"com.example.d1\"\n}",
   "resourceSecondType" : null,
   "resourceSecond" : null,
   "linkType" : null,
@@ -38,7 +38,7 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Domain",
-  "resourceFirst" : "{\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
+  "resourceFirst" : "{\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
   "resourceSecondType" : null,
   "resourceSecond" : null,
   "linkType" : null,
@@ -53,9 +53,9 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Dns Entry",
-  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
   "resourceSecondType" : "Domain",
-  "resourceSecond" : "{\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
+  "resourceSecond" : "{\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
   "linkType" : "MANAGES",
   "tagName" : null
 }, {
@@ -68,9 +68,9 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Domain",
-  "resourceFirst" : "{\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
+  "resourceFirst" : "{\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for d3.example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com\",\n  \"reverseName\" : \"com.example.d3\"\n}",
   "resourceSecondType" : "Domain",
-  "resourceSecond" : "{\n  \"name\" : \"example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"example.com\",\n  \"reverseName\" : \"com.example\"\n}",
+  "resourceSecond" : "{\n  \"meta\" : { },\n  \"name\" : \"example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"Domain for example.com\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"example.com\",\n  \"reverseName\" : \"com.example\"\n}",
   "linkType" : "MANAGES",
   "tagName" : null
 } ]
