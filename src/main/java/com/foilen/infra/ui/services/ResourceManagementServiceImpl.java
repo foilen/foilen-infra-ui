@@ -109,6 +109,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     private AtomicLong txCounter = new AtomicLong();
     private String baseTxId = JavaEnvironmentValues.getHostName() + "/" + SecureRandomTools.randomHexString(5) + "/";
 
+    private long infiniteLoopTimeoutInMs = 120000;
+
     @SuppressWarnings("rawtypes")
     protected void addColumnSearch(List<PluginResourceColumnSearch> columnSearches, PluginResource pluginResource, String propertyName, Class<?> propertyType, Object propertyValue) {
         PluginResourceColumnSearch columnSearch = new PluginResourceColumnSearch(pluginResource, propertyName);
@@ -408,7 +410,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
         logger.info("----- [changesExecute] Begin -----");
 
-        long maxTime = System.currentTimeMillis() + 15000;
+        long maxTime = System.currentTimeMillis() + infiniteLoopTimeoutInMs;
 
         try {
 
@@ -579,6 +581,10 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     private String genTxId() {
         return baseTxId + txCounter.getAndIncrement();
+    }
+
+    public long getInfiniteLoopTimeoutInMs() {
+        return infiniteLoopTimeoutInMs;
     }
 
     @Override
@@ -1246,6 +1252,10 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     public <R extends IPResource> Optional<R> resourceFindByPk(R resource) {
         return resourceFind(createResourceQuery((Class<R>) resource.getClass()) //
                 .primaryKeyEquals(resource));
+    }
+
+    public void setInfiniteLoopTimeoutInMs(long infiniteLoopTimeoutInMs) {
+        this.infiniteLoopTimeoutInMs = infiniteLoopTimeoutInMs;
     }
 
     @Override
