@@ -38,7 +38,6 @@ docker run -ti \
   --env HOSTFS=/hostfs/ \
   --env MACHINE_HOSTNAME=${machineName} \
   --hostname ${machineName} \
-  --volume $DATA_DIR:/data \
   --volume /etc:/hostfs/etc \
   --volume /home:/hostfs/home \
   --volume /usr/bin/docker:/usr/bin/docker \
