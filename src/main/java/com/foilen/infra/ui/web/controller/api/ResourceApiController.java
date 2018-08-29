@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.foilen.infra.api.request.ChangesRequest;
-import com.foilen.infra.api.response.ResponseWithStatus;
+import com.foilen.infra.api.request.RequestChanges;
+import com.foilen.infra.api.request.RequestResourceSearch;
+import com.foilen.infra.api.response.ResponseResourceBucket;
+import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.ui.services.ApiResourceManagementService;
+import com.foilen.smalltools.restapi.model.FormResult;
 
 @RequestMapping(value = "api/resource", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
@@ -29,8 +32,18 @@ public class ResourceApiController {
     private ApiResourceManagementService apiResourceManagementService;
 
     @PostMapping("applyChanges")
-    public ResponseWithStatus applyChanges(Authentication authentication, @RequestBody ChangesRequest changesRequest) {
-        return apiResourceManagementService.applyChanges(authentication.getName(), changesRequest);
+    public FormResult applyChanges(Authentication authentication, @RequestBody RequestChanges changes) {
+        return apiResourceManagementService.applyChanges(authentication.getName(), changes);
+    }
+
+    @PostMapping("resourceFindAll")
+    public ResponseResourceBuckets resourceFindAll(Authentication authentication, @RequestBody RequestResourceSearch resourceSearch) {
+        return apiResourceManagementService.resourceFindAll(authentication.getName(), resourceSearch);
+    }
+
+    @PostMapping("resourceFindOne")
+    public ResponseResourceBucket resourceFindOne(Authentication authentication, @RequestBody RequestResourceSearch resourceSearch) {
+        return apiResourceManagementService.resourceFindOne(authentication.getName(), resourceSearch);
     }
 
 }

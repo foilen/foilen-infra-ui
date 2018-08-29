@@ -13,7 +13,7 @@ import java.util.List;
 
 import com.foilen.infra.api.model.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
-import com.foilen.infra.api.response.ResponseWithStatus;
+import com.foilen.smalltools.restapi.model.FormResult;
 
 public interface ApiMachineManagementService {
 
@@ -28,7 +28,7 @@ public interface ApiMachineManagementService {
      *            the stats
      * @return the success or error
      */
-    ResponseWithStatus addSystemStats(String userId, String machineName, List<SystemStats> systemStats);
+    FormResult addSystemStats(String userId, String machineName, List<SystemStats> systemStats);
 
     /**
      * Get the Machine Setup if the currently logged in user can.

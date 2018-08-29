@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.foilen.infra.api.model.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
-import com.foilen.infra.api.response.ResponseWithStatus;
+import com.foilen.smalltools.restapi.model.ApiError;
+import com.foilen.smalltools.restapi.model.FormResult;
 
 @Service
 public class ApiMachineManagementServiceImpl extends AbstractApiService implements ApiMachineManagementService {
@@ -75,18 +76,18 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
     private EntitlementService entitlementService;
 
     @Override
-    public ResponseWithStatus addSystemStats(String userId, String machineName, List<SystemStats> systemStats) {
+    public FormResult addSystemStats(String userId, String machineName, List<SystemStats> systemStats) {
 
-        ResponseWithStatus response = new ResponseWithStatus();
+        FormResult formResult = new FormResult();
 
         if (!entitlementService.canGetSetupForMachine(userId, machineName)) {
-            response.addError("You are not allowed");
-            return response;
+            formResult.getGlobalErrors().add("You are not allowed");
+            return formResult;
         }
 
-        wrapExecution(response, () -> machineStatisticsService.addStats(machineName, systemStats));
+        wrapExecution(formResult, () -> machineStatisticsService.addStats(machineName, systemStats));
 
-        return response;
+        return formResult;
 
     }
 
@@ -101,7 +102,7 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
         ResponseMachineSetup response = new ResponseMachineSetup();
 
         if (!entitlementService.canGetSetupForMachine(userId, machineName)) {
-            response.addError("You are not allowed");
+            response.setError(new ApiError("You are not allowed"));
             return response;
         }
 
@@ -117,7 +118,7 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
         wrapExecution(response, () -> {
             response.setItem(machineService.getMachineSetup(machineName));
             if (response.getItem() == null) {
-                response.addError("The machine does not exist");
+                response.setError(new ApiError("The machine does not exist"));
             }
         });
 

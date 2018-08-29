@@ -239,10 +239,10 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         List<MachineStatistics> allToProcess = machineStatisticsDao.findAllAggregationByHoursByTimestampBefore(before);
         Map<MachineTimeKey, List<MachineStatistics>> toProcessByKey = allToProcess.stream() //
                 .collect(Collectors.groupingBy(it -> //
-        new MachineTimeKey( //
-                it.getMachineInternalId(), //
-                removeToDays(it.getTimestamp()) //
-        )));
+                new MachineTimeKey( //
+                        it.getMachineInternalId(), //
+                        removeToDays(it.getTimestamp()) //
+                )));
 
         // Get or create the existing aggregation for the key times
         Map<MachineTimeKey, MachineStatistics> mergedByMachineAndTime = new HashMap<>();
@@ -284,10 +284,10 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         List<MachineStatistics> allToProcess = machineStatisticsDao.findAllNonAggregationByTimestampBefore(before);
         Map<MachineTimeKey, List<MachineStatistics>> toProcessByKey = allToProcess.stream() //
                 .collect(Collectors.groupingBy(it -> //
-        new MachineTimeKey( //
-                it.getMachineInternalId(), //
-                removeToHours(it.getTimestamp()) //
-        )));
+                new MachineTimeKey( //
+                        it.getMachineInternalId(), //
+                        removeToHours(it.getTimestamp()) //
+                )));
 
         // Get or create the existing aggregation for the key times
         Map<MachineTimeKey, MachineStatistics> mergedByMachineAndTime = new HashMap<>();

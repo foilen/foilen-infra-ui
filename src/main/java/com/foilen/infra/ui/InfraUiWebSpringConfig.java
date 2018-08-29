@@ -69,7 +69,7 @@ public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
                         .addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra-charts.js") //
                         .primeCache() //
 
-        );
+                );
 
     }
 

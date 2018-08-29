@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foilen.infra.api.model.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
-import com.foilen.infra.api.response.ResponseWithStatus;
 import com.foilen.infra.ui.services.ApiMachineManagementService;
+import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.google.common.base.Strings;
 
@@ -38,7 +38,7 @@ public class MachineApiController extends AbstractBasics {
     private ApiMachineManagementService apiMachineManagementService;
 
     @PostMapping("{machineName:.+}/systemStats")
-    public ResponseWithStatus addSystemStats(Authentication authentication, @PathVariable String machineName, @RequestBody List<SystemStats> systemStats) {
+    public FormResult addSystemStats(Authentication authentication, @PathVariable String machineName, @RequestBody List<SystemStats> systemStats) {
         return apiMachineManagementService.addSystemStats(authentication.getName(), machineName, systemStats);
     }
 

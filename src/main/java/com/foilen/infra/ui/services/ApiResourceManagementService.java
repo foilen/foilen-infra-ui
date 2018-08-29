@@ -9,8 +9,12 @@
  */
 package com.foilen.infra.ui.services;
 
-import com.foilen.infra.api.request.ChangesRequest;
-import com.foilen.infra.api.response.ResponseWithStatus;
+import com.foilen.infra.api.request.RequestChanges;
+import com.foilen.infra.api.request.RequestResourceSearch;
+import com.foilen.infra.api.response.ResponseResourceBucket;
+import com.foilen.infra.api.response.ResponseResourceBuckets;
+import com.foilen.infra.api.response.ResponseResourceTypesDetails;
+import com.foilen.smalltools.restapi.model.FormResult;
 
 public interface ApiResourceManagementService {
 
@@ -19,10 +23,16 @@ public interface ApiResourceManagementService {
      *
      * @param userId
      *            the user id
-     * @param changesRequest
+     * @param changes
      *            the changes to make
      * @return the result
      */
-    ResponseWithStatus applyChanges(String userId, ChangesRequest changesRequest);
+    FormResult applyChanges(String userId, RequestChanges changes);
+
+    ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch);
+
+    ResponseResourceBucket resourceFindOne(String userId, RequestResourceSearch resourceSearch);
+
+    ResponseResourceTypesDetails resourceTypeFindAll();
 
 }

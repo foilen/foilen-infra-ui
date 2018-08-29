@@ -9,9 +9,6 @@
  */
 package com.foilen.infra.ui.services;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,7 @@ import com.foilen.infra.api.model.MachineSetup;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
+import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.test.asserts.AssertTools;
 
 public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
@@ -33,43 +31,47 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
         super(true);
     }
 
-    private void testGetMachineSetup_FAIL(String userId, List<String> expectedErrors, List<String> expectedWarnings) {
-        testGetMachineSetup_FAIL(MACHINE_NAME, userId, expectedErrors, expectedWarnings);
+    private void testGetMachineSetup_FAIL(String userId, String expectedError) {
+        testGetMachineSetup_FAIL(MACHINE_NAME, userId, expectedError);
     }
 
-    private void testGetMachineSetup_FAIL(String machineName, String userId, List<String> expectedErrors, List<String> expectedWarnings) {
+    private void testGetMachineSetup_FAIL(String machineName, String userId, String expectedError) {
         ResponseMachineSetup result = apiMachineManagementService.getMachineSetup(userId, machineName);
 
+        if (result.getError() != null) {
+            result.getError().setTimestamp(null);
+            result.getError().setUniqueId(null);
+        }
+
         ResponseMachineSetup expected = new ResponseMachineSetup();
-        expected.setErrors(expectedErrors);
-        expected.setWarnings(expectedWarnings);
+        expected.setError(new ApiError((String) null, (String) null, expectedError));
 
         AssertTools.assertJsonComparisonWithoutNulls(expected, result);
     }
 
     @Test
     public void testGetMachineSetup_FAIL_ApiMachineUser_another_one() {
-        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_MACHINE_ID_F002, Arrays.asList("You are not allowed"), Arrays.asList());
+        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_MACHINE_ID_F002, "You are not allowed");
     }
 
     @Test
     public void testGetMachineSetup_FAIL_ApiUser_Not_Admin() {
-        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_ID_USER, Arrays.asList("You are not allowed"), Arrays.asList());
+        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_ID_USER, "You are not allowed");
     }
 
     @Test
     public void testGetMachineSetup_FAIL_MachineNotExists() {
-        testGetMachineSetup_FAIL("not.node.example.com", FakeDataServiceImpl.USER_ID_ADMIN, Arrays.asList("The machine does not exist"), Arrays.asList());
+        testGetMachineSetup_FAIL("not.node.example.com", FakeDataServiceImpl.USER_ID_ADMIN, "The machine does not exist");
     }
 
     @Test
     public void testGetMachineSetup_FAIL_Noone() {
-        testGetMachineSetup_FAIL(null, Arrays.asList("You are not allowed"), Arrays.asList());
+        testGetMachineSetup_FAIL(null, "You are not allowed");
     }
 
     @Test
     public void testGetMachineSetup_FAIL_User_Not_Admin() {
-        testGetMachineSetup_FAIL(FakeDataServiceImpl.USER_ID_USER, Arrays.asList("You are not allowed"), Arrays.asList());
+        testGetMachineSetup_FAIL(FakeDataServiceImpl.USER_ID_USER, "You are not allowed");
     }
 
     private void testGetMachineSetup_OK(String userId) {
