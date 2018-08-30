@@ -23,6 +23,8 @@ public interface ApiUserDao extends JpaRepository<ApiUser, Long> {
 
     void deleteAllByExpireOnLessThanEqual(Date expiredOnBefore);
 
+    void deleteByUserId(String userId);
+
     ApiUser findByUserId(String userId);
 
     @Query("SELECT au FROM ApiUser au WHERE au.userId = :userId AND (au.expireOn IS NULL OR au.expireOn > :expiredOnAfter)")

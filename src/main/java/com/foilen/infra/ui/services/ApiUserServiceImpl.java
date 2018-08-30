@@ -11,8 +11,10 @@ package com.foilen.infra.ui.services;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,15 @@ public class ApiUserServiceImpl extends AbstractBasics implements ApiUserService
     private ApiMachineUserDao apiMachineUserDao;
 
     @Override
+    public Tuple2<String, String> createAdminUser() {
+        Tuple2<String, String> generated = genIdAndKey();
+        ApiUser apiUser = new ApiUser(generated.getA(), BCrypt.hashpw(generated.getB(), BCrypt.gensalt(13)), "Admin");
+        apiUser.setAdmin(true);
+        apiUserDao.save(apiUser);
+        return generated;
+    }
+
+    @Override
     public void deleteExpired() {
         deleteExpired(new Date());
     }
@@ -46,6 +57,16 @@ public class ApiUserServiceImpl extends AbstractBasics implements ApiUserService
     @Override
     public void deleteExpired(Date now) {
         apiUserDao.deleteAllByExpireOnLessThanEqual(now);
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        apiUserDao.deleteByUserId(userId);
+    }
+
+    @Override
+    public List<ApiUser> findAll() {
+        return apiUserDao.findAll(new Sort("userId"));
     }
 
     @Override

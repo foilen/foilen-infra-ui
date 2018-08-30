@@ -5,7 +5,7 @@
     <th><@spring.message "resources.type"/></th>
     <th><@spring.message "resources.name"/></th>
     <th><@spring.message "resources.description"/></th>
-    <th><@spring.message "resources.actions"/></th>
+    <th><@spring.message "terms.actions"/></th>
   </tr>
   <#list resourcesByType?keys as type>
     <#list resourcesByType[type] as resource>

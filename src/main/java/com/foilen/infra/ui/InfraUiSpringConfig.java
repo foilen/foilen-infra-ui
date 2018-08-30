@@ -110,6 +110,9 @@ public class InfraUiSpringConfig {
         menuEntry.addChild("plugin").setUri("/plugin/list").addUriStartsWith("/plugin/");
         menuEntry.addChild("pluginresources").setUri("/pluginresources/list").addUriStartsWith("/pluginresources/");
 
+        // ApiUser
+        menuEntry.addChild("apiUser").setUri("/apiUser/list").addUriStartsWith("/apiUser/");
+
         return menuEntry;
     }
 
