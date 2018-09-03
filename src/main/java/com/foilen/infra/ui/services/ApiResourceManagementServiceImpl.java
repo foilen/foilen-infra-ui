@@ -13,7 +13,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import com.foilen.infra.api.model.PartialLinkDetails;
@@ -40,6 +43,8 @@ import com.google.common.collect.ComparisonChain;
 @Service
 public class ApiResourceManagementServiceImpl extends AbstractApiService implements ApiResourceManagementService {
 
+    @Autowired
+    private ConversionService conversionService;
     @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
@@ -268,9 +273,16 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
         wrapExecution(responseResourceBucket, () -> {
             IPResourceQuery<IPResource> query = resourceService.createResourceQuery(resourceSearch.getResourceType());
+            BeanWrapper resourceBeanWrapper = new BeanWrapperImpl(resourceService.getResourceDefinition(resourceSearch.getResourceType()).getResourceClass());
 
             if (resourceSearch.getProperties() != null) {
-                resourceSearch.getProperties().forEach((name, value) -> query.propertyEquals(name, value));
+                resourceSearch.getProperties().forEach((name, value) -> {
+                    Class<?> propertyType = resourceBeanWrapper.getPropertyType(name);
+                    if (conversionService.canConvert(value.getClass(), propertyType)) {
+                        value = conversionService.convert(value, propertyType);
+                    }
+                    query.propertyEquals(name, value);
+                });
             }
 
             if (!Strings.isNullOrEmpty(resourceSearch.getTag())) {
