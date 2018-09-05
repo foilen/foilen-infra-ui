@@ -227,11 +227,11 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             return null;
         }
         Optional<IPResource> optional = resourceService.resourceFindByPk(resourcePk);
-        if (optional.isPresent()) {
+        if (!optional.isPresent()) {
             formResult.getGlobalErrors().add("[" + context + "/" + posContext + "] The resource does not exist");
-            return optional.get();
+            return null;
         }
-        return null;
+        return optional.get();
     }
 
     @Override
