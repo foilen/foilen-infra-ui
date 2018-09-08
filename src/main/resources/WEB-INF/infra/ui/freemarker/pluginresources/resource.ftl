@@ -85,7 +85,7 @@
           data-label='${pageItem.label}'
           data-field-name="${pageItem.fieldName}" 
           data-resource-type="${pageItem.resourceType.name}" 
-          data-resource-id="${pageItem.value.internalId}" 
+          data-resource-id="${pageItem.value.internalId?c}" 
           data-resource-name="${pageItem.value.resourceName}" 
           data-resource-description="${pageItem.value.resourceDescription}" 
           >
@@ -118,7 +118,7 @@
         >
         <#list pageItem.values as resource>
           <div class="ResourcesFieldPageItem_resource"
-            data-resource-id="${resource.internalId}" 
+            data-resource-id="${resource.internalId?c}" 
             data-resource-name="${resource.resourceName}" 
             data-resource-description="${resource.resourceDescription}"
             ></div>
