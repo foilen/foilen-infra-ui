@@ -18,7 +18,7 @@
           <#assign resourceNameArgs = [resource.resourceName]/>
           <form class="confirm form-inline" method="post" action="/pluginresources/delete" data-confirm="<@spring.messageArgs 'prompt.delete.confirm' resourceNameArgs />">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="hidden" name="resourceId" value="${resource.internalId}" />
+            <input type="hidden" name="resourceId" value="${resource.internalId?c}" />
 
             <a class="btn btn-sm btn-primary" href="/pluginresources/edit/${resource.internalId}"><@spring.message "button.edit"/></a>
         
