@@ -9,15 +9,16 @@
  */
 package com.foilen.infra.ui.web.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
@@ -45,6 +46,7 @@ import com.foilen.infra.plugin.v1.core.visual.editor.ResourceEditor;
 import com.foilen.infra.plugin.v1.core.visual.pageItem.field.HiddenFieldPageItem;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.services.EntitlementService;
+import com.foilen.infra.ui.visual.ResourceTypeAndDetails;
 import com.foilen.infra.ui.web.controller.response.ResourceSuggestResponse;
 import com.foilen.infra.ui.web.controller.response.ResourceUpdateResponse;
 import com.foilen.mvc.ui.UiSuccessErrorView;
@@ -53,6 +55,7 @@ import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tuple.Tuple2;
 import com.google.common.base.Strings;
+import com.google.common.collect.ComparisonChain;
 
 @Controller
 @RequestMapping("pluginresources")
@@ -243,21 +246,58 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("list")
-    public ModelAndView list(Authentication authentication) {
+    public ModelAndView list(Authentication authentication, //
+            @RequestParam(value = "s", required = false) String search //
+    ) {
+
+        String searchLower = search == null ? null : search.toLowerCase();
+        if (search != null) {
+            search = StringEscapeUtils.escapeHtml4(search);
+        }
 
         entitlementService.isAdminOrFailUi(authentication.getName());
 
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/list");
 
         List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
-        Map<String, List<?>> resourcesByType = new HashMap<>();
+
+        Stream<ResourceTypeAndDetails> resourcesTypeAndDetailsStream = Stream.of();
+
         for (IPResourceDefinition resourceDefinition : resourceDefinitions) {
             String resourceType = resourceDefinition.getResourceType();
-            List<?> resources = resourceService.resourceFindAll(resourceService.createResourceQuery(resourceType));
-            resourcesByType.put(resourceType, resources);
+            Stream<IPResource> resources = resourceService.resourceFindAll(resourceService.createResourceQuery(resourceType)).stream();
+
+            // Filter by search
+            if (!Strings.isNullOrEmpty(searchLower)) {
+
+                resources = resources.filter(it -> {
+                    boolean hasOneMatch = resourceType.toLowerCase().contains(searchLower);
+                    if (it.getResourceName() != null) {
+                        hasOneMatch |= it.getResourceName().toLowerCase().contains(searchLower);
+                    }
+                    if (it.getResourceDescription() != null) {
+                        hasOneMatch |= it.getResourceDescription().toLowerCase().contains(searchLower);
+                    }
+                    return hasOneMatch;
+                });
+
+            }
+
+            resourcesTypeAndDetailsStream = Stream.concat(resourcesTypeAndDetailsStream, resources.map(it -> new ResourceTypeAndDetails(resourceType, it)));
+
         }
 
-        modelAndView.addObject("resourcesByType", resourcesByType);
+        // Sorting
+        resourcesTypeAndDetailsStream = resourcesTypeAndDetailsStream.sorted((a, b) -> ComparisonChain.start() //
+                .compare(a.getType(), b.getType()) //
+                .compare(a.getResource().getResourceName(), b.getResource().getResourceName()) //
+                .compare(a.getResource().getResourceDescription(), b.getResource().getResourceDescription()) //
+                .result() //
+        );
+
+        List<ResourceTypeAndDetails> resourcesTypeAndDetails = resourcesTypeAndDetailsStream.collect(Collectors.toList());
+        modelAndView.addObject("resourcesTypeAndDetails", resourcesTypeAndDetails);
+        modelAndView.addObject("search", search);
         return modelAndView;
 
     }

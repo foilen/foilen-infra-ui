@@ -1,5 +1,9 @@
 <#include "/common/header.ftl">
 
+<form class="form-group" method="get" action="/pluginresources/list" autocomplete="off">
+  <input type="text" class="form-control" name="s" value="${search!''}" placeholder="<@spring.message 'terms.search'/>" />
+</form>
+
 <table class="table table-striped">
   <tr>
     <th><@spring.message "resources.type"/></th>
@@ -7,28 +11,26 @@
     <th><@spring.message "resources.description"/></th>
     <th><@spring.message "terms.actions"/></th>
   </tr>
-  <#list resourcesByType?keys as type>
-    <#list resourcesByType[type] as resource>
-      <tr>
-        <td>${type}</td>
-        <td>${resource.resourceName}</td>
-        <td>${resource.resourceDescription!}</td>
-        <td>
-          
-          <#assign resourceNameArgs = [resource.resourceName]/>
-          <form class="confirm form-inline" method="post" action="/pluginresources/delete" data-confirm="<@spring.messageArgs 'prompt.delete.confirm' resourceNameArgs />">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="hidden" name="resourceId" value="${resource.internalId?c}" />
-
-            <a class="btn btn-sm btn-primary" href="/pluginresources/edit/${resource.internalId?c}"><@spring.message "button.edit"/></a>
+  <#list resourcesTypeAndDetails as resourceTypeAndDetails>
+    <tr>
+      <td>${resourceTypeAndDetails.type}</td>
+      <td>${resourceTypeAndDetails.resource.resourceName}</td>
+      <td>${resourceTypeAndDetails.resource.resourceDescription!}</td>
+      <td>
         
-            <button class="btn btn-sm btn-danger"><@spring.message 'button.delete'/></button>  
-  
-          </form>
+        <#assign resourceNameArgs = [resourceTypeAndDetails.resource.resourceName]/>
+        <form class="confirm form-inline" method="post" action="/pluginresources/delete" data-confirm="<@spring.messageArgs 'prompt.delete.confirm' resourceNameArgs />">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          <input type="hidden" name="resourceId" value="${resourceTypeAndDetails.resource.internalId?c}" />
 
-        </td>
-      </tr>
-   </#list>
+          <a class="btn btn-sm btn-primary" href="/pluginresources/edit/${resourceTypeAndDetails.resource.internalId?c}"><@spring.message "button.edit"/></a>
+      
+          <button class="btn btn-sm btn-danger"><@spring.message 'button.delete'/></button>  
+
+        </form>
+
+      </td>
+    </tr>
   </#list>
 </table>
 
