@@ -12,7 +12,7 @@
       <tr>
         <td>${type}</td>
         <td>${resource.resourceName}</td>
-        <td>${resource.resourceDescription}</td>
+        <td>${resource.resourceDescription!}</td>
         <td>
           
           <#assign resourceNameArgs = [resource.resourceName]/>
