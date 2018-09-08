@@ -42,13 +42,16 @@ eclipse {
 }
 
 configurations {
-	testCompile.extendsFrom compileOnly
+  testCompile.extendsFrom compileOnly
 }
 
 dependencies {
 
   // Internal API
-  compile "com.foilen:foilen-infra-api:$foilenInfraApiVersion"
+  compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion") {
+    exclude group: 'com.foilen', module: 'foilen-infra-resource-application'
+    exclude group: 'com.foilen', module: 'foilen-infra-resource-unixuser'
+  }
   compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraSystemVersion"
 
   // Resources
