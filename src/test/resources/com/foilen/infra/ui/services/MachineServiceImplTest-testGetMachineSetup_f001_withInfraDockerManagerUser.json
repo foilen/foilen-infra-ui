@@ -6,16 +6,6 @@
   "redirectorBridgePort" : 11000,
   "unixUsers" : [ {
     "hashedPassword" : null,
-    "homeFolder" : "/home/infra_docker_manager",
-    "id" : 1234,
-    "name" : "infra_docker_manager",
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/infra_docker_manager",
-    "resourceEditorName" : null,
-    "resourceName" : "infra_docker_manager",
-    "shell" : null
-  }, {
-    "hashedPassword" : null,
     "homeFolder" : "/home/indirectlyattached",
     "id" : 70001,
     "name" : "indirectlyattached",
@@ -43,6 +33,16 @@
     "resourceDescription" : "/home/f12",
     "resourceEditorName" : "Unix User",
     "resourceName" : "f12",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/infra_docker_manager",
+    "id" : 123456,
+    "name" : "infra_docker_manager",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/infra_docker_manager",
+    "resourceEditorName" : null,
+    "resourceName" : "infra_docker_manager",
     "shell" : "/bin/bash"
   } ],
   "applications" : [ {

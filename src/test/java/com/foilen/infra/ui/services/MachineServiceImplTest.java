@@ -17,6 +17,9 @@ import com.foilen.infra.api.model.MachineSetup;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
+import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
+import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
@@ -38,6 +41,11 @@ public class MachineServiceImplTest extends AbstractSpringTests {
     @Test
     public void testGetMachineSetup_f001() {
 
+        // Add a system user that must not be returned
+        ChangesContext changes = new ChangesContext(ipResourceService);
+        changes.linkAdd(new SystemUnixUser(0L, "root"), LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
+        internalChangeService.changesExecute(changes);
+
         MachineSetup machineSetup = machineService.getMachineSetup("f001.node.example.com");
         Assert.assertNotNull(machineSetup.getUiApiUserId());
         Assert.assertNotNull(machineSetup.getUiApiUserKey());
@@ -54,7 +62,7 @@ public class MachineServiceImplTest extends AbstractSpringTests {
     public void testGetMachineSetup_f001_withInfraDockerManagerUser() {
 
         ChangesContext changes = new ChangesContext(ipResourceService);
-        changes.resourceAdd(new UnixUser(1234L, "infra_docker_manager", "/home/infra_docker_manager", null, null));
+        changes.resourceAdd(new UnixUser(123456L, "infra_docker_manager", "/home/infra_docker_manager", null, null));
         internalChangeService.changesExecute(changes);
 
         MachineSetup machineSetup = machineService.getMachineSetup("f001.node.example.com");

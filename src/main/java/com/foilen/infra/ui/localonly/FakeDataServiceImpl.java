@@ -27,6 +27,7 @@ import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.resource.unixuser.UnixUserEditor;
 import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
@@ -229,6 +230,7 @@ public class FakeDataServiceImpl implements FakeDataService {
 
         UnixUserAvailableIdHelper.init(ipResourceService);
 
+        SystemUnixUser root = new SystemUnixUser(0L, "root");
         UnixUser uuNotAttached = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "notattached", "/home/notattached", "/bin/bash", null);
         UnixUser uuIndirectlyAttached = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "indirectlyattached", "/home/indirectlyattached", "/bin/bash", null);
         UnixUser uuF1 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "f1", "/home/f1", "/bin/bash", PASSWORD_HASH_QWERTY);
@@ -237,6 +239,7 @@ public class FakeDataServiceImpl implements FakeDataService {
         setResourceEditor(UnixUserEditor.EDITOR_NAME, uuNotAttached, uuIndirectlyAttached, uuF1, uuF2, uuF12);
 
         ChangesContext changes = new ChangesContext(ipResourceService);
+        changes.resourceAdd(root);
         changes.resourceAdd(uuNotAttached);
         changes.resourceAdd(uuIndirectlyAttached);
         changes.resourceAdd(uuF1);

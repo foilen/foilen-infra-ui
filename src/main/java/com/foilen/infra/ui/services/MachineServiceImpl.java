@@ -29,6 +29,7 @@ import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -91,6 +92,9 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
                 .propertyEquals(UnixUser.PROPERTY_NAME, "infra_docker_manager")));// TODO Do not hardcode the docker manager unix user name
 
         unixUsers.addAll(additionnalUnixUsers);
+
+        // Remove all system unix users
+        unixUsers.removeIf(it -> it instanceof SystemUnixUser);
 
         Collections.sort(applications);
         Collections.sort(unixUsers, (a, b) -> Long.compare(a.getId(), b.getId()));
