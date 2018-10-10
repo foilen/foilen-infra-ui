@@ -39,6 +39,9 @@ import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
 import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.dao.PluginResourceLinkDao;
 import com.foilen.infra.ui.db.dao.PluginResourceTagDao;
+import com.foilen.infra.ui.db.dao.ReportCountDao;
+import com.foilen.infra.ui.db.dao.ReportExecutionDao;
+import com.foilen.infra.ui.db.dao.ReportTimeDao;
 import com.foilen.infra.ui.db.dao.UserDao;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 import com.foilen.infra.ui.db.domain.user.ApiUser;
@@ -90,12 +93,22 @@ public class FakeDataServiceImpl implements FakeDataService {
     @Autowired
     private PluginResourceColumnSearchDao pluginResourceColumnSearchDao;
     @Autowired
+    private ReportCountDao reportCountDao;
+    @Autowired
+    private ReportExecutionDao reportExecutionDao;
+    @Autowired
+    private ReportTimeDao reportTimeDao;
+    @Autowired
     private UserDao userDao;
 
     @Override
     public void clearAll() {
 
         logger.info("Begin CLEAR ALL");
+
+        reportCountDao.deleteAll();
+        reportTimeDao.deleteAll();
+        reportExecutionDao.deleteAll();
 
         apiMachineUserDao.deleteAll();
         apiUserDao.deleteAll();

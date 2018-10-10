@@ -63,6 +63,8 @@ import com.foilen.infra.ui.db.domain.plugin.PluginResource;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceLink;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceTag;
+import com.foilen.infra.ui.db.domain.reporting.ReportCount;
+import com.foilen.infra.ui.db.domain.reporting.ReportTime;
 import com.foilen.infra.ui.services.context.ApplyChangesContext;
 import com.foilen.login.spring.client.security.FoilenAuthentication;
 import com.foilen.mvc.ui.UiException;
@@ -101,6 +103,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     private PluginResourceTagDao pluginResourceTagDao;
     @Autowired
     private IPPluginService ipPluginService;
+    @Autowired
+    private ReportService reportService;
 
     private Map<Class<? extends IPResource>, List<Class<?>>> allClassesByResourceClass = new HashMap<>();
     private Map<Class<? extends IPResource>, IPResourceDefinition> resourceDefinitionByResourceClass = new HashMap<>();
@@ -522,12 +526,18 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
             if (applyChangesContext.hasChangesInQueues()) {
                 // InfiniteUpdateLoop Display report
                 logger.error("Iterated for too long and there are always changes");
+                reportService.addReport(applyChangesContext.getTxId(), false, //
+                        applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
+                        applyChangesContext.getUpdateCoundByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
                 logger.info("Report Update count: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateCountReport()));
                 logger.info("Report Event Handler execution time: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateEventHandlerExecutionTimeReport()));
                 throw new InfiniteUpdateLoop("Iterated for too long and there are always changes");
             }
 
             // Show reports
+            reportService.addReport(applyChangesContext.getTxId(), true, //
+                    applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
+                    applyChangesContext.getUpdateCoundByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
             logger.info("Report Update count: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateCountReport()));
             logger.info("Report Event Handler execution time: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateEventHandlerExecutionTimeReport()));
 
