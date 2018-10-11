@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foilen.infra.ui.db.dao.ReportCountDao;
@@ -24,7 +25,7 @@ import com.foilen.infra.ui.db.domain.reporting.ReportTime;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class ReportServiceImpl extends AbstractBasics implements ReportService {
 
     @Autowired
