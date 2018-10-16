@@ -736,7 +736,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     protected IPResource loadResource(PluginResource pluginResource) {
         IPResourceDefinition resourceDefinition = getResourceDefinition(pluginResource.getType());
         if (resourceDefinition == null) {
-            throw new UiException("Unknown resource definitino for type " + pluginResource.getType());
+            throw new UiException("Unknown resource definition for type " + pluginResource.getType());
         }
         return pluginResource.loadResource(resourceDefinition //
                 .getResourceClass());
