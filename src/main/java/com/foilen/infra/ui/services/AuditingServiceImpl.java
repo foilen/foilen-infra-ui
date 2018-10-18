@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.db.dao.AuditItemDao;
 import com.foilen.infra.ui.db.domain.audit.AuditAction;
 import com.foilen.infra.ui.db.domain.audit.AuditItem;
 import com.foilen.infra.ui.db.domain.audit.AuditType;
-import com.foilen.infra.ui.db.domain.audit.AuditUserType;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 

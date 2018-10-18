@@ -14,41 +14,30 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.foilen.infra.plugin.core.system.common.changeexecution.ChangeExecutionLogic;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
-import com.foilen.infra.plugin.v1.core.context.UpdateEventContext;
-import com.foilen.infra.plugin.v1.core.eventhandler.UpdateEventHandler;
-import com.foilen.infra.plugin.v1.core.exception.InfiniteUpdateLoop;
-import com.foilen.infra.plugin.v1.core.exception.ResourceNotFoundException;
+import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
 import com.foilen.infra.plugin.v1.core.exception.ResourceNotFromRepositoryException;
-import com.foilen.infra.plugin.v1.core.exception.ResourcePrimaryKeyCollisionException;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
-import com.foilen.infra.plugin.v1.core.service.IPPluginService;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalIPResourceService;
@@ -58,27 +47,19 @@ import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
 import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.dao.PluginResourceLinkDao;
 import com.foilen.infra.ui.db.dao.PluginResourceTagDao;
-import com.foilen.infra.ui.db.domain.audit.AuditUserType;
 import com.foilen.infra.ui.db.domain.plugin.PluginResource;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceLink;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceTag;
-import com.foilen.infra.ui.db.domain.reporting.ReportCount;
-import com.foilen.infra.ui.db.domain.reporting.ReportTime;
-import com.foilen.infra.ui.services.context.ApplyChangesContext;
-import com.foilen.login.spring.client.security.FoilenAuthentication;
+import com.foilen.infra.ui.services.hook.AuditingChangeExecutionHook;
+import com.foilen.infra.ui.services.hook.ReportingChangeExecutionHook;
+import com.foilen.infra.ui.services.hook.UserDetailsChangeExecutionHook;
 import com.foilen.mvc.ui.UiException;
-import com.foilen.smalltools.JavaEnvironmentValues;
 import com.foilen.smalltools.exception.SmallToolsException;
 import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.AssertTools;
-import com.foilen.smalltools.tools.CollectionsTools;
 import com.foilen.smalltools.tools.JsonTools;
-import com.foilen.smalltools.tools.SecureRandomTools;
-import com.foilen.smalltools.tools.ThreadNameStateTool;
-import com.foilen.smalltools.tools.ThreadTools;
-import com.foilen.smalltools.tools.TimeExecutionTools;
 import com.foilen.smalltools.tuple.Tuple2;
 import com.foilen.smalltools.tuple.Tuple3;
 import com.google.common.base.Joiner;
@@ -92,6 +73,10 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     @Autowired
     private CommonServicesContext commonServicesContext;
     @Autowired
+    private InternalServicesContext internalServicesContext;
+    @Autowired
+    private IPResourceService ipResourceService;
+    @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private PluginResourceColumnSearchDao pluginResourceColumnSearchDao;
@@ -102,16 +87,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     @Autowired
     private PluginResourceTagDao pluginResourceTagDao;
     @Autowired
-    private IPPluginService ipPluginService;
-    @Autowired
     private ReportService reportService;
 
     private Map<Class<? extends IPResource>, List<Class<?>>> allClassesByResourceClass = new HashMap<>();
     private Map<Class<? extends IPResource>, IPResourceDefinition> resourceDefinitionByResourceClass = new HashMap<>();
     private Map<String, IPResourceDefinition> resourceDefinitionByResourceType = new HashMap<>();
-
-    private AtomicLong txCounter = new AtomicLong();
-    private String baseTxId = JavaEnvironmentValues.getHostName() + "/" + SecureRandomTools.randomHexString(5) + "/";
 
     private long infiniteLoopTimeoutInMs = 120000;
 
@@ -143,414 +123,15 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         columnSearches.add(columnSearch);
     }
 
-    private void applyChanges(ApplyChangesContext applyChangesContext, ChangesContext changes) {
-
-        logger.debug("State before applying changes. Has {} updates, {} deletions, {} addition, {} refreshes", //
-                applyChangesContext.getUpdatedResourcesPrevious().size(), applyChangesContext.getDeletedResources().size(), applyChangesContext.getAddedResources().size(),
-                applyChangesContext.getResourcesNeedRefresh().size());
-        logger.debug("[APPLY] Resources: has {} updates, {} deletions, {} addition, {} refreshes ; Links: has {} deletions, {} addition ; Tags: has {} deletions, {} addition", //
-                changes.getResourcesToUpdate().size(), changes.getResourcesToDelete().size(), changes.getResourcesToAdd().size(), changes.getResourcesToRefresh().size(), //
-                changes.getLinksToDelete().size(), changes.getLinksToAdd().size(), //
-                changes.getTagsToDelete().size(), changes.getTagsToAdd().size() //
-        );
-
-        // Delete
-        Set<Long> toRefreshIds = new HashSet<>();
-        for (Long id : changes.getResourcesToDelete()) {
-
-            if (applyChangesContext.getRemovedResourcesInThisTransaction().add(id)) {
-                logger.debug("[APPLY] Delete resource {}", id);
-            } else {
-                logger.debug("[APPLY-SKIP] Delete resource {}. Already deleted in this transaction. Skipping", id);
-
-                continue;
-            }
-
-            List<Tuple3<IPResource, String, IPResource>> deletedResourcePreviousLinks = new ArrayList<>();
-            applyChangesContext.getDeletedResourcePreviousLinksByResourceId().put(id, deletedResourcePreviousLinks);
-
-            IPResource resource = resourceFind(id).get();
-            auditingService.resourceDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource);
-
-            applyChangesContext.getDeletedResources().add(resource);
-            applyChangesContext.getResourcesNeedRefresh().remove(id);
-            deletedResourcePreviousLinks.addAll(linkFindAllRelatedByResource(id));
-            Set<Long> idsToUpdate = new HashSet<>();
-            idsToUpdate.addAll(linkFindAllByFromResource(resource).stream().map(it -> it.getB().getInternalId()).collect(Collectors.toList()));
-            idsToUpdate.addAll(linkFindAllByToResource(resource).stream().map(it -> it.getA().getInternalId()).collect(Collectors.toList()));
-            markAllTransientLinkedResourcesToUpdate(toRefreshIds, idsToUpdate);
-            pluginResourceColumnSearchDao.deleteByPluginResourceId(id);
-            pluginResourceTagDao.deleteByPluginResourceId(id);
-            pluginResourceLinkDao.deleteByPluginResourceId(id);
-            pluginResourceDao.delete(id);
-        }
-        for (Tuple3<IPResource, String, IPResource> link : changes.getLinksToDelete()) {
-            logger.debug("[APPLY] Delete link {}", link);
-            Optional<IPResource> fromResource = resourceFindByPk(link.getA());
-            Optional<IPResource> toResource = resourceFindByPk(link.getC());
-            if (fromResource.isPresent() && toResource.isPresent()) {
-                Long fromId = fromResource.get().getInternalId();
-                Long toId = toResource.get().getInternalId();
-                String linkType = link.getB();
-                if (pluginResourceLinkDao.deleteByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromId, linkType, toId) > 0) {
-                    auditingService.linkDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(),
-                            fromResource.get(), linkType, toResource.get());
-                    markAllTransientLinkedResourcesToUpdate(toRefreshIds, Arrays.asList(fromId, toId));
-                } else {
-                    logger.debug("[APPLY-SKIP] Delete link {}. Skipped since does not exists", link);
-                }
-            }
-        }
-        for (Tuple2<IPResource, String> tag : changes.getTagsToDelete()) {
-            logger.debug("[APPLY] Delete tag {}", tag);
-            Optional<IPResource> resource = resourceFindByPk(tag.getA());
-            if (resource.isPresent()) {
-                Long internalId = resource.get().getInternalId();
-                String tagName = tag.getB();
-                if (pluginResourceTagDao.deleteByPluginResourceIdAndTagName(internalId, tagName) > 0) {
-                    auditingService.tagDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(),
-                            resource.get(), tagName);
-                    toRefreshIds.add(internalId);
-                } else {
-                    logger.debug("[APPLY-SKIP] Delete tag {}. Skipped since does not exists", tag);
-                }
-            }
-        }
-
-        // Add
-        for (IPResource resource : changes.getResourcesToAdd()) {
-            logger.debug("[APPLY] Add resource {}", resource);
-            // Check if already exists
-            if (resourceFindByPk(resource).isPresent()) {
-                throw new ResourcePrimaryKeyCollisionException(resource);
-            }
-
-            auditingService.resourceAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource);
-
-            String resourceType = getResourceDefinition(resource).getResourceType();
-            PluginResource pluginResource = pluginResourceDao.save(new PluginResource(resourceType, resource));
-            applyChangesContext.getAddedResources().add(pluginResource.loadResource(resource.getClass()));
-            resource.setInternalId(pluginResource.getId());
-            updateColumnSearches(resource);
-            applyChangesContext.getResourcesNeedRefresh().remove(resource.getInternalId());
-
-            // Add the direct links for update notification
-            Set<Long> idsToUpdate = new HashSet<>();
-            idsToUpdate.addAll(linkFindAllByFromResource(resource).stream().map(it -> it.getB().getInternalId()).collect(Collectors.toList()));
-            idsToUpdate.addAll(linkFindAllByToResource(resource).stream().map(it -> it.getA().getInternalId()).collect(Collectors.toList()));
-            markAllTransientLinkedResourcesToUpdate(toRefreshIds, idsToUpdate);
-
-        }
-        for (Tuple3<IPResource, String, IPResource> link : changes.getLinksToAdd()) {
-            logger.debug("[APPLY] Add link {}", link);
-            Optional<IPResource> fromResource = resourceFindByPk(link.getA());
-            if (!fromResource.isPresent()) {
-                throw new ResourceNotFoundException(link.getA());
-            }
-            Optional<IPResource> toResource = resourceFindByPk(link.getC());
-            if (!toResource.isPresent()) {
-                throw new ResourceNotFoundException(link.getC());
-            }
-
-            Long fromId = fromResource.get().getInternalId();
-            Long toId = toResource.get().getInternalId();
-            // Add if not present
-            String linkType = link.getB();
-            if (pluginResourceLinkDao.findByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromId, linkType, toId) == null) {
-                // Add
-                PluginResource fromPluginResource = pluginResourceDao.findOne(fromId);
-                PluginResource toPluginResource = pluginResourceDao.findOne(toId);
-                pluginResourceLinkDao.save(new PluginResourceLink(fromPluginResource, linkType, toPluginResource));
-                auditingService.linkAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), fromResource.get(),
-                        linkType, toResource.get());
-                markAllTransientLinkedResourcesToUpdate(toRefreshIds, Arrays.asList(fromId, toId));
-            } else {
-                logger.debug("[APPLY-SKIP] Add link {}. Skipped since does not exists", link);
-            }
-
-        }
-        for (Tuple2<IPResource, String> tag : changes.getTagsToAdd()) {
-            logger.debug("[APPLY] Add tag {}", tag);
-            Optional<IPResource> resource = resourceFindByPk(tag.getA());
-            if (!resource.isPresent()) {
-                throw new ResourceNotFoundException(tag.getA());
-            }
-
-            Long pluginResourceId = resource.get().getInternalId();
-            // Add if not present
-            String tagName = tag.getB();
-            PluginResourceTag pluginResourceTag = pluginResourceTagDao.findByPluginResourceIdAndTagName(pluginResourceId, tagName);
-            if (pluginResourceTag == null) {
-                // Add
-                PluginResource pluginResource = pluginResourceDao.findOne(pluginResourceId);
-                pluginResourceTagDao.save(new PluginResourceTag(tagName, pluginResource));
-                auditingService.tagAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(),
-                        loadResource(pluginResource), tagName);
-                toRefreshIds.add(pluginResourceId);
-            } else {
-                logger.debug("[APPLY-SKIP] Add tag {}. Skipped since does not exists", tag);
-            }
-        }
-        toRefreshIds.removeAll(applyChangesContext.getRemovedResourcesInThisTransaction());
-        toRefreshIds.forEach(toRefreshId -> {
-            if (idNotInAnyQueues(toRefreshId, applyChangesContext.getAddedResources(), applyChangesContext.getUpdatedResourcesPrevious(), applyChangesContext.getDeletedResources(),
-                    applyChangesContext.getResourcesNeedRefresh())) {
-                applyChangesContext.getResourcesNeedRefresh().add(toRefreshId);
-            }
-        });
-
-        Set<Long> toRefreshIdsSeconds = new HashSet<>();
-        // Update
-        for (Tuple2<Long, IPResource> update : changes.getResourcesToUpdate()) {
-
-            logger.debug("[APPLY] Update resource {}", update);
-
-            // Get the previous resource
-            Optional<IPResource> previousResourceOptional = resourceFind(update.getA());
-            if (!previousResourceOptional.isPresent()) {
-                throw new ResourceNotFoundException(update.getA());
-            }
-            IPResource previousResource = previousResourceOptional.get();
-            // Add if not already in the list
-            if (!applyChangesContext.getUpdatedResourcesPrevious().stream().filter(it -> previousResource.getInternalId().equals(it.getInternalId())).findAny().isPresent()) {
-                applyChangesContext.getUpdatedResourcesPrevious().add(previousResource);
-                applyChangesContext.getResourcesNeedRefresh().remove(previousResource.getInternalId());
-            }
-
-            // Get the next resource (might not exists)
-            IPResource updatedResource = update.getB();
-            Optional<IPResource> nextResourceOptional = resourceFindByPk(updatedResource);
-            if (nextResourceOptional.isPresent()) {
-                // Check if not the same resource
-                IPResource nextResource = nextResourceOptional.get();
-                if (!previousResource.getInternalId().equals(nextResource.getInternalId())) {
-                    throw new ResourcePrimaryKeyCollisionException();
-                }
-            }
-
-            // Update the resource
-            CollectionsTools
-                    .getOrCreateEmpty(applyChangesContext.getUpdateCoundByResourceId(), previousResource.getClass().getSimpleName() + " / " + previousResource.getResourceName(), AtomicInteger.class)
-                    .incrementAndGet();
-            updatedResource.setInternalId(update.getA());
-            PluginResource pluginResource = pluginResourceDao.findOne(previousResource.getInternalId());
-            String resourceType = getResourceDefinition(updatedResource).getResourceType();
-            pluginResource.store(resourceType, updatedResource);
-            auditingService.resourceUpdate(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(),
-                    previousResource, updatedResource);
-            updateColumnSearches(updatedResource);
-
-            // Add the direct links for update notification
-            applyChangesContext.getUpdatedResourcesPrevious().addAll(linkFindAllByFromResource(updatedResource).stream().map(it -> it.getB()).collect(Collectors.toList()));
-            applyChangesContext.getUpdatedResourcesPrevious().addAll(linkFindAllByToResource(updatedResource).stream().map(it -> it.getA()).collect(Collectors.toList()));
-            // Add all the transient managed resources links for update notification
-            markAllTransientLinkedResourcesToUpdate(toRefreshIdsSeconds, Arrays.asList(updatedResource.getInternalId()));
-        }
-
-        // Refreshes
-        for (Long id : changes.getResourcesToRefresh()) {
-            logger.debug("[APPLY] Refresh resource {}", id);
-            if (idNotInAnyQueues(id, applyChangesContext.getAddedResources(), applyChangesContext.getUpdatedResourcesPrevious(), applyChangesContext.getDeletedResources(),
-                    applyChangesContext.getResourcesNeedRefresh())) {
-                applyChangesContext.getResourcesNeedRefresh().add(id);
-            } else {
-                logger.debug("[APPLY-SKIP] Refresh resource {}. Already waiting for a refresh in any category", id);
-            }
-        }
-
-        toRefreshIdsSeconds.removeAll(toRefreshIds);
-        toRefreshIdsSeconds.forEach(toRefreshId -> {
-            if (idNotInAnyQueues(toRefreshId, applyChangesContext.getAddedResources(), applyChangesContext.getUpdatedResourcesPrevious(), applyChangesContext.getDeletedResources(),
-                    applyChangesContext.getResourcesNeedRefresh())) {
-                applyChangesContext.getResourcesNeedRefresh().add(toRefreshId);
-            }
-        });
-
-        // Cleanup lists
-        applyChangesContext.getRemovedResourcesInThisTransaction().addAll(applyChangesContext.getDeletedResources().stream().map(IPResource::getInternalId).collect(Collectors.toSet()));
-        applyChangesContext.getUpdatedResourcesPrevious().removeIf(it -> applyChangesContext.getRemovedResourcesInThisTransaction().contains(it.getInternalId()));
-
-        changes.clear();
-        logger.debug("State after applying changes. Has {} updates, {} deletions, {} addition, {} refreshes", applyChangesContext.getUpdatedResourcesPrevious().size(),
-                applyChangesContext.getDeletedResources().size(), applyChangesContext.getAddedResources().size(), applyChangesContext.getResourcesNeedRefresh().size());
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void changesExecute(ChangesContext changes) {
 
-        AuditUserType userType;
-        String userName;
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            userType = AuditUserType.SYSTEM;
-            userName = null;
-        } else if (auth instanceof FoilenAuthentication) {
-            userType = AuditUserType.USER;
-            userName = auth.getName();
-        } else {
-            userType = AuditUserType.API;
-            userName = auth.getName();
-        }
-
-        ApplyChangesContext applyChangesContext = new ApplyChangesContext();
-        applyChangesContext.setTxId(genTxId());
-        applyChangesContext.setUserType(userType);
-        applyChangesContext.setUserName(userName);
-        applyChangesContext.setExplicitChange(true);
-
-        ThreadNameStateTool threadNameStateTool = ThreadTools.nameThread() //
-                .appendText(" - txId:") //
-                .appendText(applyChangesContext.getTxId()) //
-                .appendText(" - user:") //
-                .appendText(userType.name());
-
-        if (userName != null) {
-            threadNameStateTool.appendText("/") //
-                    .appendText(userName);
-        }
-
-        threadNameStateTool.change();
-
-        logger.info("----- [changesExecute] Begin -----");
-
-        long maxTime = System.currentTimeMillis() + infiniteLoopTimeoutInMs;
-
-        try {
-
-            Map<Class<?>, List<UpdateEventContext>> updateEventContextsByResourceType = ipPluginService.getUpdateEvents().stream() //
-                    .collect(Collectors.groupingBy(it -> it.getUpdateEventHandler().supportedClass()));
-
-            // Apply the changes
-            applyChanges(applyChangesContext, changes);
-            applyChangesContext.setExplicitChange(false);
-
-            while (System.currentTimeMillis() < maxTime && (applyChangesContext.hasChangesInQueues())) {
-
-                logger.debug("Update events loop. Has {} updates, {} deletions, {} addition, {} refreshes", applyChangesContext.getUpdatedResourcesPrevious().size(),
-                        applyChangesContext.getUpdatedResourcesPrevious().size(), applyChangesContext.getAddedResources().size(), applyChangesContext.getResourcesNeedRefresh().size());
-
-                // Process all updates
-                IPResource itemPrevious;
-                while (System.currentTimeMillis() < maxTime && (itemPrevious = applyChangesContext.getUpdatedResourcesPrevious().poll()) != null) {
-                    Optional<IPResource> currentResourceOptional = resourceFind(itemPrevious.getInternalId());
-                    if (!currentResourceOptional.isPresent()) {
-                        throw new ResourceNotFoundException(itemPrevious);
-                    }
-                    IPResource currentResource = currentResourceOptional.get();
-                    List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(itemPrevious.getClass());
-                    if (eventContexts != null) {
-                        logger.debug("[UPDATE EVENT] Processing {} updated handlers", eventContexts.size());
-                        for (UpdateEventContext eventContext : eventContexts) {
-                            logger.debug("[UPDATE EVENT] Processing {} updated handler", eventContext.getUpdateHandlerName());
-                            UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
-                            IPResource finalItemPrevious = itemPrevious;
-                            long time = TimeExecutionTools.measureInMs(() -> {
-                                updateEventHandler.updateHandler(commonServicesContext, changes, finalItemPrevious, currentResource);
-                                applyChanges(applyChangesContext, changes);
-                            });
-                            applyChangesContext.addExecutionTime(updateEventHandler, time);
-
-                        }
-                    }
-                }
-
-                // Process all deletes
-                IPResource item;
-                while (System.currentTimeMillis() < maxTime && (item = applyChangesContext.getDeletedResources().poll()) != null) {
-                    List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
-                    if (eventContexts != null) {
-                        logger.debug("[UPDATE EVENT] Processing {} deleted handlers", eventContexts.size());
-                        for (UpdateEventContext eventContext : eventContexts) {
-                            logger.debug("[UPDATE EVENT] Processing {} deleted handler", eventContext.getUpdateHandlerName());
-                            UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
-                            IPResource finalItem = item;
-                            long time = TimeExecutionTools.measureInMs(() -> {
-                                updateEventHandler.deleteHandler(commonServicesContext, changes, finalItem,
-                                        applyChangesContext.getDeletedResourcePreviousLinksByResourceId().get(finalItem.getInternalId()));
-                                applyChanges(applyChangesContext, changes);
-                            });
-                            applyChangesContext.addExecutionTime(updateEventHandler, time);
-                        }
-                    }
-                }
-
-                // Process all adds
-                while (System.currentTimeMillis() < maxTime && (item = applyChangesContext.getAddedResources().poll()) != null) {
-                    List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
-                    if (eventContexts != null) {
-                        logger.debug("[UPDATE EVENT] Processing {} added handlers", eventContexts.size());
-                        for (UpdateEventContext eventContext : eventContexts) {
-                            logger.debug("[UPDATE EVENT] Processing {} added handler", eventContext.getUpdateHandlerName());
-                            UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
-                            IPResource finalItem = item;
-                            long time = TimeExecutionTools.measureInMs(() -> {
-                                updateEventHandler.addHandler(commonServicesContext, changes, finalItem);
-                                applyChanges(applyChangesContext, changes);
-                            });
-                            applyChangesContext.addExecutionTime(updateEventHandler, time);
-                        }
-                    }
-                }
-
-                // Process all refreshes
-                Long id;
-                while (System.currentTimeMillis() < maxTime && (id = applyChangesContext.getResourcesNeedRefresh().poll()) != null) {
-                    Optional<IPResource> optionalResource = resourceFind(id);
-                    if (optionalResource.isPresent()) {
-                        item = optionalResource.get();
-                        List<UpdateEventContext> eventContexts = updateEventContextsByResourceType.get(item.getClass());
-                        if (eventContexts != null) {
-                            logger.debug("[UPDATE EVENT] Processing {} refresh handlers", eventContexts.size());
-                            for (UpdateEventContext eventContext : eventContexts) {
-                                logger.debug("[UPDATE EVENT] Processing {} refresh handler", eventContext.getUpdateHandlerName());
-                                UpdateEventHandler updateEventHandler = eventContext.getUpdateEventHandler();
-                                IPResource finalItem = item;
-                                long time = TimeExecutionTools.measureInMs(() -> {
-                                    updateEventHandler.checkAndFix(commonServicesContext, changes, finalItem);
-                                    applyChanges(applyChangesContext, changes);
-                                });
-                                applyChangesContext.addExecutionTime(updateEventHandler, time);
-                            }
-                        }
-                    }
-                }
-
-                // Apply any pending changes
-                if (System.currentTimeMillis() < maxTime) {
-                    applyChanges(applyChangesContext, changes);
-                }
-
-            }
-
-            if (applyChangesContext.hasChangesInQueues()) {
-                // InfiniteUpdateLoop Display report
-                logger.error("Iterated for too long and there are always changes");
-                reportService.addReport(applyChangesContext.getTxId(), false, //
-                        applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
-                        applyChangesContext.getUpdateCoundByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
-                logger.info("Report Update count: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateCountReport()));
-                logger.info("Report Event Handler execution time: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateEventHandlerExecutionTimeReport()));
-                throw new InfiniteUpdateLoop("Iterated for too long and there are always changes");
-            }
-
-            // Show reports
-            reportService.addReport(applyChangesContext.getTxId(), true, //
-                    applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
-                    applyChangesContext.getUpdateCoundByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
-            logger.info("Report Update count: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateCountReport()));
-            logger.info("Report Event Handler execution time: {}", Joiner.on(", ").join(applyChangesContext.generateUpdateEventHandlerExecutionTimeReport()));
-
-            // Complete the transaction
-            logger.info("===== [changesExecute] Completed =====");
-
-        } catch (RuntimeException e) {
-            // Rollback the transaction
-            logger.error("===== [changesExecute] Problem while executing the changes. Rolling back transaction =====", e);
-            throw e;
-        } finally {
-            threadNameStateTool.revert();
-        }
+        ChangeExecutionLogic changeExecutionLogic = new ChangeExecutionLogic(commonServicesContext, internalServicesContext);
+        changeExecutionLogic.setInfiniteLoopTimeoutInMs(infiniteLoopTimeoutInMs);
+        changeExecutionLogic.addHook(new UserDetailsChangeExecutionHook());
+        changeExecutionLogic.addHook(new ReportingChangeExecutionHook(reportService));
+        changeExecutionLogic.addHook(new AuditingChangeExecutionHook(auditingService));
+        changeExecutionLogic.execute(changes);
 
     }
 
@@ -589,10 +170,6 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         return sql;
     }
 
-    private String genTxId() {
-        return baseTxId + txCounter.getAndIncrement();
-    }
-
     public long getInfiniteLoopTimeoutInMs() {
         return infiniteLoopTimeoutInMs;
     }
@@ -626,11 +203,21 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     }
 
-    private boolean idNotInAnyQueues(Long id, Queue<IPResource> addedResources, Queue<IPResource> updatedResourcesPrevious, Queue<IPResource> deletedResources, Queue<Long> resourcesNeedRefresh) {
-        return !resourcesNeedRefresh.contains(id) //
-                && !addedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
-                && !updatedResourcesPrevious.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent() //
-                && !deletedResources.stream().filter(it -> id.equals(it.getInternalId())).findAny().isPresent();
+    @Override
+    public void linkAdd(long fromResourceId, String linkType, long toResourceId) {
+        PluginResource fromPluginResource = pluginResourceDao.findOne(fromResourceId);
+        PluginResource toPluginResource = pluginResourceDao.findOne(toResourceId);
+        pluginResourceLinkDao.save(new PluginResourceLink(fromPluginResource, linkType, toPluginResource));
+    }
+
+    @Override
+    public boolean linkDelete(long fromResourceId, String linkType, long toResourceId) {
+        return pluginResourceLinkDao.deleteByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromResourceId, linkType, toResourceId) > 0;
+    }
+
+    @Override
+    public boolean linkExists(long fromResourceId, String linkType, long toResourceId) {
+        return pluginResourceLinkDao.findByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromResourceId, linkType, toResourceId) != null;
     }
 
     @Override
@@ -648,7 +235,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 .collect(Collectors.toList());
     }
 
-    protected List<Tuple2<String, ? extends IPResource>> linkFindAllByFromResource(long fromResourceId) {
+    @Override
+    public List<Tuple2<String, ? extends IPResource>> linkFindAllByFromResource(long fromResourceId) {
         return pluginResourceLinkDao.findAllByFromPluginResourceId(fromResourceId).stream() //
                 .map(it -> new Tuple2<>(it.getLinkType(), loadResource(it.getToPluginResource()))) //
                 .collect(Collectors.toList());
@@ -710,7 +298,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 .collect(Collectors.toList());
     }
 
-    protected List<Tuple2<? extends IPResource, String>> linkFindAllByToResource(long toResourceId) {
+    @Override
+    public List<Tuple2<? extends IPResource, String>> linkFindAllByToResource(long toResourceId) {
         return pluginResourceLinkDao.findAllByToPluginResourceId(toResourceId).stream() //
                 .map(it -> new Tuple2<>(loadResource(it.getFromPluginResource()), it.getLinkType())) //
                 .collect(Collectors.toList());
@@ -742,26 +331,13 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 .getResourceClass());
     }
 
-    private void markAllTransientLinkedResourcesToUpdate(Set<Long> updatedIds, Collection<Long> ids) {
-        Set<Long> transientProcessedIds = new HashSet<>();
-        markAllTransientLinkedResourcesToUpdate(updatedIds, transientProcessedIds, ids);
-    }
-
-    private void markAllTransientLinkedResourcesToUpdate(Set<Long> updatedIds, Set<Long> transientProcessedIds, Collection<Long> ids) {
-
-        updatedIds.addAll(ids);
-
-        for (Long id : ids) {
-            if (!transientProcessedIds.add(id)) {
-                continue;
-            }
-
-            List<Tuple2<String, ? extends IPResource>> resourcesTo = linkFindAllByFromResource(id);
-            markAllTransientLinkedResourcesToUpdate(updatedIds, transientProcessedIds, resourcesTo.stream().map(it -> it.getB().getInternalId()).collect(Collectors.toSet()));
-            List<Tuple2<? extends IPResource, String>> resourcesFrom = linkFindAllByToResource(id);
-            markAllTransientLinkedResourcesToUpdate(updatedIds, transientProcessedIds, resourcesFrom.stream().map(it -> it.getA().getInternalId()).collect(Collectors.toSet()));
-        }
-
+    @Override
+    public IPResource resourceAdd(IPResource resource) {
+        String resourceType = ipResourceService.getResourceDefinition(resource).getResourceType();
+        PluginResource pluginResource = pluginResourceDao.save(new PluginResource(resourceType, resource));
+        IPResource finalResource = pluginResource.loadResource(resource.getClass());
+        updateColumnSearches(finalResource);
+        return finalResource;
     }
 
     @Override
@@ -770,6 +346,14 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         resourceDefinitionByResourceType.put(resourceDefinition.getResourceType(), resourceDefinition);
 
         allClassesByResourceClass.put(resourceDefinition.getResourceClass(), ReflectionTools.allTypes(resourceDefinition.getResourceClass()));
+    }
+
+    @Override
+    public boolean resourceDelete(long resourceId) {
+        pluginResourceColumnSearchDao.deleteByPluginResourceId(resourceId);
+        pluginResourceTagDao.deleteByPluginResourceId(resourceId);
+        pluginResourceLinkDao.deleteByPluginResourceId(resourceId);
+        return pluginResourceDao.deleteById(resourceId) > 0;
     }
 
     @Override
@@ -1264,8 +848,32 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 .primaryKeyEquals(resource));
     }
 
+    @Override
+    public void resourceUpdate(IPResource previousResource, IPResource updatedResource) {
+        PluginResource pluginResource = pluginResourceDao.findOne(previousResource.getInternalId());
+        String resourceType = getResourceDefinition(updatedResource).getResourceType();
+        pluginResource.store(resourceType, updatedResource);
+        updateColumnSearches(updatedResource);
+    }
+
     public void setInfiniteLoopTimeoutInMs(long infiniteLoopTimeoutInMs) {
         this.infiniteLoopTimeoutInMs = infiniteLoopTimeoutInMs;
+    }
+
+    @Override
+    public void tagAdd(long resourceId, String tagName) {
+        PluginResource pluginResource = pluginResourceDao.findOne(resourceId);
+        pluginResourceTagDao.save(new PluginResourceTag(tagName, pluginResource));
+    }
+
+    @Override
+    public boolean tagDelete(long resourceId, String tagName) {
+        return pluginResourceTagDao.deleteByPluginResourceIdAndTagName(resourceId, tagName) > 0;
+    }
+
+    @Override
+    public boolean tagExists(long resourceId, String tagName) {
+        return pluginResourceTagDao.findByPluginResourceIdAndTagName(resourceId, tagName) != null;
     }
 
     @Override

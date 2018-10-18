@@ -9,8 +9,8 @@
  */
 package com.foilen.infra.ui.services;
 
+import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
-import com.foilen.infra.ui.db.domain.audit.AuditUserType;
 
 public interface AuditingService {
 
