@@ -114,6 +114,12 @@ public class InfraUiApp {
                 infraUiConfig.setMysqlPort(Integer.valueOf(overrideMysqlPort));
             }
 
+            // Override misc configuration if provided via environment
+            String overrideInfiniteLoopTimeoutInMs = System.getenv("INFINITE_LOOP_TIMEOUT_IN_MS");
+            if (!Strings.isNullOrEmpty(overrideInfiniteLoopTimeoutInMs)) {
+                infraUiConfig.setInfiniteLoopTimeoutInMs(Long.valueOf(overrideInfiniteLoopTimeoutInMs));
+            }
+
             // Check needed config and add it to the known properties
             uiConfigToSystemProperties(infraUiConfig);
 

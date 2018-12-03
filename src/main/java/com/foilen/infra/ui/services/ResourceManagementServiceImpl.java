@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     private Map<Class<? extends IPResource>, IPResourceDefinition> resourceDefinitionByResourceClass = new HashMap<>();
     private Map<String, IPResourceDefinition> resourceDefinitionByResourceType = new HashMap<>();
 
+    @Value("${infraUi.infiniteLoopTimeoutInMs}")
     private long infiniteLoopTimeoutInMs = 120000;
 
     @SuppressWarnings("rawtypes")

@@ -12,6 +12,7 @@ Some configuration options can be overridden with the environment variables:
 * `PLUGINS_JARS` : The path to the jars containing the plugings
 * `MYSQL_PORT_3306_TCP_ADDR` : To change `mysqlHostName` (used by Docker Links)
 * `MYSQL_PORT_3306_TCP_PORT` : To change `mysqlPort` (used by Docker Links)
+* `INFINITE_LOOP_TIMEOUT_IN_MS` : To change `infiniteLoopTimeoutInMs`
 
 ## Configuration file
 
@@ -22,6 +23,7 @@ Here is an example of the content:
 ```json
 {
 	"baseUrl" : "http://infra.localhost",
+	"infiniteLoopTimeoutInMs" : 120000,
 	"csrfSalt" : "404117EAC615CC20867B2150B",
 	
 	"mailHost" : "127.0.0.1",
