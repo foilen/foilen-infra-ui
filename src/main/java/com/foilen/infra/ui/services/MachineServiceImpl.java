@@ -33,6 +33,7 @@ import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
 import com.foilen.smalltools.tools.AbstractBasics;
+import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.StringTools;
 
 @Service
@@ -76,9 +77,9 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
 
         // Retrieve what is installed on this machine
         List<Application> applications = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(Application.class, LinkTypeConstants.INSTALLED_ON, machine);
-        machineSetup.setApplications(applications);
+        machineSetup.setApplications(applications.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.Application.class)).collect(Collectors.toList()));
         List<UnixUser> unixUsers = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(UnixUser.class, LinkTypeConstants.INSTALLED_ON, machine);
-        machineSetup.setUnixUsers(unixUsers);
+        machineSetup.setUnixUsers(unixUsers.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.UnixUser.class)).collect(Collectors.toList()));
 
         // Add any missing users that are used by the applications
         Set<UnixUser> additionnalUnixUsers = new HashSet<>();

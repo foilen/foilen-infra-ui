@@ -23,6 +23,9 @@ repositories {
   mavenLocal()
   jcenter()
   mavenCentral()
+  maven {
+    url 'https://dl.bintray.com/foilen/maven'
+  }
 }
 
 sourceCompatibility = 1.8
@@ -48,26 +51,9 @@ configurations {
 dependencies {
 
   // Internal API
-  compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion") {
-    exclude group: 'com.foilen', module: 'foilen-infra-resource-application'
-    exclude group: 'com.foilen', module: 'foilen-infra-resource-unixuser'
-  }
+  compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion")
   compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraSystemVersion"
-
-  // Resources
-  compileOnly "com.foilen:foilen-infra-resource-application:0.1.2"
-  compileOnly "com.foilen:foilen-infra-resource-dns:0.1.7"
-  compileOnly "com.foilen:foilen-infra-resource-example:0.1.0"
-  compileOnly "com.foilen:foilen-infra-resource-example-failing:0.1.0"
-  compileOnly "com.foilen:foilen-infra-resource-infraconfig:0.3.10"
-  compileOnly "com.foilen:foilen-infra-resource-letsencrypt:0.1.7"
-  compileOnly "com.foilen:foilen-infra-resource-machine:0.1.1"
-  compileOnly "com.foilen:foilen-infra-resource-mariadb:0.1.4"
-  compileOnly "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
-  compileOnly "com.foilen:foilen-infra-resource-unixuser:0.1.6"
-  compileOnly "com.foilen:foilen-infra-resource-urlredirection:0.1.8"
-  compileOnly "com.foilen:foilen-infra-resource-webcertificate:0.1.2"
-  compileOnly "com.foilen:foilen-infra-resource-website:0.1.9"
+  compileOnly 'com.foilen:foilen-infra-plugins-core:0.1.0'
 
   // Databases
   compile "mysql:mysql-connector-java"
@@ -100,6 +86,10 @@ dependencies {
   testCompile 'junit:junit'
   testCompile "org.springframework:spring-test"
   testCompile "org.springframework.boot:spring-boot-starter-test"
+  testCompile "com.foilen:foilen-infra-resource-example:0.1.0"
+  testCompile "com.foilen:foilen-infra-resource-example-failing:0.1.0"
+  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
+  
 }
 
 apply plugin: 'application'
