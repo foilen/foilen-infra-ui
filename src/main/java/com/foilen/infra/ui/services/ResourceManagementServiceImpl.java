@@ -32,6 +32,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.core.system.common.changeexecution.ChangeExecutionLogic;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
@@ -53,6 +54,7 @@ import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceLink;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceTag;
 import com.foilen.infra.ui.services.hook.AuditingChangeExecutionHook;
+import com.foilen.infra.ui.services.hook.FillResponseChangeExecutionHook;
 import com.foilen.infra.ui.services.hook.ReportingChangeExecutionHook;
 import com.foilen.infra.ui.services.hook.UserDetailsChangeExecutionHook;
 import com.foilen.mvc.ui.UiException;
@@ -133,6 +135,19 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         changeExecutionLogic.addHook(new UserDetailsChangeExecutionHook());
         changeExecutionLogic.addHook(new ReportingChangeExecutionHook(reportService));
         changeExecutionLogic.addHook(new AuditingChangeExecutionHook(auditingService));
+        changeExecutionLogic.execute(changes);
+
+    }
+
+    @Override
+    public void changesExecute(ChangesContext changes, ResponseResourceAppliedChanges responseResourceAppliedChanges) {
+
+        ChangeExecutionLogic changeExecutionLogic = new ChangeExecutionLogic(commonServicesContext, internalServicesContext);
+        changeExecutionLogic.setInfiniteLoopTimeoutInMs(infiniteLoopTimeoutInMs);
+        changeExecutionLogic.addHook(new UserDetailsChangeExecutionHook());
+        changeExecutionLogic.addHook(new ReportingChangeExecutionHook(reportService));
+        changeExecutionLogic.addHook(new AuditingChangeExecutionHook(auditingService));
+        changeExecutionLogic.addHook(new FillResponseChangeExecutionHook(auditingService, responseResourceAppliedChanges));
         changeExecutionLogic.execute(changes);
 
     }

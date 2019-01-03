@@ -11,10 +11,10 @@ package com.foilen.infra.ui.services;
 
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.api.response.ResponseResourceBucket;
 import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.api.response.ResponseResourceTypesDetails;
-import com.foilen.smalltools.restapi.model.FormResult;
 
 public interface ApiResourceManagementService {
 
@@ -27,7 +27,7 @@ public interface ApiResourceManagementService {
      *            the changes to make
      * @return the result
      */
-    FormResult applyChanges(String userId, RequestChanges changes);
+    ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes);
 
     ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch);
 

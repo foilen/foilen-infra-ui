@@ -1,0 +1,82 @@
+{
+  "auditItems" : {
+    "items" : [ {
+      "action" : "ADD",
+      "resourceFirst" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Machine"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "ADD",
+      "resourceFirst" : {
+        "resourceName" : "localhost.example.com / A",
+        "resourceType" : "Dns Entry"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "ADD",
+      "linkType" : "MANAGES",
+      "resourceFirst" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Machine"
+      },
+      "resourceSecond" : {
+        "resourceName" : "localhost.example.com / A",
+        "resourceType" : "Dns Entry"
+      },
+      "type" : "LINK"
+    }, {
+      "action" : "ADD",
+      "resourceFirst" : {
+        "resourceName" : "infra_url_redirection",
+        "resourceType" : "Unix User"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "UPDATE",
+      "resourceFirst" : {
+        "resourceName" : "infra_url_redirection",
+        "resourceType" : "Unix User"
+      },
+      "resourceSecond" : {
+        "resourceName" : "infra_url_redirection",
+        "resourceType" : "Unix User"
+      },
+      "type" : "RESOURCE"
+    } ],
+    "pagination" : {
+      "currentPage" : 0,
+      "currentPageUi" : 1,
+      "firstPage" : true,
+      "itemsPerPage" : 100,
+      "lastPage" : true,
+      "totalItems" : 5,
+      "totalPages" : 1
+    }
+  },
+  "executionTimeInMsByUpdateHandler" : {
+    "AddRedirectionUnixUserUpdateHandler" : 1,
+    "Bind9DnsEntryUpdateEventHandler" : 1,
+    "DnsEntryValidationUpdateHandler" : 1,
+    "MachineBackupToGoogleCloudEventHandler" : 1,
+    "MachineHaProxyUpdateHandler" : 1,
+    "MachineUpdateHandler" : 1,
+    "RedirectionWithApacheUpdateHandler" : 1,
+    "UnixUserUpdateHandler" : 1
+  },
+  "success" : true,
+  "txId" : "was set",
+  "updateCountByResourceId" : {
+    "DnsEntry / localhost.example.com / A" : 1,
+    "Machine / localhost.example.com" : 1,
+    "UnixUser / infra_url_redirection" : 2
+  },
+  "updateDirectCheckByUpdateHandler" : {
+    "RedirectionWithApacheUpdateHandler" : 1,
+    "MachineBackupToGoogleCloudEventHandler" : 1,
+    "AddRedirectionUnixUserUpdateHandler" : 1,
+    "MachineHaProxyUpdateHandler" : 1,
+    "MachineUpdateHandler" : 1
+  }
+}

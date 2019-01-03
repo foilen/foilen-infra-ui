@@ -9,9 +9,13 @@
  */
 package com.foilen.infra.ui.services;
 
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
+import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.ui.db.domain.plugin.PluginResource;
 
 public interface ResourceManagementService {
+
+    void changesExecute(ChangesContext changesContext, ResponseResourceAppliedChanges responseResourceAppliedChanges);
 
     void updateColumnSearches(PluginResource pluginResource);
 

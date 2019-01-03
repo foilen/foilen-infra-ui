@@ -25,6 +25,7 @@ import com.foilen.infra.api.model.ResourceDetails;
 import com.foilen.infra.api.model.ResourceTypeDetails;
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.api.response.ResponseResourceBucket;
 import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.api.response.ResponseResourceTypesDetails;
@@ -32,7 +33,6 @@ import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
-import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.restapi.model.FormResult;
@@ -46,15 +46,15 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     @Autowired
     private ConversionService conversionService;
     @Autowired
-    private InternalChangeService internalChangeService;
-    @Autowired
     private IPResourceService resourceService;
     @Autowired
     private EntitlementService entitlementService;
+    @Autowired
+    private ResourceManagementService resourceManagementService;
 
     @Override
-    public FormResult applyChanges(String userId, RequestChanges changes) {
-        FormResult formResult = new FormResult();
+    public ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes) {
+        ResponseResourceAppliedChanges formResult = new ResponseResourceAppliedChanges();
 
         if (!entitlementService.isAdmin(userId)) {
             formResult.getGlobalErrors().add("You are not an admin");
@@ -145,7 +145,7 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             // If no errors, execute
             if (formResult.isSuccess()) {
                 try {
-                    internalChangeService.changesExecute(changesContext);
+                    resourceManagementService.changesExecute(changesContext, formResult);
                 } catch (Exception e) {
                     formResult.getGlobalErrors().add("Problem executing the update: " + e.getMessage());
                 }

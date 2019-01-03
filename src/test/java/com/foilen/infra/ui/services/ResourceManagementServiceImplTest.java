@@ -11,6 +11,8 @@ package com.foilen.infra.ui.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.core.system.junits.JunitsHelper;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
@@ -29,6 +32,7 @@ import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.resource.example.JunitResource;
 import com.foilen.infra.resource.example.JunitResourceEnum;
+import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
 import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
@@ -48,6 +52,8 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
     @Autowired
     private PluginResourceColumnSearchDao pluginResourceColumnSearchDao;
     @Autowired
+    private ResourceManagementService resourceManagementService;
+    @Autowired
     private TransactionTemplate transactionTemplate;
 
     @Autowired
@@ -62,6 +68,49 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
     public void createFakeData() {
         super.createFakeData();
         JunitsHelper.createFakeData(commonServicesContext, internalServicesContext);
+    }
+
+    private Map<String, Long> sortAndSet1Long(Map<String, Long> map) {
+        Map<String, Long> newMap = new TreeMap<>(map);
+        newMap.keySet().stream().forEach(it -> newMap.put(it, 1L));
+        return newMap;
+    }
+
+    @Test
+    public void testApiChangesExecute() {
+
+        // Clear all data
+        fakeDataService.clearAll();
+
+        // Empty
+        ChangesContext changesContext = new ChangesContext(resourceService);
+        changesContext.resourceAdd(new Machine("localhost.example.com", "127.0.0.1"));
+        ResponseResourceAppliedChanges responseResourceAppliedChanges = new ResponseResourceAppliedChanges();
+        resourceManagementService.changesExecute(changesContext, responseResourceAppliedChanges);
+
+        responseResourceAppliedChanges.setExecutionTimeInMsByUpdateHandler(sortAndSet1Long(responseResourceAppliedChanges.getExecutionTimeInMsByUpdateHandler()));
+
+        Assert.assertNotNull(responseResourceAppliedChanges.getTxId());
+        responseResourceAppliedChanges.setTxId("was set");
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute-expected.json", getClass(), responseResourceAppliedChanges);
+
+    }
+
+    @Test
+    public void testApiChangesExecute_empty() {
+
+        // Clear all data
+        fakeDataService.clearAll();
+
+        // Empty
+        ChangesContext changesContext = new ChangesContext(resourceService);
+        ResponseResourceAppliedChanges responseResourceAppliedChanges = new ResponseResourceAppliedChanges();
+        resourceManagementService.changesExecute(changesContext, responseResourceAppliedChanges);
+
+        Assert.assertNotNull(responseResourceAppliedChanges.getTxId());
+        responseResourceAppliedChanges.setTxId("was set");
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute_empty-expected.json", getClass(), responseResourceAppliedChanges);
+
     }
 
     @Test

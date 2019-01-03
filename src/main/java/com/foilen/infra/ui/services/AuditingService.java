@@ -9,10 +9,15 @@
  */
 package com.foilen.infra.ui.services;
 
+import org.springframework.data.domain.Page;
+
 import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
+import com.foilen.infra.ui.db.domain.audit.AuditItem;
 
 public interface AuditingService {
+
+    Page<AuditItem> findAllByTxId(String txId, int pageId, int itemsPerPage);
 
     void linkAdd(String txId, boolean explicitChange, //
             AuditUserType userType, String userName, //

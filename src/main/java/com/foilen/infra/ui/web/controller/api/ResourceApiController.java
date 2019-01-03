@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
+import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.api.response.ResponseResourceBucket;
 import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.ui.services.ApiResourceManagementService;
-import com.foilen.smalltools.restapi.model.FormResult;
 
 @RequestMapping(value = "api/resource", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
@@ -32,7 +32,7 @@ public class ResourceApiController {
     private ApiResourceManagementService apiResourceManagementService;
 
     @PostMapping("applyChanges")
-    public FormResult applyChanges(Authentication authentication, @RequestBody RequestChanges changes) {
+    public ResponseResourceAppliedChanges applyChanges(Authentication authentication, @RequestBody RequestChanges changes) {
         return apiResourceManagementService.applyChanges(authentication.getName(), changes);
     }
 

@@ -10,6 +10,9 @@
 package com.foilen.infra.ui.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +49,11 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         auditItem.setUserType(userType.name());
         auditItem.setUserName(userName);
         return auditItem;
+    }
+
+    @Override
+    public Page<AuditItem> findAllByTxId(String txId, int pageId, int itemsPerPage) {
+        return auditItemDao.findAllByTxId(txId, new PageRequest(pageId, itemsPerPage, Direction.ASC, "id"));
     }
 
     @Override
