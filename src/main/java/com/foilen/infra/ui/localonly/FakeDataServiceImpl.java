@@ -16,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foilen.infra.api.model.DiskStat;
@@ -50,6 +51,7 @@ import com.foilen.infra.ui.services.MachineStatisticsService;
 import com.foilen.smalltools.systemusage.results.NetworkInfo;
 import com.foilen.smalltools.tools.DateTools;
 
+@Service
 @Transactional
 public class FakeDataServiceImpl implements FakeDataService {
 

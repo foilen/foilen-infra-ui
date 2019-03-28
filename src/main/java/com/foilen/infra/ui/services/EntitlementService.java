@@ -27,6 +27,8 @@ public interface EntitlementService {
 
     void canMonitorMachineOrFailUi(String userId, String machineName);
 
+    boolean canSendAlert(String userId);
+
     void canUpdateResourcesOrFailUi(String userId);
 
     boolean isAdmin(String userId);

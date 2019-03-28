@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -24,6 +25,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
+import com.foilen.infra.ui.localonly.EmailServiceMock;
 import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.localonly.LocalLaunchService;
@@ -47,6 +49,12 @@ public class InfraUiSpringConfig {
     @Configuration
     @Profile({ "JUNIT", "LOCAL" })
     public static class ConfigUiConfigLocal {
+        @Primary
+        @Bean
+        public EmailServiceMock emailServiceMock() {
+            return new EmailServiceMock();
+        }
+
         @Bean
         public FakeDataService fakeDataService() {
             return new FakeDataServiceImpl();

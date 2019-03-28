@@ -80,6 +80,11 @@ public class EntitlementServiceImpl implements EntitlementService {
     }
 
     @Override
+    public boolean canSendAlert(String userId) {
+        return isAMachine(userId);
+    }
+
+    @Override
     public void canUpdateResourcesOrFailUi(String userId) {
         if (!isAdmin(userId)) {
             throw new UiException("error.forbidden");
@@ -120,6 +125,10 @@ public class EntitlementServiceImpl implements EntitlementService {
 
         User user = userDao.findByUserId(userId);
         return user != null && user.isAdmin();
+    }
+
+    private boolean isAMachine(String userId) {
+        return apiMachineUserDao.findByUserId(userId) != null;
     }
 
     @Override

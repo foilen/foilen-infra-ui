@@ -36,7 +36,6 @@ import com.foilen.infra.ui.web.security.ApiSecurityConfig;
 import com.foilen.login.spring.client.security.FoilenLoginSecurityConfig;
 import com.foilen.login.stub.spring.client.security.FoilenLoginSecurityStubConfig;
 import com.foilen.mvc.MvcConfig;
-import com.foilen.services.AlertNotificationServiceImpl;
 import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.LogbackTools;
@@ -178,7 +177,6 @@ public class InfraUiApp {
             logger.info("Will start the main app");
             sources.clear();
 
-            sources.add(AlertNotificationServiceImpl.class);
             sources.add(MailConfig.class);
 
             sources.add(MvcConfig.class);

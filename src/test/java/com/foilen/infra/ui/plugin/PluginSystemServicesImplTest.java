@@ -25,11 +25,10 @@ import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
 import com.foilen.infra.ui.InfraUiSpringConfig;
 import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.services.ResourceManagementServiceImpl;
-import com.foilen.infra.ui.test.AlertNotificationServiceStub;
 import com.foilen.infra.ui.test.ConfigUiTestConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, AlertNotificationServiceStub.class })
+@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class })
 @ActiveProfiles("JUNIT")
 public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest {
 

@@ -13,28 +13,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.foilen.infra.plugin.v1.core.service.MessagingService;
-import com.foilen.services.AlertNotificationService;
+import com.foilen.infra.ui.services.AlertManagementService;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 @Component
 public class MessagingServiceImpl extends AbstractBasics implements MessagingService {
 
     @Autowired
-    private AlertNotificationService alertNotificationService;
+    private AlertManagementService alertManagementService;
 
     @Override
     public void alertingError(String shortDescription, String longDescription) {
-        alertNotificationService.sendAlert("[ERROR] " + shortDescription, longDescription);
+        alertManagementService.queueAlert("[ERROR] " + shortDescription, longDescription);
     }
 
     @Override
     public void alertingInfo(String shortDescription, String longDescription) {
-        alertNotificationService.sendAlert("[INFO] " + shortDescription, longDescription);
+        alertManagementService.queueAlert("[INFO] " + shortDescription, longDescription);
     }
 
     @Override
     public void alertingWarn(String shortDescription, String longDescription) {
-        alertNotificationService.sendAlert("[WARN] " + shortDescription, longDescription);
+        alertManagementService.queueAlert("[WARN] " + shortDescription, longDescription);
     }
 
 }

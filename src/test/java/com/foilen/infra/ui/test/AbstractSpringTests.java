@@ -30,7 +30,7 @@ import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
 import com.foilen.smalltools.tools.SecureRandomTools;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, AlertNotificationServiceStub.class })
+@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class })
 @ActiveProfiles("JUNIT")
 public abstract class AbstractSpringTests {
 

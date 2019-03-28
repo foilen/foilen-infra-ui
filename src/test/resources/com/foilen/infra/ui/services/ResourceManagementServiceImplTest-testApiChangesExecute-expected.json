@@ -10,6 +10,13 @@
     }, {
       "action" : "ADD",
       "resourceFirst" : {
+        "resourceName" : "infra_url_redirection",
+        "resourceType" : "Unix User"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "ADD",
+      "resourceFirst" : {
         "resourceName" : "localhost.example.com / A",
         "resourceType" : "Dns Entry"
       },
@@ -26,13 +33,6 @@
         "resourceType" : "Dns Entry"
       },
       "type" : "LINK"
-    }, {
-      "action" : "ADD",
-      "resourceFirst" : {
-        "resourceName" : "infra_url_redirection",
-        "resourceType" : "Unix User"
-      },
-      "type" : "RESOURCE"
     }, {
       "action" : "UPDATE",
       "resourceFirst" : {
