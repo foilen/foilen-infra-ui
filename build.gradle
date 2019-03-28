@@ -4,11 +4,11 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
+    classpath 'io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE'
   }
 }
 plugins {
-    id 'org.springframework.boot' version '1.5.7.RELEASE'
+    id 'org.springframework.boot' version '1.5.19.RELEASE'
 }
 
 apply plugin: 'eclipse'
@@ -33,7 +33,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
   imports {
-    mavenBom 'io.spring.platform:platform-bom:Brussels-SR5'
+    mavenBom 'io.spring.platform:platform-bom:Brussels-SR16'
   }
 }
 
@@ -99,5 +99,3 @@ mainClassName = 'com.foilen.infra.ui.InfraUiApp'
 startScripts {
   unixStartScriptGenerator.template = resources.text.fromFile('scripts/customUnixStartScript.txt')
 }
-
-task wrapper(type: Wrapper) { gradleVersion = '4.7' }
