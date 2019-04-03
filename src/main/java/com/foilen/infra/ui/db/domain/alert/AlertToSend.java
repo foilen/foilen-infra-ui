@@ -13,6 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,6 +31,7 @@ public class AlertToSend implements java.io.Serializable {
     private String sender;
 
     private String subject;
+    @Column(length = 10000)
     private String content;
 
     public AlertToSend() {
