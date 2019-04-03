@@ -29,8 +29,13 @@ public class AlertApiController extends AbstractBasics {
     @Autowired
     private AlertManagementService alertManagementService;
 
-    @PostMapping("/")
+    @PostMapping()
     public FormResult sendAlert(Authentication authentication, @RequestBody RequestAlert requestAlert) {
+        return alertManagementService.queueAlert(authentication.getName(), requestAlert.getSubject(), requestAlert.getContent());
+    }
+
+    @PostMapping("/")
+    public FormResult sendAlertSlash(Authentication authentication, @RequestBody RequestAlert requestAlert) {
         return alertManagementService.queueAlert(authentication.getName(), requestAlert.getSubject(), requestAlert.getContent());
     }
 
