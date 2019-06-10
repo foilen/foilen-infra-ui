@@ -2,11 +2,16 @@
   "auditItems" : {
     "items" : [ {
       "action" : "ADD",
+      "linkType" : "MANAGES",
       "resourceFirst" : {
         "resourceName" : "localhost.example.com",
         "resourceType" : "Machine"
       },
-      "type" : "RESOURCE"
+      "resourceSecond" : {
+        "resourceName" : "localhost.example.com / A",
+        "resourceType" : "Dns Entry"
+      },
+      "type" : "LINK"
     }, {
       "action" : "ADD",
       "resourceFirst" : {
@@ -23,16 +28,11 @@
       "type" : "RESOURCE"
     }, {
       "action" : "ADD",
-      "linkType" : "MANAGES",
       "resourceFirst" : {
         "resourceName" : "localhost.example.com",
         "resourceType" : "Machine"
       },
-      "resourceSecond" : {
-        "resourceName" : "localhost.example.com / A",
-        "resourceType" : "Dns Entry"
-      },
-      "type" : "LINK"
+      "type" : "RESOURCE"
     }, {
       "action" : "UPDATE",
       "resourceFirst" : {
@@ -60,6 +60,7 @@
     "Bind9DnsEntryUpdateEventHandler" : 1,
     "DnsEntryValidationUpdateHandler" : 1,
     "MachineBackupToGoogleCloudEventHandler" : 1,
+    "MachineBackupToSftpEventHandler" : 1,
     "MachineHaProxyUpdateHandler" : 1,
     "MachineUpdateHandler" : 1,
     "RedirectionWithApacheUpdateHandler" : 1,
@@ -73,10 +74,11 @@
     "UnixUser / infra_url_redirection" : 2
   },
   "updateDirectCheckByUpdateHandler" : {
-    "RedirectionWithApacheUpdateHandler" : 1,
-    "MachineBackupToGoogleCloudEventHandler" : 1,
     "AddRedirectionUnixUserUpdateHandler" : 1,
+    "MachineBackupToGoogleCloudEventHandler" : 1,
+    "MachineBackupToSftpEventHandler" : 1,
     "MachineHaProxyUpdateHandler" : 1,
-    "MachineUpdateHandler" : 1
+    "MachineUpdateHandler" : 1,
+    "RedirectionWithApacheUpdateHandler" : 1
   }
 }

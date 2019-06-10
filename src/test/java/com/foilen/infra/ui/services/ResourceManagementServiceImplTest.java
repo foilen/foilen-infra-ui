@@ -9,6 +9,7 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.foilen.infra.ui.db.dao.PluginResourceDao;
 import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
+import com.foilen.smalltools.tools.JsonTools;
 
 public class ResourceManagementServiceImplTest extends AbstractSpringTests {
 
@@ -92,6 +94,13 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
 
         Assert.assertNotNull(responseResourceAppliedChanges.getTxId());
         responseResourceAppliedChanges.setTxId("was set");
+
+        Collections.sort(responseResourceAppliedChanges.getAuditItems().getItems(), (a, b) -> JsonTools.compactPrintWithoutNulls(a).compareTo(JsonTools.compactPrintWithoutNulls(b)));
+
+        responseResourceAppliedChanges.setExecutionTimeInMsByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getExecutionTimeInMsByUpdateHandler()));
+        responseResourceAppliedChanges.setUpdateCountByResourceId(new TreeMap<>(responseResourceAppliedChanges.getUpdateCountByResourceId()));
+        responseResourceAppliedChanges.setUpdateDirectCheckByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getUpdateDirectCheckByUpdateHandler()));
+        responseResourceAppliedChanges.setUpdateFarCheckByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getUpdateFarCheckByUpdateHandler()));
         AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute-expected.json", getClass(), responseResourceAppliedChanges);
 
     }

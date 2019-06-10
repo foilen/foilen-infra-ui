@@ -28,8 +28,7 @@ repositories {
   }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
 
 dependencyManagement {
   imports {
@@ -53,7 +52,7 @@ dependencies {
   // Internal API
   compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion")
   compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraSystemVersion"
-  compileOnly 'com.foilen:foilen-infra-plugins-core:0.5.0'
+  compileOnly 'com.foilen:foilen-infra-plugins-core:0.6.0'
 
   // Databases
   compile "mysql:mysql-connector-java"
@@ -78,18 +77,27 @@ dependencies {
 
   // Misc
   compile "args4j:args4j:$argsVersion"
+  compile 'com.google.code.findbugs:jsr305:3.0.0'
+  compile "javax.xml.bind:jaxb-api:2.3.1"
+  
   compile 'org.quartz-scheduler:quartz'
 
   // Test
   testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
   testCompile "com.h2database:h2"
-  testCompile 'junit:junit'
+  testCompileOnly 'junit:junit:4.12'
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+  testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
   testCompile "org.springframework:spring-test"
   testCompile "org.springframework.boot:spring-boot-starter-test"
   testCompile "com.foilen:foilen-infra-resource-example:0.1.0"
   testCompile "com.foilen:foilen-infra-resource-example-failing:0.1.0"
   testCompile "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
   
+}
+
+test {
+  useJUnitPlatform()
 }
 
 apply plugin: 'application'

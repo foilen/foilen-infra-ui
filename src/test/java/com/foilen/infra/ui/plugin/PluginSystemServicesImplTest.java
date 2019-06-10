@@ -37,6 +37,9 @@ public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest 
         System.setProperty("MODE", "JUNIT");
         System.setProperty("infraUi.csrfSalt", "aaaaaa");
         System.setProperty("infraUi.baseUrl", "https://infra.example.com");
+        System.setProperty("infraUi.mailFrom", "nope_example.com");
+        System.setProperty("infraUi.mailAlertsTo", "nope_example.com");
+        System.setProperty("infraUi.infiniteLoopTimeoutInMs", "20000");
     }
 
     @Autowired
