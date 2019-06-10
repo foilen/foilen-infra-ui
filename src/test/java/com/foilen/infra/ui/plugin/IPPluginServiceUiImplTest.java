@@ -121,7 +121,7 @@ public class IPPluginServiceUiImplTest extends AbstractSpringTests {
                     return it.getColumnName().equals("setTexts") || it.getColumnName().equals("longNumber");
                 }) //
                 .collect(Collectors.toList());
-        pluginResourceColumnSearchDao.delete(toDelete);
+        pluginResourceColumnSearchDao.deleteAll(toDelete);
 
         // Process
         process();
@@ -138,7 +138,7 @@ public class IPPluginServiceUiImplTest extends AbstractSpringTests {
                     return resourceIdToDelete.equals(it.getPluginResource().getId());
                 }) //
                 .collect(Collectors.toList());
-        pluginResourceColumnSearchDao.delete(toDelete);
+        pluginResourceColumnSearchDao.deleteAll(toDelete);
         Assert.assertEquals(8, pluginResourceColumnSearchDao.count());
 
         // Process

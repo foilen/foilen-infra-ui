@@ -50,7 +50,7 @@ public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
     }
 
     private void assertDb(String jsonFile) {
-        List<MachineStatistics> machineStatisticsList = machineStatisticsDao.findAll(new Sort("timestamp", "machineInternalId"));
+        List<MachineStatistics> machineStatisticsList = machineStatisticsDao.findAll(Sort.by("timestamp", "machineInternalId"));
 
         List<MachineStatistics> actual = new ArrayList<>();
         for (MachineStatistics machineStatistics : machineStatisticsList) {

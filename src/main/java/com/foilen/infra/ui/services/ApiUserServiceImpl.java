@@ -66,7 +66,7 @@ public class ApiUserServiceImpl extends AbstractBasics implements ApiUserService
 
     @Override
     public List<ApiUser> findAll() {
-        return apiUserDao.findAll(new Sort("userId"));
+        return apiUserDao.findAll(Sort.by("userId"));
     }
 
     @Override

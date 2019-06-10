@@ -152,7 +152,7 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
         // Asserts
         Assert.assertEquals(1, pluginResourceDao.count());
 
-        List<PluginResourceColumnSearch> columnSearches = pluginResourceColumnSearchDao.findAll(new Sort("columnName"));
+        List<PluginResourceColumnSearch> columnSearches = pluginResourceColumnSearchDao.findAll(Sort.by("columnName"));
         columnSearches.forEach(it -> {
             it.setId(null);
             it.setPluginResource(null);

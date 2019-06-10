@@ -269,8 +269,8 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         }
 
         // Save aggregation and delete processed entries
-        machineStatisticsDao.save(mergedByMachineAndTime.values());
-        machineStatisticsDao.delete(allToProcess);
+        machineStatisticsDao.saveAll(mergedByMachineAndTime.values());
+        machineStatisticsDao.deleteAll(allToProcess);
     }
 
     @Override
@@ -311,8 +311,8 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         }
 
         // Save aggregation and delete processed entries
-        machineStatisticsDao.save(mergedByMachineAndTime.values());
-        machineStatisticsDao.delete(allToProcess);
+        machineStatisticsDao.saveAll(mergedByMachineAndTime.values());
+        machineStatisticsDao.deleteAll(allToProcess);
     }
 
     private int averageAndMerge(MachineStatistics merged, int currentCount, int toAdd, List<MachineStatistics> toProcess, boolean multWithAggregatedHours) {

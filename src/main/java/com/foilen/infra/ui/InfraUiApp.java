@@ -229,7 +229,8 @@ public class InfraUiApp {
         environment.addActiveProfile(mode);
         System.setProperty("MODE", mode);
 
-        SpringApplication springApplication = new SpringApplication(sources.toArray());
+        SpringApplication springApplication = new SpringApplication();
+        springApplication.addPrimarySources(sources);
         springApplication.setEnvironment(environment);
         ConfigurableApplicationContext appCtx = springApplication.run(springBootArgs.toArray(new String[springBootArgs.size()]));
         if (closeAtEnd) {

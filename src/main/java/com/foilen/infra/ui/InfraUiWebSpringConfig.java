@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceChainRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.CachingResourceResolver;
-import org.springframework.web.servlet.resource.GzipResourceResolver;
+import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 
 import com.foilen.infra.ui.web.interceptor.AddUserDetailsModelExtension;
@@ -28,7 +28,7 @@ import com.foilen.smalltools.spring.resourceresolver.BundleResourceResolver;
 
 @Configuration
 @ComponentScan({ "com.foilen.infra.ui.web" })
-public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
+public class InfraUiWebSpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -47,7 +47,7 @@ public class InfraUiWebSpringConfig extends WebMvcConfigurerAdapter {
         ResourceChainRegistration chain = registry.addResourceHandler("/bundles/**") //
                 .setCachePeriod(365 * 24 * 60 * 60) //
                 .resourceChain(isProd) //
-                .addResolver(new GzipResourceResolver()); //
+                .addResolver(new EncodedResourceResolver()); //
         if (isProd) {
             chain.addResolver(new CachingResourceResolver(new ConcurrentMapCache("bundles")));
         }

@@ -53,7 +53,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
 
     @Override
     public Page<AuditItem> findAllByTxId(String txId, int pageId, int itemsPerPage) {
-        return auditItemDao.findAllByTxId(txId, new PageRequest(pageId, itemsPerPage, Direction.ASC, "id"));
+        return auditItemDao.findAllByTxId(txId, PageRequest.of(pageId, itemsPerPage, Direction.ASC, "id"));
     }
 
     @Override

@@ -75,7 +75,7 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
             return;
         }
 
-        List<AlertToSend> alertsToSend = alertToSendDao.findAll(new Sort("sender", "subject", "sentOn"));
+        List<AlertToSend> alertsToSend = alertToSendDao.findAll(Sort.by("sender", "subject", "sentOn"));
 
         // Choose the subject
         String subject;
@@ -104,7 +104,7 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
         }
 
         // Delete
-        alertToSendDao.delete(alertsToSend);
+        alertToSendDao.deleteAll(alertsToSend);
 
     }
 

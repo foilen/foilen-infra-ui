@@ -222,8 +222,8 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public void linkAdd(long fromResourceId, String linkType, long toResourceId) {
-        PluginResource fromPluginResource = pluginResourceDao.findOne(fromResourceId);
-        PluginResource toPluginResource = pluginResourceDao.findOne(toResourceId);
+        PluginResource fromPluginResource = pluginResourceDao.findById(fromResourceId).get();
+        PluginResource toPluginResource = pluginResourceDao.findById(toResourceId).get();
         pluginResourceLinkDao.save(new PluginResourceLink(fromPluginResource, linkType, toPluginResource));
     }
 
@@ -434,11 +434,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public Optional<IPResource> resourceFind(long internalResourceId) {
-        PluginResource pluginResource = pluginResourceDao.findOne(internalResourceId);
-        if (pluginResource == null) {
+        Optional<PluginResource> pluginResource = pluginResourceDao.findById(internalResourceId);
+        if (pluginResource.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(loadResource(pluginResource));
+        return Optional.of(loadResource(pluginResource.get()));
     }
 
     @Override
@@ -867,7 +867,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public void resourceUpdate(IPResource previousResource, IPResource updatedResource) {
-        PluginResource pluginResource = pluginResourceDao.findOne(previousResource.getInternalId());
+        PluginResource pluginResource = pluginResourceDao.findById(previousResource.getInternalId()).get();
         String resourceType = getResourceDefinition(updatedResource).getResourceType();
         pluginResource.store(resourceType, updatedResource);
         updateColumnSearches(updatedResource);
@@ -879,7 +879,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public void tagAdd(long resourceId, String tagName) {
-        PluginResource pluginResource = pluginResourceDao.findOne(resourceId);
+        PluginResource pluginResource = pluginResourceDao.findById(resourceId).get();
         pluginResourceTagDao.save(new PluginResourceTag(tagName, pluginResource));
     }
 
@@ -934,7 +934,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 logger.error("Could not retrieve the property value of the resource", e);
             }
         }
-        pluginResourceColumnSearchDao.save(columnSearches);
+        pluginResourceColumnSearchDao.saveAll(columnSearches);
     }
 
     @Override

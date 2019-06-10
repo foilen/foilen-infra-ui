@@ -3,12 +3,9 @@ buildscript {
     mavenLocal()
     jcenter()
   }
-  dependencies {
-    classpath 'io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE'
-  }
 }
 plugins {
-    id 'org.springframework.boot' version '1.5.19.RELEASE'
+  id 'org.springframework.boot' version '2.1.5.RELEASE'
 }
 
 apply plugin: 'eclipse'
@@ -30,12 +27,6 @@ repositories {
 
 sourceCompatibility = 1.11
 
-dependencyManagement {
-  imports {
-    mavenBom 'io.spring.platform:platform-bom:Brussels-SR16'
-  }
-}
-
 eclipse {
   classpath {
     downloadSources = true
@@ -52,12 +43,12 @@ dependencies {
   // Internal API
   compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion")
   compile "com.foilen:foilen-infra-system-core-system-common:$foilenInfraSystemVersion"
-  compileOnly 'com.foilen:foilen-infra-plugins-core:0.6.0'
+  compileOnly "com.foilen:foilen-infra-plugins-core:$foilenInfraPluginsCoreVersion"
 
   // Databases
   compile "mysql:mysql-connector-java"
-  compile "org.springframework.boot:spring-boot-starter-data-jpa"
-  compile "org.springframework.boot:spring-boot-starter-jdbc"
+  implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+  implementation "org.springframework.boot:spring-boot-starter-jdbc"
   
   // Emails
   compile 'com.sun.mail:javax.mail'
@@ -65,8 +56,8 @@ dependencies {
 
   // Web
   compile "com.foilen:foilen-login-api:$foilenLoginApiVersion"
-  compile "org.springframework.boot:spring-boot-starter-freemarker"
-  compile "org.springframework.boot:spring-boot-starter-web"
+  implementation "org.springframework.boot:spring-boot-starter-freemarker"
+  implementation "org.springframework.boot:spring-boot-starter-web"
   compile "org.webjars:bootstrap:3.3.7-1"
   compile "org.webjars:typeaheadjs:0.11.1"
 
@@ -78,8 +69,8 @@ dependencies {
   // Misc
   compile "args4j:args4j:$argsVersion"
   compile 'com.google.code.findbugs:jsr305:3.0.0'
-  compile "javax.xml.bind:jaxb-api:2.3.1"
-  
+  compile 'org.apache.commons:commons-text:1.6'
+  compile "javax.xml.bind:jaxb-api"
   compile 'org.quartz-scheduler:quartz'
 
   // Test
@@ -90,9 +81,9 @@ dependencies {
   testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
   testCompile "org.springframework:spring-test"
   testCompile "org.springframework.boot:spring-boot-starter-test"
-  testCompile "com.foilen:foilen-infra-resource-example:0.1.0"
-  testCompile "com.foilen:foilen-infra-resource-example-failing:0.1.0"
-  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.1.0"
+  testCompile "com.foilen:foilen-infra-resource-example:0.2.0"
+  testCompile "com.foilen:foilen-infra-resource-example-failing:0.2.0"
+  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.2.0"
   
 }
 
@@ -100,10 +91,16 @@ test {
   useJUnitPlatform()
 }
 
+
 apply plugin: 'application'
-
 mainClassName = 'com.foilen.infra.ui.InfraUiApp'
-
 startScripts {
   unixStartScriptGenerator.template = resources.text.fromFile('scripts/customUnixStartScript.txt')
+}
+jar {
+  enabled = true
+}
+
+bootJar {
+ classifier = 'boot'
 }

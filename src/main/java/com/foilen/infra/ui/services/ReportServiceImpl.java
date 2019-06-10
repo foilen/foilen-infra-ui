@@ -42,9 +42,9 @@ public class ReportServiceImpl extends AbstractBasics implements ReportService {
         ReportExecution finalReportExecution = reportExecution;
 
         reportTimes.forEach(it -> it.setReportExecution(finalReportExecution));
-        reportTimeDao.save(reportTimes);
+        reportTimeDao.saveAll(reportTimes);
         reportCounts.forEach(it -> it.setReportExecution(finalReportExecution));
-        reportCountDao.save(reportCounts);
+        reportCountDao.saveAll(reportCounts);
 
     }
 
