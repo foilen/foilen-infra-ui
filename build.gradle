@@ -76,14 +76,14 @@ dependencies {
   // Test
   testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
   testCompile "com.h2database:h2"
-  testCompileOnly 'junit:junit:4.12'
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-  testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
+  testCompileOnly 'junit:junit'
+  testImplementation "org.junit.jupiter:junit-jupiter-api"
+  testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
   testCompile "org.springframework:spring-test"
   testCompile "org.springframework.boot:spring-boot-starter-test"
-  testCompile "com.foilen:foilen-infra-resource-example:0.2.0"
-  testCompile "com.foilen:foilen-infra-resource-example-failing:0.2.0"
-  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.2.0"
+  testCompile "com.foilen:foilen-infra-resource-example:0.3.0"
+  testCompile "com.foilen:foilen-infra-resource-example-failing:0.3.0"
+  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.3.0"
   
 }
 

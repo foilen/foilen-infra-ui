@@ -11,7 +11,7 @@ package com.foilen.infra.ui.services;
 
 import org.springframework.data.domain.Page;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.db.domain.audit.AuditItem;
 

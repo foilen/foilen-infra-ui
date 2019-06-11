@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.db.dao.AuditItemDao;

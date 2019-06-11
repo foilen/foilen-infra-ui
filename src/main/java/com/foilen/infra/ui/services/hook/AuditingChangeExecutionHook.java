@@ -9,8 +9,8 @@
  */
 package com.foilen.infra.ui.services.hook;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.ApplyChangesContext;
 import com.foilen.infra.plugin.core.system.common.changeexecution.hooks.ChangeExecutionHook;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.services.AuditingService;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -24,40 +24,44 @@ public class AuditingChangeExecutionHook extends AbstractBasics implements Chang
     }
 
     @Override
-    public void linkAdded(ApplyChangesContext applyChangesContext, IPResource fromResource, String linkType, IPResource toResource) {
-        auditingService.linkAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), fromResource, linkType,
-                toResource);
+    public void linkAdded(ChangesInTransactionContext changesInTransactionContext, IPResource fromResource, String linkType, IPResource toResource) {
+        auditingService.linkAdd(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), fromResource, linkType, toResource);
     }
 
     @Override
-    public void linkDeleted(ApplyChangesContext applyChangesContext, IPResource fromResource, String linkType, IPResource toResource) {
-        auditingService.linkDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), fromResource, linkType,
-                toResource);
+    public void linkDeleted(ChangesInTransactionContext changesInTransactionContext, IPResource fromResource, String linkType, IPResource toResource) {
+        auditingService.linkDelete(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), fromResource, linkType, toResource);
     }
 
     @Override
-    public void resourceAdded(ApplyChangesContext applyChangesContext, IPResource resource) {
-        auditingService.resourceAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource);
+    public void resourceAdded(ChangesInTransactionContext changesInTransactionContext, IPResource resource) {
+        auditingService.resourceAdd(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), resource);
     }
 
     @Override
-    public void resourceDeleted(ApplyChangesContext applyChangesContext, IPResource resource) {
-        auditingService.resourceDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource);
+    public void resourceDeleted(ChangesInTransactionContext changesInTransactionContext, IPResource resource) {
+        auditingService.resourceDelete(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), resource);
     }
 
     @Override
-    public void resourceUpdated(ApplyChangesContext applyChangesContext, IPResource previousResource, IPResource updatedResource) {
-        auditingService.resourceUpdate(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), previousResource,
-                updatedResource);
+    public void resourceUpdated(ChangesInTransactionContext changesInTransactionContext, IPResource previousResource, IPResource updatedResource) {
+        auditingService.resourceUpdate(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), previousResource, updatedResource);
     }
 
     @Override
-    public void tagAdded(ApplyChangesContext applyChangesContext, IPResource resource, String tagName) {
-        auditingService.tagAdd(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource, tagName);
+    public void tagAdded(ChangesInTransactionContext changesInTransactionContext, IPResource resource, String tagName) {
+        auditingService.tagAdd(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), resource, tagName);
     }
 
     @Override
-    public void tagDeleted(ApplyChangesContext applyChangesContext, IPResource resource, String tagName) {
-        auditingService.tagDelete(applyChangesContext.getTxId(), applyChangesContext.isExplicitChange(), applyChangesContext.getUserType(), applyChangesContext.getUserName(), resource, tagName);
+    public void tagDeleted(ChangesInTransactionContext changesInTransactionContext, IPResource resource, String tagName) {
+        auditingService.tagDelete(changesInTransactionContext.getTxId(), changesInTransactionContext.isExplicitChange(), changesInTransactionContext.getUserType(),
+                changesInTransactionContext.getUserName(), resource, tagName);
     }
 }

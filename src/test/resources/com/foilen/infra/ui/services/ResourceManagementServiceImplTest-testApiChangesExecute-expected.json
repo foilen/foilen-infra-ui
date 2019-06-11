@@ -15,13 +15,6 @@
     }, {
       "action" : "ADD",
       "resourceFirst" : {
-        "resourceName" : "infra_url_redirection",
-        "resourceType" : "Unix User"
-      },
-      "type" : "RESOURCE"
-    }, {
-      "action" : "ADD",
-      "resourceFirst" : {
         "resourceName" : "localhost.example.com / A",
         "resourceType" : "Dns Entry"
       },
@@ -33,17 +26,6 @@
         "resourceType" : "Machine"
       },
       "type" : "RESOURCE"
-    }, {
-      "action" : "UPDATE",
-      "resourceFirst" : {
-        "resourceName" : "infra_url_redirection",
-        "resourceType" : "Unix User"
-      },
-      "resourceSecond" : {
-        "resourceName" : "infra_url_redirection",
-        "resourceType" : "Unix User"
-      },
-      "type" : "RESOURCE"
     } ],
     "pagination" : {
       "currentPage" : 0,
@@ -51,34 +33,19 @@
       "firstPage" : true,
       "itemsPerPage" : 100,
       "lastPage" : true,
-      "totalItems" : 5,
+      "totalItems" : 3,
       "totalPages" : 1
     }
   },
-  "executionTimeInMsByUpdateHandler" : {
-    "AddRedirectionUnixUserUpdateHandler" : 1,
-    "Bind9DnsEntryUpdateEventHandler" : 1,
-    "DnsEntryValidationUpdateHandler" : 1,
-    "MachineBackupToGoogleCloudEventHandler" : 1,
-    "MachineBackupToSftpEventHandler" : 1,
-    "MachineHaProxyUpdateHandler" : 1,
-    "MachineUpdateHandler" : 1,
-    "RedirectionWithApacheUpdateHandler" : 1,
-    "UnixUserUpdateHandler" : 1
+  "executionTimeInMsByActionHandler" : {
+    "BackupToGoogleCloudActionHandler" : 1,
+    "BackupToSftpActionHandler" : 1,
+    "MachineChangesEventHandler$$Lambda$NUM" : 1
   },
   "success" : true,
   "txId" : "was set",
   "updateCountByResourceId" : {
     "DnsEntry / localhost.example.com / A" : 1,
-    "Machine / localhost.example.com" : 1,
-    "UnixUser / infra_url_redirection" : 2
-  },
-  "updateDirectCheckByUpdateHandler" : {
-    "AddRedirectionUnixUserUpdateHandler" : 1,
-    "MachineBackupToGoogleCloudEventHandler" : 1,
-    "MachineBackupToSftpEventHandler" : 1,
-    "MachineHaProxyUpdateHandler" : 1,
-    "MachineUpdateHandler" : 1,
-    "RedirectionWithApacheUpdateHandler" : 1
+    "Machine / localhost.example.com" : 1
   }
 }

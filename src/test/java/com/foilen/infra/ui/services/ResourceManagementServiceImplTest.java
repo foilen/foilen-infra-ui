@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -90,17 +91,25 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
         ResponseResourceAppliedChanges responseResourceAppliedChanges = new ResponseResourceAppliedChanges();
         resourceManagementService.changesExecute(changesContext, responseResourceAppliedChanges);
 
-        responseResourceAppliedChanges.setExecutionTimeInMsByUpdateHandler(sortAndSet1Long(responseResourceAppliedChanges.getExecutionTimeInMsByUpdateHandler()));
+        responseResourceAppliedChanges.setExecutionTimeInMsByActionHandler(sortAndSet1Long(responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler()));
 
         Assert.assertNotNull(responseResourceAppliedChanges.getTxId());
         responseResourceAppliedChanges.setTxId("was set");
 
         Collections.sort(responseResourceAppliedChanges.getAuditItems().getItems(), (a, b) -> JsonTools.compactPrintWithoutNulls(a).compareTo(JsonTools.compactPrintWithoutNulls(b)));
 
-        responseResourceAppliedChanges.setExecutionTimeInMsByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getExecutionTimeInMsByUpdateHandler()));
+        responseResourceAppliedChanges.setExecutionTimeInMsByActionHandler(new TreeMap<>(responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler()));
         responseResourceAppliedChanges.setUpdateCountByResourceId(new TreeMap<>(responseResourceAppliedChanges.getUpdateCountByResourceId()));
-        responseResourceAppliedChanges.setUpdateDirectCheckByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getUpdateDirectCheckByUpdateHandler()));
-        responseResourceAppliedChanges.setUpdateFarCheckByUpdateHandler(new TreeMap<>(responseResourceAppliedChanges.getUpdateFarCheckByUpdateHandler()));
+        responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler().keySet().stream().collect(Collectors.toList()).forEach(key -> {
+            int pos = key.indexOf("Lambda$");
+            if (pos != -1) {
+                pos += 7;
+                String newKey = key.substring(0, pos) + "NUM";
+                Map<String, Long> executionTimeInMsByActionHandler = responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler();
+                executionTimeInMsByActionHandler.put(newKey, executionTimeInMsByActionHandler.get(key));
+                executionTimeInMsByActionHandler.remove(key);
+            }
+        });
         AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute-expected.json", getClass(), responseResourceAppliedChanges);
 
     }

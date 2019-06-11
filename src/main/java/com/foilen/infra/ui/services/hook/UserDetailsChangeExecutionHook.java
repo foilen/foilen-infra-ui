@@ -12,16 +12,16 @@ package com.foilen.infra.ui.services.hook;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.ApplyChangesContext;
-import com.foilen.infra.plugin.core.system.common.changeexecution.AuditUserType;
 import com.foilen.infra.plugin.core.system.common.changeexecution.hooks.ChangeExecutionHook;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;
 import com.foilen.login.spring.client.security.FoilenAuthentication;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 public class UserDetailsChangeExecutionHook extends AbstractBasics implements ChangeExecutionHook {
 
     @Override
-    public void fillApplyChangesContext(ApplyChangesContext applyChangesContext) {
+    public void fillApplyChangesContext(ChangesInTransactionContext changesInTransactionContext) {
         AuditUserType userType;
         String userName;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -35,7 +35,7 @@ public class UserDetailsChangeExecutionHook extends AbstractBasics implements Ch
             userType = AuditUserType.API;
             userName = auth.getName();
         }
-        applyChangesContext.setUserType(userType);
-        applyChangesContext.setUserName(userName);
+        changesInTransactionContext.setUserType(userType);
+        changesInTransactionContext.setUserName(userName);
     }
 }

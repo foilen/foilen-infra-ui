@@ -11,8 +11,10 @@ package com.foilen.infra.ui.plugin;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -69,6 +71,13 @@ public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest 
     @Override
     protected InternalServicesContext getInternalServicesContext() {
         return internalServicesContext;
+    }
+
+    @DirtiesContext
+    @Test(timeout = 30000)
+    @Override
+    public void testInfiniteLoop() {
+        super.testInfiniteLoop();
     }
 
 }

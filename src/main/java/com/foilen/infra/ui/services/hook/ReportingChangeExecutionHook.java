@@ -11,8 +11,8 @@ package com.foilen.infra.ui.services.hook;
 
 import java.util.stream.Collectors;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.ApplyChangesContext;
 import com.foilen.infra.plugin.core.system.common.changeexecution.hooks.ChangeExecutionHook;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;
 import com.foilen.infra.ui.db.domain.reporting.ReportCount;
 import com.foilen.infra.ui.db.domain.reporting.ReportTime;
 import com.foilen.infra.ui.services.ReportService;
@@ -27,16 +27,16 @@ public class ReportingChangeExecutionHook extends AbstractBasics implements Chan
     }
 
     @Override
-    public void failureInfinite(ApplyChangesContext applyChangesContext) {
-        reportService.addReport(applyChangesContext.getTxId(), false, //
-                applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
-                applyChangesContext.getUpdateCountByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
+    public void failureInfinite(ChangesInTransactionContext changesInTransactionContext) {
+        reportService.addReport(changesInTransactionContext.getTxId(), false, //
+                changesInTransactionContext.getExecutionTimeInMsByActionHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
+                changesInTransactionContext.getUpdateCountByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
     }
 
     @Override
-    public void success(ApplyChangesContext applyChangesContext) {
-        reportService.addReport(applyChangesContext.getTxId(), true, //
-                applyChangesContext.getExecutionTimeInMsByUpdateHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
-                applyChangesContext.getUpdateCountByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
+    public void success(ChangesInTransactionContext changesInTransactionContext) {
+        reportService.addReport(changesInTransactionContext.getTxId(), true, //
+                changesInTransactionContext.getExecutionTimeInMsByActionHandler().entrySet().stream().map(entry -> new ReportTime(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()), //
+                changesInTransactionContext.getUpdateCountByResourceId().entrySet().stream().map(entry -> new ReportCount(entry.getKey(), entry.getValue().get())).collect(Collectors.toList()));
     }
 }

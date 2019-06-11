@@ -21,7 +21,7 @@ import com.foilen.infra.ui.db.domain.plugin.PluginResource;
 @Service
 public interface PluginResourceDao extends JpaRepository<PluginResource, Long> {
 
-    long deleteById(long id);
+    long deleteOneById(long id);
 
     List<PluginResource> findAllByIdIn(Collection<Long> ids);
 

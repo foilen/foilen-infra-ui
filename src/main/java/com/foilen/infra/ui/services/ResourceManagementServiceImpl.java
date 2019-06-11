@@ -37,7 +37,6 @@ import com.foilen.infra.plugin.core.system.common.changeexecution.ChangeExecutio
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
-import com.foilen.infra.plugin.v1.core.exception.ResourceNotFromRepositoryException;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
@@ -244,10 +243,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public List<Tuple2<String, ? extends IPResource>> linkFindAllByFromResource(IPResource fromResource) {
-        if (fromResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(fromResource);
+        Long fromInternalId = resourceFindIdByPk(fromResource);
+        if (fromInternalId == null) {
+            return Collections.emptyList();
         }
-        return pluginResourceLinkDao.findAllByFromPluginResourceId(fromResource.getInternalId()).stream() //
+        return pluginResourceLinkDao.findAllByFromPluginResourceId(fromInternalId).stream() //
                 .map(it -> new Tuple2<>(it.getLinkType(), loadResource(it.getToPluginResource()))) //
                 .collect(Collectors.toList());
     }
@@ -261,10 +261,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public List<? extends IPResource> linkFindAllByFromResourceAndLinkType(IPResource fromResource, String linkType) {
-        if (fromResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(fromResource);
+        Long fromInternalId = resourceFindIdByPk(fromResource);
+        if (fromInternalId == null) {
+            return Collections.emptyList();
         }
-        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkType(fromResource.getInternalId(), linkType).stream() //
+        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkType(fromInternalId, linkType).stream() //
                 .map(it -> loadResource(it.getToPluginResource())) //
                 .collect(Collectors.toList());
     }
@@ -272,12 +273,13 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     @SuppressWarnings("unchecked")
     @Override
     public <R extends IPResource> List<R> linkFindAllByFromResourceAndLinkTypeAndToResourceClass(IPResource fromResource, String linkType, Class<R> toResourceClass) {
-        if (fromResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(fromResource);
+        Long fromInternalId = resourceFindIdByPk(fromResource);
+        if (fromInternalId == null) {
+            return Collections.emptyList();
         }
         List<IPResourceDefinition> ipResourceDefinitions = getResourceDefinitions(toResourceClass);
         List<String> toResourceTypes = ipResourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
-        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceTypeIn(fromResource.getInternalId(), linkType, toResourceTypes).stream() //
+        return pluginResourceLinkDao.findAllByFromPluginResourceIdAndLinkTypeAndToPluginResourceTypeIn(fromInternalId, linkType, toResourceTypes).stream() //
                 .map(it -> (R) loadResource(it.getToPluginResource())) //
                 .collect(Collectors.toList());
     }
@@ -285,32 +287,35 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
     @SuppressWarnings("unchecked")
     @Override
     public <R extends IPResource> List<R> linkFindAllByFromResourceClassAndLinkTypeAndToResource(Class<R> fromResourceClass, String linkType, IPResource toResource) {
-        if (toResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(toResource);
+        Long toInternalId = resourceFindIdByPk(toResource);
+        if (toInternalId == null) {
+            return Collections.emptyList();
         }
         List<IPResourceDefinition> ipResourceDefinitions = getResourceDefinitions(fromResourceClass);
         List<String> fromResourceTypes = ipResourceDefinitions.stream().map(it -> it.getResourceType()).collect(Collectors.toList());
-        return pluginResourceLinkDao.findAllByFromPluginResourceTypeInAndLinkTypeAndToPluginResourceId(fromResourceTypes, linkType, toResource.getInternalId()).stream() //
+        return pluginResourceLinkDao.findAllByFromPluginResourceTypeInAndLinkTypeAndToPluginResourceId(fromResourceTypes, linkType, toInternalId).stream() //
                 .map(it -> (R) loadResource(it.getFromPluginResource())) //
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<? extends IPResource> linkFindAllByLinkTypeAndToResource(String linkType, IPResource toResource) {
-        if (toResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(toResource);
+        Long toInternalId = resourceFindIdByPk(toResource);
+        if (toInternalId == null) {
+            return Collections.emptyList();
         }
-        return pluginResourceLinkDao.findAllByLinkTypeAndToPluginResourceId(linkType, toResource.getInternalId()).stream() //
+        return pluginResourceLinkDao.findAllByLinkTypeAndToPluginResourceId(linkType, toInternalId).stream() //
                 .map(it -> loadResource(it.getFromPluginResource())) //
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Tuple2<? extends IPResource, String>> linkFindAllByToResource(IPResource toResource) {
-        if (toResource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(toResource);
+        Long toInternalId = resourceFindIdByPk(toResource);
+        if (toInternalId == null) {
+            return Collections.emptyList();
         }
-        return pluginResourceLinkDao.findAllByToPluginResourceId(toResource.getInternalId()).stream() //
+        return pluginResourceLinkDao.findAllByToPluginResourceId(toInternalId).stream() //
                 .map(it -> new Tuple2<>(loadResource(it.getFromPluginResource()), it.getLinkType())) //
                 .collect(Collectors.toList());
     }
@@ -324,10 +329,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public List<Tuple3<IPResource, String, IPResource>> linkFindAllRelatedByResource(IPResource resource) {
-        if (resource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(resource);
+        Long internalId = resourceFindIdByPk(resource);
+        if (internalId == null) {
+            return Collections.emptyList();
         }
-        return pluginResourceLinkDao.findAllByPluginResourceId(resource.getInternalId()).stream() //
+        return pluginResourceLinkDao.findAllByPluginResourceId(internalId).stream() //
                 .map(it -> new Tuple3<>(loadResource(it.getFromPluginResource()), it.getLinkType(), loadResource(it.getToPluginResource()))) //
                 .collect(Collectors.toList());
     }
@@ -370,7 +376,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
         pluginResourceColumnSearchDao.deleteByPluginResourceId(resourceId);
         pluginResourceTagDao.deleteByPluginResourceId(resourceId);
         pluginResourceLinkDao.deleteByPluginResourceId(resourceId);
-        return pluginResourceDao.deleteById(resourceId) > 0;
+        return pluginResourceDao.deleteOneById(resourceId) > 0;
     }
 
     @Override
@@ -865,6 +871,22 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
                 .primaryKeyEquals(resource));
     }
 
+    private Long resourceFindIdByPk(IPResource resource) {
+        // Id already there
+        if (resource.getInternalId() != null) {
+            return resource.getInternalId();
+        }
+
+        // Search by PK
+        Optional<IPResource> o = resourceFindByPk(resource);
+        if (o.isPresent()) {
+            return o.get().getInternalId();
+        }
+
+        // Does not exist
+        return null;
+    }
+
     @Override
     public void resourceUpdate(IPResource previousResource, IPResource updatedResource) {
         PluginResource pluginResource = pluginResourceDao.findById(previousResource.getInternalId()).get();
@@ -895,10 +917,11 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public Set<String> tagFindAllByResource(IPResource resource) {
-        if (resource.getInternalId() == null) {
-            throw new ResourceNotFromRepositoryException(resource);
+        Long internalId = resourceFindIdByPk(resource);
+        if (internalId == null) {
+            return Collections.emptySet();
         }
-        return pluginResourceTagDao.findAllTagNameByPluginResourceId(resource.getInternalId());
+        return pluginResourceTagDao.findAllTagNameByPluginResourceId(internalId);
     }
 
     private void updateColumnSearches(IPResource resource) {

@@ -18,8 +18,8 @@ import com.foilen.infra.api.model.AuditItemSmall;
 import com.foilen.infra.api.model.AuditType;
 import com.foilen.infra.api.model.ResourceDetailsSmall;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
-import com.foilen.infra.plugin.core.system.common.changeexecution.ApplyChangesContext;
 import com.foilen.infra.plugin.core.system.common.changeexecution.hooks.ChangeExecutionHook;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;
 import com.foilen.infra.ui.db.domain.audit.AuditItem;
 import com.foilen.infra.ui.services.AuditingService;
 import com.foilen.smalltools.restapi.model.ApiPagination;
@@ -38,29 +38,23 @@ public class FillResponseChangeExecutionHook extends AbstractBasics implements C
     }
 
     @Override
-    public void failureInfinite(ApplyChangesContext applyChangesContext) {
-        fill(applyChangesContext);
+    public void failureInfinite(ChangesInTransactionContext changesInTransactionContext) {
+        fill(changesInTransactionContext);
     }
 
     @SuppressWarnings("unchecked")
-    private void fill(ApplyChangesContext applyChangesContext) {
+    private void fill(ChangesInTransactionContext changesInTransactionContext) {
 
-        responseResourceAppliedChanges.setTxId(applyChangesContext.getTxId());
+        responseResourceAppliedChanges.setTxId(changesInTransactionContext.getTxId());
 
-        applyChangesContext.getUpdateCountByResourceId().forEach((k, v) -> {
+        changesInTransactionContext.getUpdateCountByResourceId().forEach((k, v) -> {
             responseResourceAppliedChanges.getUpdateCountByResourceId().put(k, v.get());
         });
-        applyChangesContext.getExecutionTimeInMsByUpdateHandler().forEach((k, v) -> {
-            responseResourceAppliedChanges.getExecutionTimeInMsByUpdateHandler().put(k, v.get());
-        });
-        applyChangesContext.getUpdateDirectCheckByUpdateHandler().forEach((k, v) -> {
-            responseResourceAppliedChanges.getUpdateDirectCheckByUpdateHandler().put(k, v.get());
-        });
-        applyChangesContext.getUpdateFarCheckByUpdateHandler().forEach((k, v) -> {
-            responseResourceAppliedChanges.getUpdateFarCheckByUpdateHandler().put(k, v.get());
+        changesInTransactionContext.getExecutionTimeInMsByActionHandler().forEach((k, v) -> {
+            responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler().put(k, v.get());
         });
 
-        Page<AuditItem> auditPage = auditingService.findAllByTxId(applyChangesContext.getTxId(), 0, 100);
+        Page<AuditItem> auditPage = auditingService.findAllByTxId(changesInTransactionContext.getTxId(), 0, 100);
         auditPage.forEach(it -> {
 
             AuditItemSmall auditItem = new AuditItemSmall();
@@ -88,8 +82,8 @@ public class FillResponseChangeExecutionHook extends AbstractBasics implements C
     }
 
     @Override
-    public void success(ApplyChangesContext applyChangesContext) {
-        fill(applyChangesContext);
+    public void success(ChangesInTransactionContext changesInTransactionContext) {
+        fill(changesInTransactionContext);
     }
 
 }
