@@ -27,5 +27,6 @@ find $DOCKER_BUILD
 echo ----[ Build docker image ]----
 DOCKER_IMAGE=foilen-infra-ui:$VERSION
 docker build -t $DOCKER_IMAGE $DOCKER_BUILD
+docker tag $DOCKER_IMAGE foilen/$DOCKER_IMAGE
 
 rm -rf $DOCKER_BUILD
