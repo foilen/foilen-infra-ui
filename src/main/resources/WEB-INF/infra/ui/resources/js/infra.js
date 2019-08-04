@@ -321,7 +321,7 @@ function updateResourceFieldPageItem(resource) {
         var searchedData = [];
         query = query.toLowerCase();
         jQuery.each(allData, function() {
-          if (this.name.toLowerCase().indexOf(query) !== -1 || this.description.toLowerCase().indexOf(query) !== -1) {
+          if ( (this.name && this.name.toLowerCase().indexOf(query) !== -1) || (this.description && this.description.toLowerCase().indexOf(query) !== -1) ) {
             searchedData.push(this);
           }
         });
@@ -478,7 +478,7 @@ function updateResourcesFieldPageItem(resource) {
           if (jQuery.inArray(this.id, itemsIds) > -1) {
             return;
           }
-          if (this.name.toLowerCase().indexOf(query) !== -1 || this.description.toLowerCase().indexOf(query) !== -1) {
+          if ( (this.name && this.name.toLowerCase().indexOf(query) !== -1) || (this.description && this.description.toLowerCase().indexOf(query) !== -1) ) {
             searchedData.push(this);
           }
         });
