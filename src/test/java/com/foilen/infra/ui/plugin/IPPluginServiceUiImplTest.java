@@ -88,7 +88,7 @@ public class IPPluginServiceUiImplTest extends AbstractSpringTests {
                 .map(PluginResourceColumnSearch::getId) //
                 .sorted() //
                 .collect(Collectors.toList());
-        Assert.assertEquals(100, columnSearchIds.size());
+        Assert.assertEquals(108, columnSearchIds.size());
 
         // Create extra column data
         for (PluginResource pluginResource : pluginResourceDao.findAll()) {
@@ -96,20 +96,20 @@ public class IPPluginServiceUiImplTest extends AbstractSpringTests {
             pluginResourceColumnSearch.setText("blah");
             pluginResourceColumnSearchDao.saveAndFlush(pluginResourceColumnSearch);
         }
-        Assert.assertEquals(107, pluginResourceColumnSearchDao.count());
+        Assert.assertEquals(116, pluginResourceColumnSearchDao.count());
 
         // Process
         ipPluginServiceImpl.updateResourcesColumnSearch(commonServicesContext.getResourceService().getResourceDefinitions());
 
-        Assert.assertEquals(7, pluginResourceDao.count());
-        Assert.assertEquals(100, pluginResourceColumnSearchDao.count());
+        Assert.assertEquals(8, pluginResourceDao.count());
+        Assert.assertEquals(108, pluginResourceColumnSearchDao.count());
 
         // Check the column searches ids are still the same (for perf optimization)
         List<Long> finalColumnSearchIds = pluginResourceColumnSearchDao.findAll().stream() //
                 .map(PluginResourceColumnSearch::getId) //
                 .sorted() //
                 .collect(Collectors.toList());
-        Assert.assertEquals(100, finalColumnSearchIds.size());
+        Assert.assertEquals(108, finalColumnSearchIds.size());
         Assert.assertEquals(columnSearchIds, finalColumnSearchIds);
     }
 

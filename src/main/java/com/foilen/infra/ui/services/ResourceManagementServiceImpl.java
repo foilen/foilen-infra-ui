@@ -238,7 +238,15 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Int
 
     @Override
     public boolean linkExistsByFromResourceAndLinkTypeAndToResource(IPResource fromResource, String linkType, IPResource toResource) {
-        return pluginResourceLinkDao.countByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromResource.getInternalId(), linkType, toResource.getInternalId()) > 0;
+        Long fromInternalId = resourceFindIdByPk(fromResource);
+        if (fromInternalId == null) {
+            return false;
+        }
+        Long toInternalId = resourceFindIdByPk(toResource);
+        if (toInternalId == null) {
+            return false;
+        }
+        return pluginResourceLinkDao.countByFromPluginResourceIdAndLinkTypeAndToPluginResourceId(fromInternalId, linkType, toInternalId) > 0;
     }
 
     @Override
