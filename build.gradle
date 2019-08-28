@@ -83,7 +83,7 @@ dependencies {
   testCompile "org.springframework.boot:spring-boot-starter-test"
   testCompile "com.foilen:foilen-infra-resource-example:0.3.0"
   testCompile "com.foilen:foilen-infra-resource-example-failing:0.3.0"
-  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.3.0"
+  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.3.1"
   
 }
 

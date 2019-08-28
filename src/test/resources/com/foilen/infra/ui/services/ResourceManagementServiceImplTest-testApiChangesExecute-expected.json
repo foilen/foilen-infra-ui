@@ -40,7 +40,8 @@
   "executionTimeInMsByActionHandler" : {
     "BackupToGoogleCloudActionHandler" : 1,
     "BackupToSftpActionHandler" : 1,
-    "MachineChangesEventHandler$$Lambda$NUM" : 1
+    "MachineChangesEventHandler$$Lambda$NUM" : 1,
+    "UsageMetricsConfigMachineActionHandler" : 1
   },
   "success" : true,
   "txId" : "was set",
