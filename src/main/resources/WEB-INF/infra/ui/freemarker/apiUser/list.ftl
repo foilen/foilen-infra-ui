@@ -13,12 +13,12 @@
 
 <table class="table table-striped">
   <tr>
-    <th><@spring.message 'terms.userId'/></th>
-    <th><@spring.message 'terms.description'/></th>
-    <th><@spring.message 'terms.isAdmin'/></th>
-    <th><@spring.message 'terms.createdOn'/></th>
-    <th><@spring.message 'terms.expireOn'/></th>
-    <th><@spring.message "terms.actions"/></th>
+    <th><@spring.message 'term.userId'/></th>
+    <th><@spring.message 'term.description'/></th>
+    <th><@spring.message 'term.isAdmin'/></th>
+    <th><@spring.message 'term.createdOn'/></th>
+    <th><@spring.message 'term.expireOn'/></th>
+    <th><@spring.message "term.actions"/></th>
   </tr>
   <#list apiUsers as apiUser>
 	  <tr>

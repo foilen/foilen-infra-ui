@@ -17,12 +17,26 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
 /**
  * Auditing.
  */
 @Entity
+@Table(indexes = { //
+        @Index(name = "audit_item_action_id", columnList = "action, id desc"), //
+        @Index(name = "audit_item_link_type_id", columnList = "linkType, id desc"), //
+        @Index(name = "audit_item_resource_first_type_id", columnList = "resourceFirstType, id desc"), //
+        @Index(name = "audit_item_resource_second_type_id", columnList = "resourceSecondType, id desc"), //
+        @Index(name = "audit_item_tag_name_id", columnList = "tagName, id desc"), //
+        @Index(name = "audit_item_timestamp_id", columnList = "timestamp, id desc"), //
+        @Index(name = "audit_item_type_id", columnList = "type, id desc"), //
+        @Index(name = "audit_item_tx_id_id", columnList = "txId, id desc"), //
+        @Index(name = "audit_item_user_name_id", columnList = "userName, id desc"), //
+        @Index(name = "audit_item_user_type_id", columnList = "userType, id desc"), //
+})
 public class AuditItem implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -120,60 +134,74 @@ public class AuditItem implements java.io.Serializable {
         return explicitChange;
     }
 
-    public void setAction(String action) {
+    public AuditItem setAction(String action) {
         this.action = action;
+        return this;
     }
 
-    public void setExplicitChange(boolean explicitChange) {
+    public AuditItem setExplicitChange(boolean explicitChange) {
         this.explicitChange = explicitChange;
+        return this;
     }
 
-    public void setId(Long id) {
+    public AuditItem setId(Long id) {
         this.id = id;
+        return this;
     }
 
-    public void setLinkType(String linkType) {
+    public AuditItem setLinkType(String linkType) {
         this.linkType = linkType;
+        return this;
     }
 
-    public void setResourceFirst(String resourceFirst) {
+    public AuditItem setResourceFirst(String resourceFirst) {
         this.resourceFirst = resourceFirst;
+        return this;
     }
 
-    public void setResourceFirstType(String resourceFirstType) {
+    public AuditItem setResourceFirstType(String resourceFirstType) {
         this.resourceFirstType = resourceFirstType;
+        return this;
     }
 
-    public void setResourceSecond(String resourceSecond) {
+    public AuditItem setResourceSecond(String resourceSecond) {
         this.resourceSecond = resourceSecond;
+        return this;
     }
 
-    public void setResourceSecondType(String resourceSecondType) {
+    public AuditItem setResourceSecondType(String resourceSecondType) {
         this.resourceSecondType = resourceSecondType;
+        return this;
     }
 
-    public void setTagName(String tagName) {
+    public AuditItem setTagName(String tagName) {
         this.tagName = tagName;
+        return this;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public AuditItem setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+        return this;
     }
 
-    public void setTxId(String txId) {
+    public AuditItem setTxId(String txId) {
         this.txId = txId;
+        return this;
     }
 
-    public void setType(String type) {
+    public AuditItem setType(String type) {
         this.type = type;
+        return this;
     }
 
-    public void setUserName(String userName) {
+    public AuditItem setUserName(String userName) {
         this.userName = userName;
+        return this;
     }
 
-    public void setUserType(String userType) {
+    public AuditItem setUserType(String userType) {
         this.userType = userType;
+        return this;
     }
 
 }

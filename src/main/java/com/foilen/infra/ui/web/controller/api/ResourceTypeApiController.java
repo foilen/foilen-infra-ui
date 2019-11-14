@@ -20,6 +20,7 @@ import com.foilen.infra.ui.services.ApiResourceManagementService;
 
 @RequestMapping(value = "api/resourceType", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
+@SwaggerExpose
 public class ResourceTypeApiController {
 
     @Autowired

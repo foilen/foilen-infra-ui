@@ -9,6 +9,8 @@
  */
 package com.foilen.infra.ui;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.wiring.BeanConfigurerSupport;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -21,6 +23,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -36,6 +39,7 @@ import com.foilen.smalltools.tools.CharsetTools;
 
 @Configuration
 @ComponentScan({ "com.foilen.infra.ui.config", //
+        "com.foilen.infra.ui.converters", //
         "com.foilen.infra.ui.db.dao", //
         "com.foilen.infra.ui.plugin", //
         "com.foilen.infra.ui.services", //
@@ -95,8 +99,10 @@ public class InfraUiSpringConfig {
     }
 
     @Bean
-    public ConversionService conversionService() {
-        return new DefaultConversionService();
+    public ConversionService conversionService(List<Converter<?, ?>> converters) {
+        DefaultConversionService conversionService = new DefaultConversionService();
+        converters.forEach(c -> conversionService.addConverter(c));
+        return conversionService;
     }
 
     @Bean

@@ -1,0 +1,5 @@
+<div class="form-group">
+  <button class="btn btn-small btn-primary" v-bind:disabled="pagination.firstPage" v-on:click="previous()">&lt;</button>
+  {{pagination.currentPageUi}} / {{pagination.totalPages}}
+  <button class="btn btn-small btn-primary" v-bind:disabled="pagination.lastPage" v-on:click="next()">&gt;</button>
+</div>

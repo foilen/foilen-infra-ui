@@ -2,11 +2,11 @@
 
 <table class="table table-striped">
   <tr>
-    <th><@spring.message 'terms.name'/></th>
-    <th><@spring.message 'terms.cpu'/></th>
-    <th><@spring.message 'terms.memory'/></th>
-    <th><@spring.message 'terms.disk'/></th>
-    <th><@spring.message 'terms.network'/></th>
+    <th><@spring.message 'term.name'/></th>
+    <th><@spring.message 'term.cpu'/></th>
+    <th><@spring.message 'term.memory'/></th>
+    <th><@spring.message 'term.disk'/></th>
+    <th><@spring.message 'term.network'/></th>
   </tr>
   <#list machines as machine>
 	  <tr>

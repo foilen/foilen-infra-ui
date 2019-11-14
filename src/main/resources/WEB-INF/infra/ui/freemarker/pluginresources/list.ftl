@@ -1,7 +1,7 @@
 <#include "/common/header.ftl">
 
 <form class="form-group" method="get" action="/pluginresources/list" autocomplete="off">
-  <input type="text" class="form-control" name="s" value="${search!''}" placeholder="<@spring.message 'terms.search'/>" />
+  <input type="text" class="form-control" name="s" value="${search!''}" placeholder="<@spring.message 'term.search'/>" />
 </form>
 
 <table class="table table-striped">
@@ -9,7 +9,7 @@
     <th><@spring.message "resources.type"/></th>
     <th><@spring.message "resources.name"/></th>
     <th><@spring.message "resources.description"/></th>
-    <th><@spring.message "terms.actions"/></th>
+    <th><@spring.message "term.actions"/></th>
   </tr>
   <#list resourcesTypeAndDetails as resourceTypeAndDetails>
     <tr>

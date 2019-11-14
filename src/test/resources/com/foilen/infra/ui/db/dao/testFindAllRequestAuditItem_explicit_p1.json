@@ -1,0 +1,37 @@
+{
+  "content" : [ {
+    "id" : 2,
+    "timestamp" : 957157200000,
+    "txId" : "tx2",
+    "explicitChange" : true,
+    "type" : "RESOURCE",
+    "action" : "ADD",
+    "userType" : "SYSTEM",
+    "resourceFirstType" : "Junit",
+    "resourceFirst" : "{\n  \"bool\" : false,\n  \"date\" : null,\n  \"doubleNumber\" : null,\n  \"enumeration\" : null,\n  \"floatNumber\" : null,\n  \"integerNumber\" : null,\n  \"longNumber\" : 0,\n  \"meta\" : { },\n  \"resourceCategory\" : \"INFRASTRUCTURE\",\n  \"resourceDescription\" : \"JunitResource [text=r3, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"r3\",\n  \"setDates\" : [ ],\n  \"setDoubles\" : [ ],\n  \"setEnumerations\" : [ ],\n  \"setFloats\" : [ ],\n  \"setIntegers\" : [ ],\n  \"setLongs\" : [ ],\n  \"setTexts\" : [ ],\n  \"text\" : \"r3\"\n}"
+  }, {
+    "id" : 0,
+    "timestamp" : 946706400000,
+    "txId" : "tx1",
+    "explicitChange" : true,
+    "type" : "RESOURCE",
+    "action" : "ADD",
+    "userType" : "USER",
+    "userName" : "12345",
+    "resourceFirstType" : "Junit",
+    "resourceFirst" : "{\n  \"bool\" : false,\n  \"date\" : null,\n  \"doubleNumber\" : null,\n  \"enumeration\" : null,\n  \"floatNumber\" : null,\n  \"integerNumber\" : null,\n  \"longNumber\" : 0,\n  \"meta\" : { },\n  \"resourceCategory\" : \"INFRASTRUCTURE\",\n  \"resourceDescription\" : \"JunitResource [text=r1, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"r1\",\n  \"setDates\" : [ ],\n  \"setDoubles\" : [ ],\n  \"setEnumerations\" : [ ],\n  \"setFloats\" : [ ],\n  \"setIntegers\" : [ ],\n  \"setLongs\" : [ ],\n  \"setTexts\" : [ ],\n  \"text\" : \"r1\"\n}"
+  } ],
+  "empty" : false,
+  "first" : true,
+  "last" : true,
+  "number" : 0,
+  "numberOfElements" : 2,
+  "size" : 2,
+  "sort" : {
+    "sorted" : true,
+    "unsorted" : false,
+    "empty" : false
+  },
+  "totalElements" : 2,
+  "totalPages" : 1
+}

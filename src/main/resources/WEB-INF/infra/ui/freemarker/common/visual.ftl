@@ -8,7 +8,7 @@
 	      <span class="icon-bar"></span>
 	      <span class="icon-bar"></span>
 	    </button>
-	    <a class="navbar-brand" href="/">FoilenCloud</a>
+	    <a class="navbar-brand" href="/">FoilenInfra</a>
 	  </div>
 	  <div class="navbar-collapse collapse">
 	    <ul class="nav navbar-nav">
@@ -26,6 +26,7 @@
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
 	      <li><a href="?lang=<@spring.message "navbar.nextlang.id"/>"><@spring.message "navbar.nextlang.name"/></a></li>
+	      <li><a href="/index.html"/><@spring.message "navbar.newUi"/></a></li>
 	    </ul>
 	  </div>
 	</div>

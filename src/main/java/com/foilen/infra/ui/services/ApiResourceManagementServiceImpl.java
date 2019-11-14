@@ -48,8 +48,6 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     @Autowired
     private IPResourceService resourceService;
     @Autowired
-    private EntitlementService entitlementService;
-    @Autowired
     private ResourceManagementService resourceManagementService;
 
     @Override

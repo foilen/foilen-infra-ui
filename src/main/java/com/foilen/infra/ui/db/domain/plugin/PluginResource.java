@@ -15,7 +15,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
@@ -26,6 +28,7 @@ import com.foilen.smalltools.tools.JsonTools;
  * A Plugin resource.
  */
 @Entity
+@Table(indexes = { @Index(name = "plugin_resource_type", columnList = "type") })
 public class PluginResource implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;

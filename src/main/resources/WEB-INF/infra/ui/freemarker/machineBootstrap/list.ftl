@@ -2,8 +2,8 @@
 
 <table class="table table-striped">
   <tr>
-    <th><@spring.message 'terms.name'/></th>
-    <th><@spring.message 'terms.ip'/></th>
+    <th><@spring.message 'term.name'/></th>
+    <th><@spring.message 'term.ip'/></th>
   </tr>
   <#list machines as machine>
 	  <tr>

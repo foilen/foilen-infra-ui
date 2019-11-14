@@ -74,3 +74,10 @@ Simply execute `./test-ui-local.sh` .
 Simply execute `./test-ui-test.sh` .
 
 When done, cleanup by stopping the DB: `docker stop infra_ui_db` .
+
+# More
+
+## Swagger
+
+You can see the API documentation here: http://localhost:8080/swagger-ui.html
+

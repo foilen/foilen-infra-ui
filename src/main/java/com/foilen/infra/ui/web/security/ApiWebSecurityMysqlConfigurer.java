@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Order(1)
+@Order(1) // To ensure it is checked before FoilenLoginWebSecurityConfigurerAdapter
 public class ApiWebSecurityMysqlConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired

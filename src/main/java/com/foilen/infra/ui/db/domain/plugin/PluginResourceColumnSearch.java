@@ -15,14 +15,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
  * To help search values per column.
  */
 @Entity
+@Table(indexes = { @Index(name = "plugin_resource_column_search_column_name", columnList = "columnName") })
 public class PluginResourceColumnSearch implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;

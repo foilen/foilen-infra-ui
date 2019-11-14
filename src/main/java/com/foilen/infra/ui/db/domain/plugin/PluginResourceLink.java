@@ -15,14 +15,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
  * To help search values per column.
  */
 @Entity
+@Table(indexes = { //
+        @Index(name = "plugin_resource_link_from_type", columnList = "from_plugin_resource_id, linkType"), //
+        @Index(name = "plugin_resource_link_to_type", columnList = "to_plugin_resource_id, linkType") //
+})
 public class PluginResourceLink implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;

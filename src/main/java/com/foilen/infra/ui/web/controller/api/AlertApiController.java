@@ -24,6 +24,7 @@ import com.foilen.smalltools.tools.AbstractBasics;
 
 @RequestMapping(value = "api/alert", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
+@SwaggerExpose
 public class AlertApiController extends AbstractBasics {
 
     @Autowired

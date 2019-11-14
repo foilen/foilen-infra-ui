@@ -32,6 +32,7 @@ import com.google.common.base.Strings;
 
 @RequestMapping(value = "api/machine", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @RestController
+@SwaggerExpose
 public class MachineApiController extends AbstractBasics {
 
     @Autowired

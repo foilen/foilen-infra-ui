@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.foilen.infra.ui.db.domain.audit.AuditItem;
 
 @Service
-public interface AuditItemDao extends JpaRepository<AuditItem, Long> {
+public interface AuditItemDao extends JpaRepository<AuditItem, Long>, AuditItemCustomDao {
 
     Page<AuditItem> findAllByTxId(String txId, Pageable page);
 

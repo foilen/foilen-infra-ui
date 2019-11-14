@@ -9,11 +9,16 @@
  */
 package com.foilen.infra.ui.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.foilen.smalltools.restapi.model.AbstractApiBaseWithError;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 public abstract class AbstractApiService extends AbstractBasics {
+
+    @Autowired
+    protected EntitlementService entitlementService;
 
     protected void wrapExecution(AbstractApiBaseWithError abstractApiBaseWithError, Runnable runnable) {
         try {

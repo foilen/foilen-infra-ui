@@ -1,0 +1,44 @@
+<div class="row">
+
+  <div class="col-12">
+
+    <pagination class="float-right" v-bind:pagination="pagination" v-on:changePage="refresh($event.pageId)"></pagination>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('term.id') }}</th>
+          <th scope="col">{{ $t('term.timestamp') }}</th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.txId')" v-model="queries.txId" v-on:input="refresh(1)" width="122px"> </table-header-search></th>
+          <th scope="col">{{ $t('term.explicitChange') }}</th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.type')" v-model="queries.type" v-on:input="refresh(1)" width="93px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.action')" v-model="queries.action" v-on:input="refresh(1)" width="67px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.userType')" v-model="queries.userType" v-on:input="refresh(1)" width="77px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.userName')" v-model="queries.userName" v-on:input="refresh(1)" width="86px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.tagName')" v-model="queries.tagName" v-on:input="refresh(1)" width="76px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.resourceFirstType')" v-model="queries.resourceFirstType" v-on:input="refresh(1)" width="153px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.linkType')" v-model="queries.linkType" v-on:input="refresh(1)" width="117px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.resourceSecondType')" v-model="queries.resourceSecondType" v-on:input="refresh(1)" width="178px"> </table-header-search></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in items">
+          <td>{{item.id}}</td>
+          <td>{{item.timestampText}}</td>
+          <td>{{item.txId}}</td>
+          <td>{{item.explicitChange}}</td>
+          <td>{{item.type}}</td>
+          <td>{{item.action}}</td>
+          <td>{{item.userType}}</td>
+          <td>{{item.userName}}</td>
+          <td>{{item.tagName}}</td>
+          <td>{{item.resourceFirst?item.resourceFirst.resourceType:''}}</td>
+          <td>{{item.linkType}}</td>
+          <td>{{item.resourceSecond?item.resourceSecond.resourceType:''}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

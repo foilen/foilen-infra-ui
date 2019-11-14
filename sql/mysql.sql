@@ -164,12 +164,26 @@
 
     alter table api_user 
        add constraint UK_6amqsmb5hmim0r67uoums68m4 unique (user_id);
+create index audit_item_action_id on audit_item (action, id desc);
+create index audit_item_link_type_id on audit_item (link_type, id desc);
+create index audit_item_resource_first_type_id on audit_item (resource_first_type, id desc);
+create index audit_item_resource_second_type_id on audit_item (resource_second_type, id desc);
+create index audit_item_tag_name_id on audit_item (tag_name, id desc);
+create index audit_item_timestamp_id on audit_item (timestamp, id desc);
+create index audit_item_type_id on audit_item (type, id desc);
+create index audit_item_tx_id_id on audit_item (tx_id, id desc);
+create index audit_item_user_name_id on audit_item (user_name, id desc);
+create index audit_item_user_type_id on audit_item (user_type, id desc);
 
     alter table machine_statistics_fs 
        add constraint UK_9dmogrrotqudkwogn3jxow1o7 unique (fs_id);
 
     alter table machine_statistics_networks 
        add constraint UK_jmuvbuf1gkt6xygfmfvt2r4f unique (networks_id);
+create index plugin_resource_type on plugin_resource (type);
+create index plugin_resource_column_search_column_name on plugin_resource_column_search (column_name);
+create index plugin_resource_link_from_type on plugin_resource_link (from_plugin_resource_id, link_type);
+create index plugin_resource_link_to_type on plugin_resource_link (to_plugin_resource_id, link_type);
 
     alter table plugin_resource_tag 
        add constraint UK6v7gutams8avyc1o051o06hbi unique (tag_name, plugin_resource_id);
