@@ -71,7 +71,6 @@ dependencies {
   // Misc
   compile "args4j:args4j:$argsVersion"
   compile 'com.google.code.findbugs:jsr305:3.0.0'
-  compile "com.foilen:jl-smalltools:$smalltoolsVersion"
   compile 'org.apache.commons:commons-text:1.6'
   compile "javax.xml.bind:jaxb-api"
   compile 'org.quartz-scheduler:quartz'
