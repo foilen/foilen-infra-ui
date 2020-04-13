@@ -25,6 +25,7 @@ public class InfraUiConfig {
     @Nullable
     private String mysqlHostName;
     private int mysqlPort = 3306;
+    @Nullable
     private String mysqlDatabaseName = "foilen_infra";
     @Nullable
     private String mysqlDatabaseUserName;
