@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -15,9 +15,8 @@ import org.springframework.stereotype.Component;
 import com.foilen.infra.api.model.AuditAction;
 import com.foilen.infra.api.model.AuditType;
 import com.foilen.infra.api.model.ResourceDetails;
-import com.foilen.infra.ui.db.domain.audit.AuditItem;
+import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.smalltools.tools.AbstractBasics;
-import com.foilen.smalltools.tools.JsonTools;
 
 @Component
 public class AuditItemConverter extends AbstractBasics implements Converter<AuditItem, com.foilen.infra.apitmp.model.AuditItem> {
@@ -35,10 +34,10 @@ public class AuditItemConverter extends AbstractBasics implements Converter<Audi
         target.setUserType(source.getUserType());
         target.setUserName(source.getUserName());
         if (source.getResourceFirstType() != null) {
-            target.setResourceFirst(new ResourceDetails(source.getResourceFirstType(), JsonTools.readFromString(source.getResourceFirst(), Object.class)));
+            target.setResourceFirst(new ResourceDetails(source.getResourceFirstType(), source.getResourceFirst()));
         }
         if (source.getResourceSecondType() != null) {
-            target.setResourceSecond(new ResourceDetails(source.getResourceSecondType(), JsonTools.readFromString(source.getResourceSecond(), Object.class)));
+            target.setResourceSecond(new ResourceDetails(source.getResourceSecondType(), source.getResourceSecond()));
         }
         target.setLinkType(source.getLinkType());
         target.setTagName(source.getTagName());

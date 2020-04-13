@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -31,7 +31,7 @@ import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
-import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
+import com.foilen.infra.ui.repositories.documents.UserApiMachine;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.StringTools;
@@ -41,7 +41,7 @@ import com.foilen.smalltools.tools.StringTools;
 public class MachineServiceImpl extends AbstractBasics implements MachineService {
 
     @Autowired
-    private ApiUserService apiUserService;
+    private UserApiService userApiService;
     @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
@@ -69,7 +69,7 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         machineSetup.setMachineName(machineName);
 
         // Retrieve API access details
-        ApiMachineUser apiUser = apiUserService.getOrCreateForMachine(machineName);
+        UserApiMachine apiUser = userApiService.getOrCreateForMachine(machineName);
         machineSetup.setUiApiBaseUrl(uiApiBaseUrl);
         machineSetup.setUiApiCert(uiApiCert);
         machineSetup.setUiApiUserId(apiUser.getUserId());

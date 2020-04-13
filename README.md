@@ -18,6 +18,8 @@ Some configuration options can be overridden with the environment variables:
 
 You need to create a json configuration file that maps the object InfraUiConfig.
 
+The MySQL part is optional. It is only useful for the migration between MySQL to MongoDB. Once migrated, it is no more needed.
+
 Here is an example of the content:
 
 ```json
@@ -40,6 +42,8 @@ Here is an example of the content:
 	"mysqlDatabaseUserName" : "infra_ui",
 	"mysqlDatabasePassword" : "7b6618c64f538a7b181e24642",
 	
+	"mongoUri" : "mongodb://root:ABC@172.17.0.1:27017/foilen-ui-test",
+	
 	"loginConfigDetails" : {
 		"appId" : "BC805427E1",
 		"baseUrl" : "http://login.localhost",
@@ -55,7 +59,7 @@ You can then specify the full path of that file as the *configFile* argument whe
 
 # Development
 
-## Local in Eclipse
+## TEST in Eclipse
 
 To be able to execute the application in Eclipse, you first need to download all the plugins jars:
 
@@ -63,17 +67,13 @@ To be able to execute the application in Eclipse, you first need to download all
 ./download-local-plugins-jars.sh
 ```
 
-Then, run *InfraUiApp - LOCAL.launch*
-
-## Local in Docker
-
-Simply execute `./test-ui-local.sh` .
+Then, run *InfraUiApp - TEST.launch*
 
 ## TEST in Docker
 
 Simply execute `./test-ui-test.sh` .
 
-When done, cleanup by stopping the DB: `docker stop infra_ui_db` .
+When done, cleanup by stopping the DB: `docker stop infra-ui-mongodb` .
 
 # More
 

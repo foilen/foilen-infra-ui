@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -19,7 +19,7 @@ import com.foilen.smalltools.tools.DateTools;
 
 public class AuditItem extends AbstractApiBase {
 
-    private long id;
+    private String id;
 
     private Date timestamp;
     private String txId;
@@ -42,7 +42,7 @@ public class AuditItem extends AbstractApiBase {
         return action;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -98,7 +98,7 @@ public class AuditItem extends AbstractApiBase {
         this.explicitChange = explicitChange;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

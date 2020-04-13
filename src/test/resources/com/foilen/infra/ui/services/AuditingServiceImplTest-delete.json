@@ -8,9 +8,29 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : "Dns Entry",
-  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceFirst" : {
+    "details" : "127.0.0.1",
+    "meta" : { },
+    "mxPriority" : 10,
+    "name" : "d3.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "127.0.0.1",
+    "resourceEditorName" : null,
+    "resourceName" : "d3.example.com / A",
+    "type" : "A"
+  },
   "resourceSecondType" : "Dns Entry",
-  "resourceSecond" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d2.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : \"Manual DnsEntry\",\n  \"resourceName\" : \"d2.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceSecond" : {
+    "details" : "127.0.0.1",
+    "meta" : { },
+    "mxPriority" : 10,
+    "name" : "d2.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "127.0.0.1",
+    "resourceEditorName" : "Manual DnsEntry",
+    "resourceName" : "d2.example.com / A",
+    "type" : "A"
+  },
   "linkType" : "USES",
   "tagName" : null
 }, {
@@ -23,7 +43,17 @@
   "userType" : "SYSTEM",
   "userName" : null,
   "resourceFirstType" : null,
-  "resourceFirst" : "{\n  \"details\" : \"127.0.0.1\",\n  \"meta\" : { },\n  \"name\" : \"d3.example.com\",\n  \"resourceCategory\" : \"NET\",\n  \"resourceDescription\" : \"127.0.0.1\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"d3.example.com / A\",\n  \"type\" : \"A\"\n}",
+  "resourceFirst" : {
+    "details" : "127.0.0.1",
+    "meta" : { },
+    "mxPriority" : 10,
+    "name" : "d3.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "127.0.0.1",
+    "resourceEditorName" : null,
+    "resourceName" : "d3.example.com / A",
+    "type" : "A"
+  },
   "resourceSecondType" : null,
   "resourceSecond" : null,
   "linkType" : null,

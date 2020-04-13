@@ -1,7 +1,7 @@
 [ {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 946708440000,
   "cpuUsed" : 100,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,
@@ -31,8 +31,8 @@
   "aggregationsForDay" : 0
 }, {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 946709760000,
   "cpuUsed" : 200,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,
@@ -62,8 +62,8 @@
   "aggregationsForDay" : 0
 }, {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 946716180000,
   "cpuUsed" : 251,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,
@@ -93,8 +93,8 @@
   "aggregationsForDay" : 0
 }, {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 946815720000,
   "cpuUsed" : 843,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,
@@ -124,8 +124,8 @@
   "aggregationsForDay" : 0
 }, {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f002.node.example.com",
+  "timestamp" : 946816380000,
   "cpuUsed" : 275,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,

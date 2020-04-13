@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -22,7 +22,7 @@ public class InfraUiOptions {
     @Option(name = "--configFile", usage = "The config file path (default: none since using the CONFIG_FILE environment variable)")
     public String configFile;
 
-    @Option(name = "--mode", usage = "The mode: LOCAL, TEST, PROD (default: PROD)")
+    @Option(name = "--mode", usage = "The mode: TEST, PROD (default: PROD)")
     public String mode = "PROD";
 
 }

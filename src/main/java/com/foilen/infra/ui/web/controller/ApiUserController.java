@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foilen.infra.ui.services.ApiUserService;
 import com.foilen.infra.ui.services.EntitlementService;
+import com.foilen.infra.ui.services.UserApiService;
 import com.foilen.mvc.ui.UiSuccessErrorView;
 import com.foilen.smalltools.tuple.Tuple2;
 
@@ -31,7 +31,7 @@ public class ApiUserController {
     private static final String VIEW_BASE_PATH = "apiUser";
 
     @Autowired
-    private ApiUserService apiUserService;
+    private UserApiService userApiService;
     @Autowired
     private EntitlementService entitlementService;
 
@@ -43,7 +43,7 @@ public class ApiUserController {
                 .setErrorViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .execute((ui, modelAndView) -> {
                     entitlementService.isAdminOrFailUi(authentication.getName());
-                    Tuple2<String, String> userAndPassword = apiUserService.createAdminUser();
+                    Tuple2<String, String> userAndPassword = userApiService.createAdminUser();
                     redirectAttributes.addFlashAttribute("createdUser", userAndPassword);
                 });
 
@@ -56,7 +56,7 @@ public class ApiUserController {
                 .setErrorViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .execute((ui, modelAndView) -> {
                     entitlementService.isAdminOrFailUi(authentication.getName());
-                    apiUserService.deleteUser(userId);
+                    userApiService.deleteUser(userId);
                 });
     }
 
@@ -66,7 +66,7 @@ public class ApiUserController {
         entitlementService.isAdminOrFailUi(authentication.getName());
 
         ModelAndView modelAndView = new ModelAndView("apiUser/list");
-        modelAndView.addObject("apiUsers", apiUserService.findAll());
+        modelAndView.addObject("apiUsers", userApiService.findAll());
         return modelAndView;
     }
 

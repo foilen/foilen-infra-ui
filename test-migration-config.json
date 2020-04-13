@@ -1,0 +1,29 @@
+{
+	"baseUrl": "http://127.0.0.1:8080",
+	"infiniteLoopTimeoutInMs": 120000,
+	
+	"mysqlHostName" : "127.0.0.1",
+	"mysqlPort" : 3306,
+	"mysqlDatabaseName" : "infra_ui",
+	"mysqlDatabaseUserName" : "root",
+	"mysqlDatabasePassword" : "ABC",
+	
+	"mongoUri": "mongodb://127.0.0.1:27085/foilen-ui-test",
+	
+	"mailHost": "127.0.0.1",
+	"mailPort": 25,
+	"mailUsername": null,
+	"mailPassword": null,
+	
+	"mailFrom": "infra@example.com",
+	"mailAlertsTo": "alerts@example.com",
+	
+	"loginConfigDetails": {
+		"appId": null,
+		"baseUrl": "http://login.example.com",
+		"certFile": null,
+		"certText": null
+	},
+	"loginCookieSignatureSalt": "AAA",
+	"csrfSalt": "BBB"
+}

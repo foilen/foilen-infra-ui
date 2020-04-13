@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -36,7 +36,7 @@ public class AddVisualModelExtension extends AbstractCommonHandlerInterceptor {
     private Map<String, MenuEntry> leftMenuEntryByUri = new ConcurrentHashMap<>();
     private List<Tuple2<String, MenuEntry>> topMenustartsWith = new ArrayList<>();
     private List<Tuple2<String, MenuEntry>> leftMenustartsWith = new ArrayList<>();
-    private String version = "LOCAL";
+    private String version = "TEST";
 
     @Autowired
     private MenuEntry rootMenuEntry;

@@ -1,7 +1,7 @@
 [ {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 1463430915001,
   "cpuUsed" : 10,
   "cpuTotal" : 1000,
   "memoryUsed" : 1972293140,
@@ -31,8 +31,8 @@
   "aggregationsForDay" : 0
 }, {
   "id" : null,
-  "machineInternalId" : null,
-  "timestamp" : null,
+  "machineInternalId" : "f001.node.example.com",
+  "timestamp" : 1463430975001,
   "cpuUsed" : 1234,
   "cpuTotal" : 12345,
   "memoryUsed" : 1993274982,

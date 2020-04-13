@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -11,7 +11,6 @@ package com.foilen.infra.ui.services;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -20,13 +19,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.core.system.junits.JunitsHelper;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
@@ -35,9 +34,6 @@ import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.resource.example.JunitResource;
 import com.foilen.infra.resource.example.JunitResourceEnum;
 import com.foilen.infra.resource.machine.Machine;
-import com.foilen.infra.ui.db.dao.PluginResourceColumnSearchDao;
-import com.foilen.infra.ui.db.dao.PluginResourceDao;
-import com.foilen.infra.ui.db.domain.plugin.PluginResourceColumnSearch;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
@@ -51,9 +47,7 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
     @Autowired
     private InternalServicesContext internalServicesContext;
     @Autowired
-    private PluginResourceDao pluginResourceDao;
-    @Autowired
-    private PluginResourceColumnSearchDao pluginResourceColumnSearchDao;
+    private PluginResourceRepository pluginResourceRepository;
     @Autowired
     private ResourceManagementService resourceManagementService;
     @Autowired
@@ -159,14 +153,7 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
         });
 
         // Asserts
-        Assert.assertEquals(1, pluginResourceDao.count());
-
-        List<PluginResourceColumnSearch> columnSearches = pluginResourceColumnSearchDao.findAll(Sort.by("columnName"));
-        columnSearches.forEach(it -> {
-            it.setId(null);
-            it.setPluginResource(null);
-        });
-        AssertTools.assertJsonComparison("PluginResourceServiceImplTest-testCreateResource-expected.json", getClass(), columnSearches);
+        Assert.assertEquals(1, pluginResourceRepository.count());
     }
 
 }

@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -12,8 +12,8 @@ package com.foilen.infra.ui.services.hook;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.foilen.infra.plugin.core.system.common.changeexecution.hooks.ChangeExecutionHook;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangeExecutionHook;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;
 import com.foilen.login.spring.client.security.FoilenAuthentication;
 import com.foilen.smalltools.tools.AbstractBasics;

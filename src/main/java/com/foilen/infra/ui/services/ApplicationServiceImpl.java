@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -25,8 +26,8 @@ import org.springframework.stereotype.Service;
 
 import com.foilen.infra.apitmp.model.ApplicationDetails;
 import com.foilen.infra.apitmp.model.ApplicationDetailsResult;
-import com.foilen.infra.ui.db.dao.UserDao;
-import com.foilen.infra.ui.db.domain.user.User;
+import com.foilen.infra.ui.repositories.UserHumanRepository;
+import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
 import com.foilen.login.spring.services.FoilenLoginService;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -42,11 +43,11 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
     @Autowired
     private ReloadableResourceBundleMessageSource messageSource;
     @Autowired
-    private UserDao userDao;
+    private UserHumanRepository userHumanRepository;
 
     private Map<String, Object> translations = new TreeMap<>();
 
-    private String version = "LOCAL";
+    private String version = "TEST";
 
     private void addTranslations(Map<String, String> lang, String filename) {
         filename = filename.substring(filename.indexOf('/'));
@@ -81,9 +82,9 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
         if (userDetails != null) {
             applicationDetails.setUserEmail(userDetails.getEmail());
 
-            User user = userDao.findByUserId(userDetails.getUsername());
-            if (user != null) {
-                applicationDetails.setUserAdmin(user.isAdmin());
+            Optional<UserHuman> user = userHumanRepository.findById(userDetails.getUsername());
+            if (user.isPresent()) {
+                applicationDetails.setUserAdmin(user.get().isAdmin());
             }
         }
 

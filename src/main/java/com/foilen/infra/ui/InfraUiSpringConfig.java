@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -14,11 +14,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.wiring.BeanConfigurerSupport;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -28,57 +31,26 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
-import com.foilen.infra.ui.localonly.EmailServiceMock;
-import com.foilen.infra.ui.localonly.FakeDataService;
-import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
-import com.foilen.infra.ui.localonly.LocalLaunchService;
 import com.foilen.infra.ui.visual.MenuEntry;
 import com.foilen.smalltools.spring.security.CookiesGeneratedCsrfTokenRepository;
 import com.foilen.smalltools.tools.AssertTools;
 import com.foilen.smalltools.tools.CharsetTools;
 
 @Configuration
-@ComponentScan({ "com.foilen.infra.ui.config", //
+@ComponentScan({ //
         "com.foilen.infra.ui.converters", //
-        "com.foilen.infra.ui.db.dao", //
-        "com.foilen.infra.ui.plugin", //
         "com.foilen.infra.ui.services", //
         "com.foilen.infra.ui.tasks", //
-        "com.foilen.infra.ui.visual" })
-@EnableAutoConfiguration
+})
+@EnableAutoConfiguration(exclude = { //
+        DataSourceAutoConfiguration.class, //
+        DataSourceTransactionManagerAutoConfiguration.class, //
+        JpaRepositoriesAutoConfiguration.class, //
+        MongoDataAutoConfiguration.class, //
+})
 @EnableScheduling
-@PropertySource({ "classpath:/com/foilen/infra/ui/application-common.properties", "classpath:/com/foilen/infra/ui/application-${MODE}.properties" })
+@PropertySource({ "classpath:/com/foilen/infra/ui/application-common.properties" })
 public class InfraUiSpringConfig {
-
-    @Configuration
-    @Profile({ "JUNIT", "LOCAL" })
-    public static class ConfigUiConfigLocal {
-        @Primary
-        @Bean
-        public EmailServiceMock emailServiceMock() {
-            return new EmailServiceMock();
-        }
-
-        @Bean
-        public FakeDataService fakeDataService() {
-            return new FakeDataServiceImpl();
-        }
-
-        @Bean
-        public LocalLaunchService localLaunchService() {
-            return new LocalLaunchService(fakeDataService());
-        }
-
-        @Bean
-        public MessageSource messageSource() {
-            ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-            messageSource.setBasename("classpath:/WEB-INF/infra/ui/messages/messages");
-            messageSource.setDefaultEncoding(CharsetTools.UTF_8.name());
-            messageSource.setUseCodeAsDefaultMessage(true);
-            return messageSource;
-        }
-
-    }
 
     @Configuration
     @Profile({ "TEST", "PROD" })

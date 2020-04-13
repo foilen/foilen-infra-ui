@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -19,19 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
-import com.foilen.infra.ui.db.dao.AuditItemDao;
-import com.foilen.infra.ui.db.domain.audit.AuditAction;
-import com.foilen.infra.ui.db.domain.audit.AuditItem;
-import com.foilen.infra.ui.db.domain.audit.AuditType;
+import com.foilen.infra.ui.repositories.AuditItemRepository;
+import com.foilen.infra.ui.repositories.documents.AuditItem;
+import com.foilen.infra.ui.repositories.documents.models.AuditAction;
+import com.foilen.infra.ui.repositories.documents.models.AuditType;
 import com.foilen.smalltools.tools.AbstractBasics;
-import com.foilen.smalltools.tools.JsonTools;
 
 @Service
 @Transactional
 public class AuditingServiceImpl extends AbstractBasics implements AuditingService {
 
     @Autowired
-    private AuditItemDao auditItemDao;
+    private AuditItemRepository auditItemDao;
     @Autowired
     private IPResourceService ipResourceService;
 
@@ -100,11 +99,11 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
     private void setResources(AuditItem auditItem, IPResource resourceFirst, IPResource resourceSecond) {
         if (resourceFirst != null) {
             auditItem.setResourceFirstType(ipResourceService.getResourceDefinition(resourceFirst.getClass()).getResourceType());
-            auditItem.setResourceFirst(JsonTools.prettyPrint(resourceFirst));
+            auditItem.setResourceFirst(resourceFirst);
         }
         if (resourceSecond != null) {
             auditItem.setResourceSecondType(ipResourceService.getResourceDefinition(resourceSecond.getClass()).getResourceType());
-            auditItem.setResourceSecond(JsonTools.prettyPrint(resourceSecond));
+            auditItem.setResourceSecond(resourceSecond);
         }
     }
 
@@ -119,7 +118,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
     @Override
     public void tagDelete(String txId, boolean explicitChange, AuditUserType userType, String userName, IPResource resource, String tagName) {
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.TAG, AuditAction.DELETE, userType, userName);
-        auditItem.setResourceFirst(JsonTools.prettyPrint(resource));
+        auditItem.setResourceFirst(resource);
         auditItem.setTagName(tagName);
         auditItemDao.save(auditItem);
     }

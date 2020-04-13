@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
@@ -22,8 +23,8 @@ import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.dns.DnsEntry;
 import com.foilen.infra.resource.dns.ManualDnsEntryEditor;
 import com.foilen.infra.resource.dns.model.DnsEntryType;
-import com.foilen.infra.ui.db.dao.AuditItemDao;
-import com.foilen.infra.ui.db.domain.audit.AuditItem;
+import com.foilen.infra.ui.repositories.AuditItemRepository;
+import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
@@ -35,7 +36,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
     @Autowired
     private IPResourceService resourceService;
     @Autowired
-    private AuditItemDao auditItemDao;
+    private AuditItemRepository auditItemDao;
 
     public AuditingServiceImplTest() {
         super(false);
@@ -43,6 +44,8 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
 
     @Test
     public void test() {
+
+        Sort sort = Sort.by("type", "action", "linkType", "resourceFirst.resourceType", "resourceSecond.resourceType", "id");
 
         // Add
         ChangesContext changes = new ChangesContext(resourceService);
@@ -58,8 +61,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Add
-        List<AuditItem> items = auditItemDao.findAll().stream() //
-                .sorted((a, b) -> Long.compare(a.getId(), b.getId())) //
+        List<AuditItem> items = auditItemDao.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);
@@ -79,8 +81,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Update
-        items = auditItemDao.findAll().stream() //
-                .sorted((a, b) -> Long.compare(a.getId(), b.getId())) //
+        items = auditItemDao.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);
@@ -100,8 +101,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Delete
-        items = auditItemDao.findAll().stream() //
-                .sorted((a, b) -> Long.compare(a.getId(), b.getId())) //
+        items = auditItemDao.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);

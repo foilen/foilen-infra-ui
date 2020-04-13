@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,8 +65,6 @@ public class PluginResourceController extends AbstractBasics {
 
     @Autowired
     private CommonServicesContext commonServicesContext;
-    @Autowired
-    private ConversionService conversionService;
     @Autowired
     private EntitlementService entitlementService;
     @Autowired
@@ -148,7 +145,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @PostMapping("delete")
-    public ModelAndView delete(Authentication authentication, @RequestParam("resourceId") long resourceId, RedirectAttributes redirectAttributes) {
+    public ModelAndView delete(Authentication authentication, @RequestParam("resourceId") String resourceId, RedirectAttributes redirectAttributes) {
         return new UiSuccessErrorView(redirectAttributes) //
                 .setSuccessViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .setErrorViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
@@ -161,7 +158,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("edit/{resourceId}")
-    public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") long resourceId) {
+    public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") String resourceId) {
 
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/edit");
 
@@ -194,7 +191,7 @@ public class PluginResourceController extends AbstractBasics {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @GetMapping("editPageDefinition/{editorName}/{resourceId}")
-    public ModelAndView editPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, @PathVariable("resourceId") long resourceId,
+    public ModelAndView editPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, @PathVariable("resourceId") String resourceId,
             HttpServletRequest httpServletRequest) {
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
@@ -342,7 +339,7 @@ public class PluginResourceController extends AbstractBasics {
             ResourceEditor resourceEditor = resourceEditorOptional.get();
 
             // Get the resource if is editing
-            Long resourceId = conversionService.convert(formValues.get(RESOURCE_ID_FIELD), Long.class);
+            String resourceId = formValues.get(RESOURCE_ID_FIELD);
             boolean isUpdate = resourceId != null;
             IPResource resource = null;
             if (resourceId != null) {
@@ -390,7 +387,7 @@ public class PluginResourceController extends AbstractBasics {
             }
 
             // No errors: save and give the redirection link if no issues
-            Long internalId;
+            String internalId;
             if (isUpdate) {
 
                 // Update existing resource

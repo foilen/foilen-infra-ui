@@ -25,8 +25,8 @@
 	    <td>${apiUser.userId}</a></td>
 	    <td>${apiUser.description}</a></td>
 	    <td>${apiUser.admin?c}</a></td>
-	    <td>${apiUser.createdOn}</a></td>
-	    <td>${apiUser.expireOn!''}</a></td>
+	    <td>${apiUser.createdOnText!''}</a></td>
+	    <td>${apiUser.expireOnText!''}</a></td>
       <td>
         
         <#assign userIdArgs = [apiUser.userId]/>

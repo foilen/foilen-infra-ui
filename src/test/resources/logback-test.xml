@@ -11,5 +11,6 @@
   </root>
 
   <logger name="com.foilen.infra" level="DEBUG" />
+  <logger name="org.reflections.Reflections" level="ERROR" />
 
 </configuration>

@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -11,6 +11,7 @@ package com.foilen.infra.ui.services;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,11 @@ import org.springframework.stereotype.Service;
 
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.resource.machine.Machine;
-import com.foilen.infra.ui.db.dao.ApiMachineUserDao;
-import com.foilen.infra.ui.db.dao.UserDao;
-import com.foilen.infra.ui.db.domain.user.ApiMachineUser;
-import com.foilen.infra.ui.db.domain.user.ApiUser;
-import com.foilen.infra.ui.db.domain.user.User;
+import com.foilen.infra.ui.repositories.UserApiMachineRepository;
+import com.foilen.infra.ui.repositories.UserHumanRepository;
+import com.foilen.infra.ui.repositories.documents.UserApi;
+import com.foilen.infra.ui.repositories.documents.UserApiMachine;
+import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.mvc.ui.UiException;
 import com.foilen.smalltools.tools.StringTools;
 
@@ -30,13 +31,13 @@ import com.foilen.smalltools.tools.StringTools;
 public class EntitlementServiceImpl implements EntitlementService {
 
     @Autowired
-    private ApiMachineUserDao apiMachineUserDao;
-    @Autowired
-    private ApiUserService apiUserService;
-    @Autowired
     private IPResourceService ipResourceService;
     @Autowired
-    private UserDao userDao;
+    private UserApiService userApiService;
+    @Autowired
+    private UserApiMachineRepository userApiMachineRepository;
+    @Autowired
+    private UserHumanRepository userHumanRepository;
 
     @Override
     public void canDeleteResourcesOrFailUi(String userId) {
@@ -93,13 +94,13 @@ public class EntitlementServiceImpl implements EntitlementService {
 
     @Override
     public boolean isAdmin(String userId) {
-        ApiUser apiUser = apiUserService.findByUserIdAndActive(userId);
+        UserApi apiUser = userApiService.findByUserIdAndActive(userId);
         if (apiUser != null) {
             return apiUser.isAdmin();
         }
 
-        User user = userDao.findByUserId(userId);
-        return user != null && user.isAdmin();
+        Optional<UserHuman> user = userHumanRepository.findById(userId);
+        return user.isPresent() && user.get().isAdmin();
     }
 
     @Override
@@ -110,31 +111,33 @@ public class EntitlementServiceImpl implements EntitlementService {
     }
 
     private boolean isAdminOrMachine(String userId, String machineName) {
-        ApiUser apiUser = apiUserService.findByUserIdAndActive(userId);
-        if (apiUser != null) {
+        if (userId == null) {
+            return false;
+        }
+        UserApi apiUser = userApiService.findByUserIdAndActive(userId);
+        if (apiUser == null) {
+            Optional<UserApiMachine> apiMachineUser = userApiMachineRepository.findById(userId);
+            if (apiMachineUser.isPresent() && StringTools.safeEquals(apiMachineUser.get().getMachineName(), machineName)) {
+                return true;
+            }
+        } else {
             if (apiUser.isAdmin()) {
                 return true;
             }
-            if (apiUser instanceof ApiMachineUser) {
-                ApiMachineUser apiMachineUser = (ApiMachineUser) apiUser;
-                if (StringTools.safeEquals(apiMachineUser.getMachineName(), machineName)) {
-                    return true;
-                }
-            }
         }
 
-        User user = userDao.findByUserId(userId);
-        return user != null && user.isAdmin();
+        Optional<UserHuman> user = userHumanRepository.findById(userId);
+        return user.isPresent() && user.get().isAdmin();
     }
 
     private boolean isAMachine(String userId) {
-        return apiMachineUserDao.findByUserId(userId) != null;
+        return userApiMachineRepository.findById(userId) != null;
     }
 
     @Override
     public boolean isTheMachine(String userId, String machineName) {
-        ApiMachineUser apiMachineUser = apiMachineUserDao.findByUserId(userId);
-        return apiMachineUser != null && StringTools.safeEquals(machineName, apiMachineUser.getMachineName());
+        Optional<UserApiMachine> apiMachineUser = userApiMachineRepository.findById(userId);
+        return apiMachineUser.isPresent() && StringTools.safeEquals(machineName, apiMachineUser.get().getMachineName());
     }
 
     @Override

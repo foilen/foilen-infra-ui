@@ -25,32 +25,12 @@ mkdir -p $FOLDER_DATA $FOLDER_PLUGINS_JARS
 echo '###[ Download plugins ]###'
 ./download-local-plugins-jars.sh
 
-# Start mariadb
-INSTANCE=infra_ui_db
-DBNAME=infra_ui
-
-cat > $FOLDER_DATA/createDb.sh << _EOF
-#!/bin/bash
-mysql -uroot -pABC << _EOFF
-  CREATE DATABASE $DBNAME;
-_EOFF
-_EOF
-chmod +x $FOLDER_DATA/createDb.sh
+# Start mongodb
+INSTANCE=infra-ui-mongodb
 
 if ! docker ps | grep $INSTANCE ; then
-	echo '###[ Start mariadb ]###'
-	docker run \
-	  --rm \
-	  --name $INSTANCE \
-	  --env MYSQL_ROOT_PASSWORD=ABC \
-	  --env DBNAME=$DBNAME \
-	  --volume $FOLDER_DATA:/data \
-	  -d mariadb:10.3.6
-  
-  echo '###[ Wait 20 seconds ]###'
-  sleep 20s
-  echo '###[ Create the MariaDB database ]###'
-  docker exec -ti $INSTANCE /data/createDb.sh
+	echo '###[ Start mongodb ]###'
+	./mongodb-start.sh
 fi
 
 # Config file
@@ -65,9 +45,7 @@ cat > $FOLDER_DATA/config.json << _EOF
 	"mailAlertsTo" : "admin@localhost",
 	"mailFrom" : "infra-ui@localhost",
 	
-	"mysqlDatabaseName" : "infra_ui",
-	"mysqlDatabaseUserName" : "root",
-	"mysqlDatabasePassword" : "ABC",
+	"mongoUri" : "mongodb://127.0.0.1:27085",
 	
 	"loginConfigDetails" : {
 		"appId" : "BC805427E1",

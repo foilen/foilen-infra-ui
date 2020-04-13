@@ -4,6 +4,18 @@
       "action" : "ADD",
       "linkType" : "MANAGES",
       "resourceFirst" : {
+        "resourceName" : "localhost.example.com / A",
+        "resourceType" : "Dns Entry"
+      },
+      "resourceSecond" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Domain"
+      },
+      "type" : "LINK"
+    }, {
+      "action" : "ADD",
+      "linkType" : "MANAGES",
+      "resourceFirst" : {
         "resourceName" : "localhost.example.com",
         "resourceType" : "Machine"
       },
@@ -14,9 +26,47 @@
       "type" : "LINK"
     }, {
       "action" : "ADD",
+      "linkType" : "MANAGES",
+      "resourceFirst" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Machine"
+      },
+      "resourceSecond" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Domain"
+      },
+      "type" : "LINK"
+    }, {
+      "action" : "ADD",
+      "linkType" : "SUBDOMAIN",
+      "resourceFirst" : {
+        "resourceName" : "example.com",
+        "resourceType" : "Domain"
+      },
+      "resourceSecond" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Domain"
+      },
+      "type" : "LINK"
+    }, {
+      "action" : "ADD",
+      "resourceFirst" : {
+        "resourceName" : "example.com",
+        "resourceType" : "Domain"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "ADD",
       "resourceFirst" : {
         "resourceName" : "localhost.example.com / A",
         "resourceType" : "Dns Entry"
+      },
+      "type" : "RESOURCE"
+    }, {
+      "action" : "ADD",
+      "resourceFirst" : {
+        "resourceName" : "localhost.example.com",
+        "resourceType" : "Domain"
       },
       "type" : "RESOURCE"
     }, {
@@ -33,20 +83,25 @@
       "firstPage" : true,
       "itemsPerPage" : 100,
       "lastPage" : true,
-      "totalItems" : 3,
+      "totalItems" : 8,
       "totalPages" : 1
     }
   },
   "executionTimeInMsByActionHandler" : {
     "BackupToGoogleCloudActionHandler" : 1,
     "BackupToSftpActionHandler" : 1,
+    "DnsEntryValidationChangesEventHandler$$Lambda$NUM" : 1,
+    "DomainChangesEventHandler$$Lambda$NUM" : 1,
     "MachineChangesEventHandler$$Lambda$NUM" : 1,
+    "MachineDomainChangesEventHandler$$Lambda$NUM" : 1,
     "UsageMetricsConfigMachineActionHandler" : 1
   },
   "success" : true,
   "txId" : "was set",
   "updateCountByResourceId" : {
     "DnsEntry / localhost.example.com / A" : 1,
+    "Domain / example.com" : 1,
+    "Domain / localhost.example.com" : 1,
     "Machine / localhost.example.com" : 1
   }
 }

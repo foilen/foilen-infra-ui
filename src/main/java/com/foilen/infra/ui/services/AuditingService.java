@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
-import com.foilen.infra.ui.db.domain.audit.AuditItem;
+import com.foilen.infra.ui.repositories.documents.AuditItem;
 
 public interface AuditingService {
 

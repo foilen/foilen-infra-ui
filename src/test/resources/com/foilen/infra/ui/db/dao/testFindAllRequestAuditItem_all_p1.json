@@ -1,6 +1,6 @@
 {
   "content" : [ {
-    "id" : 3,
+    "id" : "1",
     "timestamp" : 957157200000,
     "txId" : "tx2",
     "explicitChange" : false,
@@ -8,11 +8,42 @@
     "action" : "UPDATE",
     "userType" : "SYSTEM",
     "resourceFirstType" : "Junit",
-    "resourceFirst" : "{\n  \"bool\" : false,\n  \"date\" : null,\n  \"doubleNumber\" : null,\n  \"enumeration\" : null,\n  \"floatNumber\" : null,\n  \"integerNumber\" : null,\n  \"longNumber\" : 0,\n  \"meta\" : { },\n  \"resourceCategory\" : \"INFRASTRUCTURE\",\n  \"resourceDescription\" : \"JunitResource [text=r1, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"r1\",\n  \"setDates\" : [ ],\n  \"setDoubles\" : [ ],\n  \"setEnumerations\" : [ ],\n  \"setFloats\" : [ ],\n  \"setIntegers\" : [ ],\n  \"setLongs\" : [ ],\n  \"setTexts\" : [ ],\n  \"text\" : \"r1\"\n}",
+    "resourceFirst" : {
+      "bool" : false,
+      "longNumber" : 0,
+      "meta" : { },
+      "resourceCategory" : "INFRASTRUCTURE",
+      "resourceDescription" : "JunitResource [text=r1, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+      "resourceName" : "r1",
+      "setDates" : [ ],
+      "setDoubles" : [ ],
+      "setEnumerations" : [ ],
+      "setFloats" : [ ],
+      "setIntegers" : [ ],
+      "setLongs" : [ ],
+      "setTexts" : [ ],
+      "text" : "r1"
+    },
     "resourceSecondType" : "Junit",
-    "resourceSecond" : "{\n  \"bool\" : false,\n  \"date\" : null,\n  \"doubleNumber\" : null,\n  \"enumeration\" : null,\n  \"floatNumber\" : null,\n  \"integerNumber\" : 2,\n  \"longNumber\" : 0,\n  \"meta\" : { },\n  \"resourceCategory\" : \"INFRASTRUCTURE\",\n  \"resourceDescription\" : \"JunitResource [text=r1, enumeration=null, date=null, integerNumber=2, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"r1\",\n  \"setDates\" : [ ],\n  \"setDoubles\" : [ ],\n  \"setEnumerations\" : [ ],\n  \"setFloats\" : [ ],\n  \"setIntegers\" : [ ],\n  \"setLongs\" : [ ],\n  \"setTexts\" : [ ],\n  \"text\" : \"r1\"\n}"
+    "resourceSecond" : {
+      "bool" : false,
+      "integerNumber" : 2,
+      "longNumber" : 0,
+      "meta" : { },
+      "resourceCategory" : "INFRASTRUCTURE",
+      "resourceDescription" : "JunitResource [text=r1, enumeration=null, date=null, integerNumber=2, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+      "resourceName" : "r1",
+      "setDates" : [ ],
+      "setDoubles" : [ ],
+      "setEnumerations" : [ ],
+      "setFloats" : [ ],
+      "setIntegers" : [ ],
+      "setLongs" : [ ],
+      "setTexts" : [ ],
+      "text" : "r1"
+    }
   }, {
-    "id" : 2,
+    "id" : "0",
     "timestamp" : 957157200000,
     "txId" : "tx2",
     "explicitChange" : true,
@@ -20,7 +51,22 @@
     "action" : "ADD",
     "userType" : "SYSTEM",
     "resourceFirstType" : "Junit",
-    "resourceFirst" : "{\n  \"bool\" : false,\n  \"date\" : null,\n  \"doubleNumber\" : null,\n  \"enumeration\" : null,\n  \"floatNumber\" : null,\n  \"integerNumber\" : null,\n  \"longNumber\" : 0,\n  \"meta\" : { },\n  \"resourceCategory\" : \"INFRASTRUCTURE\",\n  \"resourceDescription\" : \"JunitResource [text=r3, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]\",\n  \"resourceEditorName\" : null,\n  \"resourceName\" : \"r3\",\n  \"setDates\" : [ ],\n  \"setDoubles\" : [ ],\n  \"setEnumerations\" : [ ],\n  \"setFloats\" : [ ],\n  \"setIntegers\" : [ ],\n  \"setLongs\" : [ ],\n  \"setTexts\" : [ ],\n  \"text\" : \"r3\"\n}"
+    "resourceFirst" : {
+      "bool" : false,
+      "longNumber" : 0,
+      "meta" : { },
+      "resourceCategory" : "INFRASTRUCTURE",
+      "resourceDescription" : "JunitResource [text=r3, enumeration=null, date=null, integerNumber=null, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+      "resourceName" : "r3",
+      "setDates" : [ ],
+      "setDoubles" : [ ],
+      "setEnumerations" : [ ],
+      "setFloats" : [ ],
+      "setIntegers" : [ ],
+      "setLongs" : [ ],
+      "setTexts" : [ ],
+      "text" : "r3"
+    }
   } ],
   "empty" : false,
   "first" : true,

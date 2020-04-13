@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.foilen.infra.api.model.MachineSetup;
 import com.foilen.infra.api.response.ResponseMachineSetup;
-import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
+import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.test.asserts.AssertTools;
 

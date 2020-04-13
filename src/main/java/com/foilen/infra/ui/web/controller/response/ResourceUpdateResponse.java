@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -17,7 +17,7 @@ import com.foilen.infra.plugin.v1.model.resource.IPResource;
 public class ResourceUpdateResponse {
 
     private IPResource successResource;
-    private Long successResourceId;
+    private String successResourceId;
     private String topError = "";
     private Map<String, String> fieldsValues = new HashMap<>();
     private Map<String, String> fieldsErrors = new HashMap<>();
@@ -34,7 +34,7 @@ public class ResourceUpdateResponse {
         return successResource;
     }
 
-    public Long getSuccessResourceId() {
+    public String getSuccessResourceId() {
         return successResourceId;
     }
 
@@ -54,7 +54,7 @@ public class ResourceUpdateResponse {
         this.successResource = successResource;
     }
 
-    public void setSuccessResourceId(Long successResourceId) {
+    public void setSuccessResourceId(String successResourceId) {
         this.successResourceId = successResourceId;
     }
 

@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -10,33 +10,35 @@
 package com.foilen.infra.ui.services;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.ui.db.dao.AlertToSendDao;
-import com.foilen.infra.ui.db.dao.ApiMachineUserDao;
-import com.foilen.infra.ui.db.domain.alert.AlertToSend;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.MessageRepository;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.Message;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.models.MessageLevel;
+import com.foilen.infra.ui.repositories.UserApiMachineRepository;
 import com.foilen.smalltools.email.EmailService;
 import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.DateTools;
+import com.google.common.collect.ComparisonChain;
 
 @Service
 @Transactional
 public class AlertManagementServiceImpl extends AbstractBasics implements AlertManagementService {
 
     @Autowired
-    private AlertToSendDao alertToSendDao;
-    @Autowired
-    private ApiMachineUserDao apiMachineUserDao;
-    @Autowired
     private EntitlementService entitlementService;
+    @Autowired
+    private MessageRepository messageRepository;
+    @Autowired
+    private UserApiMachineRepository userApiMachineRepository;
 
     @Autowired
     private EmailService emailService;
@@ -49,7 +51,7 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
 
     @Override
     public void queueAlert(String subject, String content) {
-        alertToSendDao.save(new AlertToSend(new Date(), "UI", subject, content));
+        messageRepository.save(new Message(MessageLevel.INFO, new Date(), "UI", subject, content));
     }
 
     @Override
@@ -62,8 +64,8 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
             return formResult;
         }
 
-        String machineName = apiMachineUserDao.findByUserId(userId).getMachineName();
-        alertToSendDao.save(new AlertToSend(new Date(), machineName, subject, content));
+        String machineName = userApiMachineRepository.findById(userId).get().getMachineName();
+        messageRepository.save(new Message(MessageLevel.INFO, new Date(), machineName, subject, content));
 
         return formResult;
     }
@@ -71,11 +73,16 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
     @Override
     public void sendQueuedAlerts() {
 
-        if (alertToSendDao.countBySentOnBefore(DateTools.addDate(Calendar.SECOND, -30)) == 0) {
+        if (messageRepository.countBySentOnBeforeAndAcknowledgedIsFalse(DateTools.addDate(Calendar.SECOND, -30)) == 0) {
             return;
         }
 
-        List<AlertToSend> alertsToSend = alertToSendDao.findAll(Sort.by("sender", "subject", "sentOn"));
+        List<Message> alertsToSend = messageRepository.findAllNotAcknowledgedAndAcknowledgedThem();
+        Collections.sort(alertsToSend, (a, b) -> ComparisonChain.start() //
+                .compare(a.getSender(), b.getSender()) //
+                .compare(a.getShortDescription(), b.getShortDescription()) //
+                .compare(a.getSentOn(), b.getSentOn()) //
+                .result());
 
         // Choose the subject
         String subject;
@@ -89,9 +96,9 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
         StringBuilder content = new StringBuilder();
         alertsToSend.forEach(it -> {
             content.append(it.getSender()) //
-                    .append(" | ").append(it.getSubject()) //
+                    .append(" | ").append(it.getShortDescription()) //
                     .append(" | ").append(DateTools.formatFull(it.getSentOn())) //
-                    .append(" | ").append(it.getContent()) //
+                    .append(" | ").append(it.getLongDescription()) //
                     .append("\n");
         });
 
@@ -103,8 +110,8 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
             return;
         }
 
-        // Delete
-        alertToSendDao.deleteAll(alertsToSend);
+        // Delete alerts from 1 week ago
+        messageRepository.deleteBySentOnBeforeAndAcknowledgedIsTrue(DateTools.addDate(Calendar.WEEK_OF_YEAR, -1));
 
     }
 

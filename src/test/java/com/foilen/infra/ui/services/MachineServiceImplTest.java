@@ -1,13 +1,15 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
 
  */
 package com.foilen.infra.ui.services;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,8 +54,11 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
 
-        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup-f001.json", MachineSetup.class, getClass());
+        // Sort some things
+        Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
+        // Assert
+        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup-f001.json", MachineSetup.class, getClass());
         AssertTools.assertIgnoreLineFeed(JsonTools.prettyPrint(expectedMachineSetup), JsonTools.prettyPrint(machineSetup));
 
     }
@@ -71,8 +76,11 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
 
-        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup_f001_withInfraDockerManagerUser.json", MachineSetup.class, getClass());
+        // Sort some things
+        Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
+        // Assert
+        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup_f001_withInfraDockerManagerUser.json", MachineSetup.class, getClass());
         AssertTools.assertIgnoreLineFeed(JsonTools.prettyPrint(expectedMachineSetup), JsonTools.prettyPrint(machineSetup));
 
     }
@@ -86,8 +94,11 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
 
-        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup-f002.json", MachineSetup.class, getClass());
+        // Sort some things
+        Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
+        // Assert
+        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup-f002.json", MachineSetup.class, getClass());
         AssertTools.assertIgnoreLineFeed(JsonTools.prettyPrint(expectedMachineSetup), JsonTools.prettyPrint(machineSetup));
 
     }

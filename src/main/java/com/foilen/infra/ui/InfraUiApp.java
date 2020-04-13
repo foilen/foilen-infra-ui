@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -30,16 +30,19 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.AlwaysRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
+import com.foilen.infra.plugin.core.system.mongodb.spring.MongoDbSpringConfig;
+import com.foilen.infra.ui.testonly.FoilenLoginSecurityFakeUserConfig;
 import com.foilen.infra.ui.web.security.ApiSecurityConfig;
 import com.foilen.login.spring.client.security.FoilenLoginSecurityConfig;
 import com.foilen.login.stub.spring.client.security.FoilenLoginSecurityStubConfig;
 import com.foilen.mvc.MvcConfig;
 import com.foilen.smalltools.reflection.ReflectionTools;
+import com.foilen.smalltools.tools.JdbcUriTools;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.LogbackTools;
-import com.foilen.smalltools.tools.SecureRandomTools;
 import com.foilen.smalltools.tools.SpringTools;
 import com.foilen.springconfig.MailConfig;
 import com.google.common.base.Strings;
@@ -62,9 +65,10 @@ public class InfraUiApp {
                 return;
             }
 
-            List<String> springBootArgs = new ArrayList<>();
             if (options.debug) {
-                springBootArgs.add("--debug");
+                LogbackTools.changeConfig("/logback-debug.xml");
+            } else {
+                LogbackTools.changeConfig("/logback-normal.xml");
             }
 
             // Set the environment
@@ -82,25 +86,6 @@ public class InfraUiApp {
                 infraUiConfig = new InfraUiConfig();
             } else {
                 infraUiConfig = JsonTools.readFromFile(configFile, InfraUiConfig.class);
-            }
-
-            // Local -> Add some mock values
-            if ("LOCAL".equals(mode)) {
-                logger.info("Setting some random values for LOCAL mode");
-
-                infraUiConfig.setBaseUrl("http://127.0.0.1:8080");
-
-                infraUiConfig.setMysqlDatabaseUserName("notNeeded");
-                infraUiConfig.setMysqlDatabasePassword("notNeeded");
-
-                infraUiConfig.setMailFrom("infra@example.com");
-                infraUiConfig.setMailAlertsTo("alerts@example.com");
-
-                infraUiConfig.getLoginConfigDetails().setBaseUrl("http://login.example.com");
-
-                infraUiConfig.setCsrfSalt(SecureRandomTools.randomBase64String(10));
-                infraUiConfig.setLoginCookieSignatureSalt(SecureRandomTools.randomBase64String(10));
-
             }
 
             // Override some database configuration if provided via environment
@@ -124,8 +109,6 @@ public class InfraUiApp {
 
             // Config per mode
             switch (mode) {
-            case "LOCAL":
-                break;
             case "PROD":
                 // Configure login service
                 File loginConfigFile = File.createTempFile("loginConfig", ".json");
@@ -133,10 +116,13 @@ public class InfraUiApp {
                 System.setProperty("login.cookieSignatureSalt", infraUiConfig.getLoginCookieSignatureSalt());
                 System.setProperty("login.configFile", loginConfigFile.getAbsolutePath());
             case "TEST":
-                // Configure database
-                System.setProperty("spring.datasource.url", "jdbc:mysql://" + infraUiConfig.getMysqlHostName() + ":" + infraUiConfig.getMysqlPort() + "/" + infraUiConfig.getMysqlDatabaseName());
-                System.setProperty("spring.datasource.username", infraUiConfig.getMysqlDatabaseUserName());
-                System.setProperty("spring.datasource.password", infraUiConfig.getMysqlDatabasePassword());
+                System.setProperty("spring.data.mongodb.uri", infraUiConfig.getMongoUri());
+                String database = new JdbcUriTools("jdbc:" + infraUiConfig.getMongoUri()).getDatabase();
+                if (database == null) {
+                    System.err.println("Cannot get the mongodb database from the mongodb uri");
+                    System.exit(1);
+                }
+                System.setProperty("spring.data.mongodb.database", database);
                 break;
             default:
                 System.out.println("Invalid mode: " + mode);
@@ -147,34 +133,47 @@ public class InfraUiApp {
             List<Class<?>> sources = new ArrayList<>();
 
             // Run the upgrader
-            if ("LOCAL".equals(mode)) {
-                logger.info("Skipping UPGRADE MODE");
-            } else {
-                logger.info("Begin UPGRADE MODE");
-                sources.add(InfraUiUpgradesSpringConfig.class);
-
-                RetryTemplate infiniteRetryTemplate = new RetryTemplate();
-
-                FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-                fixedBackOffPolicy.setBackOffPeriod(10000L);// 10 seconds
-                infiniteRetryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-
-                infiniteRetryTemplate.setRetryPolicy(new AlwaysRetryPolicy());
-
-                infiniteRetryTemplate.execute(new RetryCallback<Void, RuntimeException>() {
-
-                    @Override
-                    public Void doWithRetry(RetryContext context) throws RuntimeException {
-                        runApp(springBootArgs, sources, mode, true);
-                        return null;
-                    }
-                });
-
-                logger.info("End UPGRADE MODE");
+            logger.info("[UPGRADE] Begin");
+            if (!Strings.isNullOrEmpty(infraUiConfig.getMysqlHostName())) {
+                logger.info("[UPGRADE] Has MySql");
+                sources.add(InfraUiUpgradesMysqlSpringConfig.class);
             }
 
+            sources.add(MongoDbSpringConfig.class);
+            sources.add(InfraUiMongoDbExtraSpringConfig.class);
+
+            sources.add(InfraUiUpgradesMongoDbSpringConfig.class);
+            sources.add(InfraUiUpgradesCommonSpringConfig.class);
+
+            FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+            fixedBackOffPolicy.setBackOffPeriod(10000L);// 10 seconds
+            RetryTemplate infiniteRetryTemplate = new RetryTemplate();
+            infiniteRetryTemplate.setBackOffPolicy(fixedBackOffPolicy);
+
+            infiniteRetryTemplate.setRetryPolicy(new AlwaysRetryPolicy());
+
+            logger.info("[UPGRADE] Execute");
+            infiniteRetryTemplate.execute(new RetryCallback<Void, RuntimeException>() {
+
+                @Override
+                public Void doWithRetry(RetryContext context) throws RuntimeException {
+                    logger.info("[UPGRADE] Try upgrading");
+                    try {
+                        runApp(options.debug, sources, mode, false, true);
+                    } catch (Throwable e) {
+                        logger.info("[UPGRADE] Problem upgrading", e);
+                        throw e;
+                    } finally {
+                        logger.info("[UPGRADE] Finished to try upgrading");
+                    }
+                    return null;
+                }
+            });
+
+            logger.info("[UPGRADE] End");
+
             // Run the main app
-            logger.info("Will start the main app");
+            logger.info("[MAIN APP] Will start the main app");
             sources.clear();
 
             sources.add(MailConfig.class);
@@ -185,7 +184,15 @@ public class InfraUiApp {
             sources.add(SpringTools.class);
 
             sources.add(InfraUiSpringConfig.class);
-            sources.add(InfraUiDbLiveSpringConfig.class);
+
+            // MongoDB
+            sources.add(MongoDbSpringConfig.class);
+            sources.add(InfraUiMongoDbExtraSpringConfig.class);
+
+            // System
+            sources.add(InfraUiSystemSpringConfig.class);
+
+            // Web
             sources.add(InfraUiWebSpringConfig.class);
 
             // Spring Security for the external API
@@ -193,9 +200,9 @@ public class InfraUiApp {
 
             // Beans per mode
             switch (mode) {
-            case "LOCAL":
             case "TEST":
                 sources.add(FoilenLoginSecurityStubConfig.class);
+                sources.add(FoilenLoginSecurityFakeUserConfig.class);
                 break;
             case "PROD":
                 // foilen-login-api
@@ -208,7 +215,7 @@ public class InfraUiApp {
             }
 
             // Start
-            runApp(springBootArgs, sources, mode, false);
+            runApp(options.debug, sources, mode, true, false);
 
             // Check if debug
             if (options.debug) {
@@ -216,27 +223,46 @@ public class InfraUiApp {
             }
 
         } catch (Exception e) {
-            logger.error("Application failed", e);
+            logger.error("[MAIN APP] Application failed", e);
             System.exit(1);
         }
 
     }
 
-    private static ConfigurableApplicationContext runApp(List<String> springBootArgs, List<Class<?>> sources, String mode, boolean closeAtEnd) {
+    @SuppressWarnings("resource")
+    private static ConfigurableApplicationContext runApp(boolean debug, List<Class<?>> sources, String mode, boolean webContext, boolean closeAtEnd) {
 
-        // Set the environment
-        ConfigurableEnvironment environment = new StandardServletEnvironment();
-        environment.addActiveProfile(mode);
         System.setProperty("MODE", mode);
 
-        SpringApplication springApplication = new SpringApplication();
-        springApplication.addPrimarySources(sources);
-        springApplication.setEnvironment(environment);
-        ConfigurableApplicationContext appCtx = springApplication.run(springBootArgs.toArray(new String[springBootArgs.size()]));
-        if (closeAtEnd) {
-            appCtx.close();
+        ConfigurableApplicationContext ctx;
+        if (webContext) {
+            ConfigurableEnvironment environment = new StandardServletEnvironment();
+            environment.addActiveProfile(mode);
+            System.setProperty("MODE", mode);
+
+            SpringApplication springApplication = new SpringApplication();
+            springApplication.addPrimarySources(sources);
+            springApplication.setEnvironment(environment);
+            List<String> springBootArgs = new ArrayList<>();
+            if (debug) {
+                springBootArgs.add("--debug");
+            }
+            ConfigurableApplicationContext appCtx = springApplication.run(springBootArgs.toArray(new String[springBootArgs.size()]));
+            ctx = appCtx;
+        } else {
+            AnnotationConfigWebApplicationContext appCtx = new AnnotationConfigWebApplicationContext();
+            ctx = appCtx;
+            sources.forEach(s -> appCtx.register(s));
+            ctx.getEnvironment().setActiveProfiles(mode);
+            ctx.refresh();
         }
-        return appCtx;
+
+        if (closeAtEnd) {
+            ctx.close();
+            return null;
+        }
+        return ctx;
+
     }
 
     private static void showUsage() {
@@ -256,6 +282,7 @@ public class InfraUiApp {
                     System.exit(1);
                 }
             } else {
+                logger.info("[PROPERTY] Adding infraUi.{}", propertyName);
                 System.setProperty("infraUi." + propertyName, propertyValue.toString());
             }
         }

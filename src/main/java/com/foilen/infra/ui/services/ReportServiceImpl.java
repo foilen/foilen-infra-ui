@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -16,12 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.ui.db.dao.ReportCountDao;
-import com.foilen.infra.ui.db.dao.ReportExecutionDao;
-import com.foilen.infra.ui.db.dao.ReportTimeDao;
-import com.foilen.infra.ui.db.domain.reporting.ReportCount;
-import com.foilen.infra.ui.db.domain.reporting.ReportExecution;
-import com.foilen.infra.ui.db.domain.reporting.ReportTime;
+import com.foilen.infra.ui.repositories.ReportExecutionRepository;
+import com.foilen.infra.ui.repositories.documents.ReportExecution;
+import com.foilen.infra.ui.repositories.documents.models.ReportCount;
+import com.foilen.infra.ui.repositories.documents.models.ReportTime;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 @Service
@@ -29,22 +27,16 @@ import com.foilen.smalltools.tools.AbstractBasics;
 public class ReportServiceImpl extends AbstractBasics implements ReportService {
 
     @Autowired
-    private ReportCountDao reportCountDao;
-    @Autowired
-    private ReportExecutionDao reportExecutionDao;
-    @Autowired
-    private ReportTimeDao reportTimeDao;
+    private ReportExecutionRepository reportExecutionRepository;
 
     @Override
     public void addReport(String txId, boolean success, List<ReportTime> reportTimes, List<ReportCount> reportCounts) {
         ReportExecution reportExecution = new ReportExecution(txId, success);
-        reportExecution = reportExecutionDao.save(reportExecution);
-        ReportExecution finalReportExecution = reportExecution;
 
-        reportTimes.forEach(it -> it.setReportExecution(finalReportExecution));
-        reportTimeDao.saveAll(reportTimes);
-        reportCounts.forEach(it -> it.setReportExecution(finalReportExecution));
-        reportCountDao.saveAll(reportCounts);
+        reportExecution.setReportTimes(reportTimes);
+        reportExecution.setReportCounts(reportCounts);
+
+        reportExecutionRepository.save(reportExecution);
 
     }
 

@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -22,11 +22,17 @@ public class InfraUiConfig {
     private long infiniteLoopTimeoutInMs = 120000;
 
     // MySql
-    private String mysqlHostName = "127.0.0.1";
+    @Nullable
+    private String mysqlHostName;
     private int mysqlPort = 3306;
     private String mysqlDatabaseName = "foilen_infra";
+    @Nullable
     private String mysqlDatabaseUserName;
+    @Nullable
     private String mysqlDatabasePassword;
+
+    // Mongo
+    private String mongoUri;
 
     // Email server
     private String mailHost = "127.0.0.1";
@@ -91,6 +97,10 @@ public class InfraUiConfig {
         return mailUsername;
     }
 
+    public String getMongoUri() {
+        return mongoUri;
+    }
+
     public String getMysqlDatabaseName() {
         return mysqlDatabaseName;
     }
@@ -153,6 +163,10 @@ public class InfraUiConfig {
 
     public void setMailUsername(String mailUsername) {
         this.mailUsername = mailUsername;
+    }
+
+    public void setMongoUri(String mongoUri) {
+        this.mongoUri = mongoUri;
     }
 
     public void setMysqlDatabaseName(String mysqlDatabaseName) {

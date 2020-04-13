@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -21,12 +21,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foilen.infra.api.model.SystemStats;
-import com.foilen.infra.ui.db.dao.MachineStatisticFSDao;
-import com.foilen.infra.ui.db.dao.MachineStatisticNetworkDao;
-import com.foilen.infra.ui.db.dao.MachineStatisticsDao;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatisticFS;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatisticNetwork;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatistics;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.PluginResource;
+import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.ui.repositories.MachineStatisticsRepository;
+import com.foilen.infra.ui.repositories.documents.MachineStatistics;
+import com.foilen.infra.ui.repositories.documents.models.MachineStatisticFS;
+import com.foilen.infra.ui.repositories.documents.models.MachineStatisticNetwork;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.reflection.BeanPropertiesCopierTools;
 import com.foilen.smalltools.test.asserts.AssertTools;
@@ -37,20 +38,18 @@ import com.foilen.smalltools.tools.JsonTools;
 public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
 
     @Autowired
-    private MachineStatisticsDao machineStatisticsDao;
-    @Autowired
-    private MachineStatisticFSDao machineStatisticFSDao;
-    @Autowired
-    private MachineStatisticNetworkDao machineStatisticNetworkDao;
+    private MachineStatisticsRepository machineStatisticsRepository;
     @Autowired
     private MachineStatisticsService machineStatisticsService;
+    @Autowired
+    private PluginResourceRepository pluginResourceRepository;
 
     public MachineStatisticsServiceImplTest() {
         super(true);
     }
 
     private void assertDb(String jsonFile) {
-        List<MachineStatistics> machineStatisticsList = machineStatisticsDao.findAll(Sort.by("timestamp", "machineInternalId"));
+        List<MachineStatistics> machineStatisticsList = machineStatisticsRepository.findAll(Sort.by("timestamp", "machineInternalId"));
 
         List<MachineStatistics> actual = new ArrayList<>();
         for (MachineStatistics machineStatistics : machineStatisticsList) {
@@ -63,9 +62,7 @@ public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
 
     @Before
     public void clearStats() {
-        machineStatisticNetworkDao.deleteAll();
-        machineStatisticFSDao.deleteAll();
-        machineStatisticsDao.deleteAll();
+        machineStatisticsRepository.deleteAll();
     }
 
     private MachineStatisticFS copy(MachineStatisticFS machineStatisticFS) {
@@ -87,7 +84,7 @@ public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
 
     private MachineStatistics copy(MachineStatistics machineStatistics) {
         BeanPropertiesCopierTools bp = new BeanPropertiesCopierTools(machineStatistics, MachineStatistics.class);
-        // bp.copyProperty("timestamp");
+        bp.copyProperty("timestamp");
         bp.copyProperty("cpuUsed");
         bp.copyProperty("cpuTotal");
         bp.copyProperty("memoryUsed");
@@ -96,6 +93,11 @@ public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
         bp.copyProperty("aggregationsForDay");
 
         MachineStatistics destination = (MachineStatistics) bp.getDestination();
+
+        // Machine name
+        PluginResource pluginResource = pluginResourceRepository.findById(machineStatistics.getMachineInternalId()).get();
+        Machine machine = (Machine) pluginResource.getResource();
+        destination.setMachineInternalId(machine.getName());
 
         // FS
         for (MachineStatisticFS machineStatisticFS : machineStatistics.getFs().stream().sorted().collect(Collectors.toList())) {
@@ -118,9 +120,7 @@ public class MachineStatisticsServiceImplTest extends AbstractSpringTests {
         systemStats.add(JsonTools.readFromResource("MachineStatisticsServiceImplTest-systemstats-2.json", SystemStats.class, this.getClass()));
         machineStatisticsService.addStats(machineName, systemStats);
 
-        Assert.assertEquals(2, machineStatisticsDao.count());
-        Assert.assertEquals(2, machineStatisticFSDao.count());
-        Assert.assertEquals(6, machineStatisticNetworkDao.count());
+        Assert.assertEquals(2, machineStatisticsRepository.count());
 
         assertDb("MachineStatisticsServiceImplTest-testAddStats-expected.json");
 

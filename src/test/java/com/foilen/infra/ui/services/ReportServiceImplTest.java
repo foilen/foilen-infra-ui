@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -15,11 +15,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.foilen.infra.ui.db.dao.ReportCountDao;
-import com.foilen.infra.ui.db.dao.ReportExecutionDao;
-import com.foilen.infra.ui.db.dao.ReportTimeDao;
-import com.foilen.infra.ui.db.domain.reporting.ReportCount;
-import com.foilen.infra.ui.db.domain.reporting.ReportTime;
+import com.foilen.infra.ui.repositories.ReportExecutionRepository;
+import com.foilen.infra.ui.repositories.documents.ReportExecution;
+import com.foilen.infra.ui.repositories.documents.models.ReportCount;
+import com.foilen.infra.ui.repositories.documents.models.ReportTime;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 
 public class ReportServiceImplTest extends AbstractSpringTests {
@@ -27,11 +26,7 @@ public class ReportServiceImplTest extends AbstractSpringTests {
     @Autowired
     private ReportService reportService;
     @Autowired
-    private ReportCountDao reportCountDao;
-    @Autowired
-    private ReportExecutionDao reportExecutionDao;
-    @Autowired
-    private ReportTimeDao reportTimeDao;
+    private ReportExecutionRepository reportExecutionRepository;
 
     public ReportServiceImplTest() {
         super(false);
@@ -45,9 +40,10 @@ public class ReportServiceImplTest extends AbstractSpringTests {
                 Arrays.asList(new ReportCount("resource1", 1), new ReportCount("resource2", 2)) //
         );
 
-        Assert.assertEquals(1, reportExecutionDao.count());
-        Assert.assertEquals(3, reportTimeDao.count());
-        Assert.assertEquals(2, reportCountDao.count());
+        Assert.assertEquals(1, reportExecutionRepository.count());
+        ReportExecution reportExecution = reportExecutionRepository.findAll().stream().findAny().get();
+        Assert.assertEquals(3, reportExecution.getReportTimes().size());
+        Assert.assertEquals(2, reportExecution.getReportCounts().size());
 
     }
 

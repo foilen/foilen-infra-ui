@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -21,8 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +33,12 @@ import com.foilen.infra.api.model.SystemStats;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.ui.InfraUiException;
-import com.foilen.infra.ui.db.dao.MachineStatisticsDao;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatisticFS;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatisticNetwork;
-import com.foilen.infra.ui.db.domain.monitoring.MachineStatistics;
+import com.foilen.infra.ui.repositories.MachineStatisticsRepository;
+import com.foilen.infra.ui.repositories.documents.MachineStatistics;
+import com.foilen.infra.ui.repositories.documents.models.MachineStatisticFS;
+import com.foilen.infra.ui.repositories.documents.models.MachineStatisticNetwork;
 import com.foilen.smalltools.systemusage.results.NetworkInfo;
+import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.DateTools;
 import com.foilen.smalltools.tools.JsonTools;
 import com.google.common.cache.CacheBuilder;
@@ -48,7 +47,7 @@ import com.google.common.cache.LoadingCache;
 
 @Service
 @Transactional
-public class MachineStatisticsServiceImpl implements MachineStatisticsService {
+public class MachineStatisticsServiceImpl extends AbstractBasics implements MachineStatisticsService {
 
     private static class AggregatedStats {
         private List<String> timestamp = new ArrayList<>();
@@ -74,12 +73,12 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
             logger.debug("Loading stats aggregation for {}", machineName);
 
             AggregatedStats aggregatedStats = new AggregatedStats();
-            Long machineInternalId = findMachineInternalId(machineName);
+            String machineInternalId = findMachineInternalId(machineName);
             if (machineInternalId == null) {
                 return aggregatedStats;
             }
 
-            List<MachineStatistics> machineStatistics = machineStatisticsDao.findAllByMachineInternalIdAndTimestampAfterOrderByTimestamp(machineInternalId,
+            List<MachineStatistics> machineStatistics = machineStatisticsRepository.findAllByMachineInternalIdAndTimestampAfterOrderByTimestamp(machineInternalId,
                     DateTools.addDate(new Date(), Calendar.HOUR, -6));
 
             for (MachineStatistics oneStat : machineStatistics) {
@@ -123,58 +122,22 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
 
     }
 
-    private static class MachineTimeKey {
-        private long machineInternalId;
+    private static class MachineTimeKey extends AbstractBasics {
+        private String machineInternalId;
         private Date timestamp;
 
-        public MachineTimeKey(long machineInternalId, Date timestamp) {
+        public MachineTimeKey(String machineInternalId, Date timestamp) {
             this.machineInternalId = machineInternalId;
             this.timestamp = timestamp;
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            MachineTimeKey other = (MachineTimeKey) obj;
-            if (machineInternalId != other.machineInternalId) {
-                return false;
-            }
-            if (timestamp == null) {
-                if (other.timestamp != null) {
-                    return false;
-                }
-            } else if (!timestamp.equals(other.timestamp)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + (int) (machineInternalId ^ (machineInternalId >>> 32));
-            result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
-            return result;
-        }
-
     }
-
-    private final static Logger logger = LoggerFactory.getLogger(MachineStatisticsServiceImpl.class);
 
     @Autowired
     private IPResourceService ipResourceService;
 
     @Autowired
-    private MachineStatisticsDao machineStatisticsDao;
+    private MachineStatisticsRepository machineStatisticsRepository;
     private LoadingCache<String, AggregatedStats> aggregatedStatsByMachineName = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.MINUTES)
             .build(new AggregatedStatsCacheLoader());
 
@@ -183,7 +146,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
 
         // Get the machine
         logger.info("[{}] Adding {} stats", machineName, systemStatsList.size());
-        Long machineInternalId = findMachineInternalId(machineName);
+        String machineInternalId = findMachineInternalId(machineName);
         if (machineInternalId == null) {
             logger.error("[{}] The machine does not exists", machineName);
             return;
@@ -221,7 +184,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
                         networkInfo.getOutBytes()));
             }
 
-            machineStatisticsDao.save(machineStatistics);
+            machineStatisticsRepository.save(machineStatistics);
         }
 
         logger.info("[{}] Adding stats completed", machineName);
@@ -236,7 +199,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         logger.info("Will aggregate by day all items before {}", DateTools.formatFull(before));
 
         // Get the items to process
-        List<MachineStatistics> allToProcess = machineStatisticsDao.findAllAggregationByHoursByTimestampBefore(before);
+        List<MachineStatistics> allToProcess = machineStatisticsRepository.findAllAggregationByHoursByTimestampBefore(before);
         Map<MachineTimeKey, List<MachineStatistics>> toProcessByKey = allToProcess.stream() //
                 .collect(Collectors.groupingBy(it -> //
                 new MachineTimeKey( //
@@ -247,7 +210,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         // Get or create the existing aggregation for the key times
         Map<MachineTimeKey, MachineStatistics> mergedByMachineAndTime = new HashMap<>();
         for (MachineTimeKey key : toProcessByKey.keySet()) {
-            MachineStatistics existing = machineStatisticsDao.findAggregationDayByMachineInternalIdAndTimestamp(key.machineInternalId, key.timestamp);
+            MachineStatistics existing = machineStatisticsRepository.findAggregationDayByMachineInternalIdAndTimestamp(key.machineInternalId, key.timestamp);
             if (existing == null) {
                 existing = new MachineStatistics(key.machineInternalId, key.timestamp, 0, 0, 0, 0, 0, 0);
             }
@@ -269,8 +232,8 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         }
 
         // Save aggregation and delete processed entries
-        machineStatisticsDao.saveAll(mergedByMachineAndTime.values());
-        machineStatisticsDao.deleteAll(allToProcess);
+        machineStatisticsRepository.saveAll(mergedByMachineAndTime.values());
+        machineStatisticsRepository.deleteAll(allToProcess);
     }
 
     @Override
@@ -281,7 +244,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         logger.info("Will aggregate by hour all items before {}", DateTools.formatFull(before));
 
         // Get the items to process
-        List<MachineStatistics> allToProcess = machineStatisticsDao.findAllNonAggregationByTimestampBefore(before);
+        List<MachineStatistics> allToProcess = machineStatisticsRepository.findAllNonAggregationByTimestampBefore(before);
         Map<MachineTimeKey, List<MachineStatistics>> toProcessByKey = allToProcess.stream() //
                 .collect(Collectors.groupingBy(it -> //
                 new MachineTimeKey( //
@@ -292,7 +255,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         // Get or create the existing aggregation for the key times
         Map<MachineTimeKey, MachineStatistics> mergedByMachineAndTime = new HashMap<>();
         for (MachineTimeKey key : toProcessByKey.keySet()) {
-            MachineStatistics existing = machineStatisticsDao.findAggregationHourByMachineInternalIdAndTimestamp(key.machineInternalId, key.timestamp);
+            MachineStatistics existing = machineStatisticsRepository.findAggregationHourByMachineInternalIdAndTimestamp(key.machineInternalId, key.timestamp);
             if (existing == null) {
                 existing = new MachineStatistics(key.machineInternalId, key.timestamp, 0, 0, 0, 0, 0, 0);
             }
@@ -311,8 +274,8 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         }
 
         // Save aggregation and delete processed entries
-        machineStatisticsDao.saveAll(mergedByMachineAndTime.values());
-        machineStatisticsDao.deleteAll(allToProcess);
+        machineStatisticsRepository.saveAll(mergedByMachineAndTime.values());
+        machineStatisticsRepository.deleteAll(allToProcess);
     }
 
     private int averageAndMerge(MachineStatistics merged, int currentCount, int toAdd, List<MachineStatistics> toProcess, boolean multWithAggregatedHours) {
@@ -384,7 +347,7 @@ public class MachineStatisticsServiceImpl implements MachineStatisticsService {
         return total;
     }
 
-    private Long findMachineInternalId(String machineName) {
+    private String findMachineInternalId(String machineName) {
         Optional<Machine> machine = ipResourceService.resourceFind(ipResourceService.createResourceQuery(Machine.class) //
                 .propertyEquals(Machine.PROPERTY_NAME, machineName));
         if (machine.isPresent()) {

@@ -1,7 +1,7 @@
 /*
     Foilen Infra UI
     https://github.com/foilen/foilen-infra-ui
-    Copyright (c) 2017-2019 Foilen (http://foilen.com)
+    Copyright (c) 2017-2020 Foilen (http://foilen.com)
 
     The MIT License
     http://opensource.org/licenses/MIT
@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.foilen.infra.apitmp.model.AuditItemWithPagination;
 import com.foilen.infra.apitmp.request.RequestAuditItem;
 import com.foilen.infra.plugin.v1.core.service.TranslationService;
-import com.foilen.infra.ui.db.dao.AuditItemDao;
-import com.foilen.infra.ui.db.domain.audit.AuditItem;
+import com.foilen.infra.ui.repositories.AuditItemRepository;
+import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.tools.CollectionsTools;
 import com.foilen.smalltools.tools.DateTools;
@@ -30,7 +30,7 @@ import com.foilen.smalltools.tools.DateTools;
 public class ApiAuditManagementServiceImpl extends AbstractApiService implements ApiAuditManagementService {
 
     @Autowired
-    private AuditItemDao auditItemDao;
+    private AuditItemRepository auditItemDao;
     @Autowired
     private PaginationService paginationService;
     @Autowired
