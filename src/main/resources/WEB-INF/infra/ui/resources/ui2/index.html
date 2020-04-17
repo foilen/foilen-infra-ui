@@ -36,10 +36,21 @@
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item"><router-link class="nav-link" to="/" v-bind:class="{active: $route.path == '/'}">{{ $t('menu.home') }}</router-link></li>
+
+          <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="infraDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $t('menu.infrastructure') }}</a>
+            <div class="dropdown-menu" aria-labelledby="infraDropdown">
+              <a class="dropdown-item" href="/machineGraphics/list">{{ $t('menu.machineGraphics') }}</a>
+              <a class="dropdown-item" href="/machineBootstrap/list">{{ $t('menu.machineBootstrap') }}</a>
+            </div>
+          </li>
+
+          <li class="nav-item"><a href="/plugin/list" class="nav-link" >{{ $t('menu.plugin') }}</a></li>
+          <li class="nav-item"><a href="/pluginresources/list" class="nav-link" >{{ $t('menu.pluginresources') }}</a></li>
+          <li class="nav-item"><a href="/apiUser/list" class="nav-link" >{{ $t('menu.apiUser') }}</a></li>
+          
           <li class="nav-item"><router-link class="nav-link" to="/audits" v-bind:class="{active: $route.path == '/audits'}">{{ $t('menu.audits') }}</router-link></li>
         </ul>
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/">{{ $t('navbar.oldUi') }}</a></li>
           <li class="nav-item"><a class="nav-link" v-on:click="changeLang()">{{ $t('navbar.nextlang.name') }}</a></li>
         </ul>
       </div>

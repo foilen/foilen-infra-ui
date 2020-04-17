@@ -99,6 +99,9 @@ public class InfraUiSpringConfig {
         // ApiUser
         menuEntry.addChild("apiUser").setUri("/apiUser/list").addUriStartsWith("/apiUser/");
 
+        // Audits
+        menuEntry.addChild("audits").setUri("/index.html#/audits").addUriStartsWith("/index.html#/audits");
+
         return menuEntry;
     }
 

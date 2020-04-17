@@ -26,7 +26,6 @@
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
 	      <li><a href="?lang=<@spring.message "navbar.nextlang.id"/>"><@spring.message "navbar.nextlang.name"/></a></li>
-	      <li><a href="/index.html"/><@spring.message "navbar.newUi"/></a></li>
 	    </ul>
 	  </div>
 	</div>
