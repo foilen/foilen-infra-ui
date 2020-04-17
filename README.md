@@ -67,6 +67,12 @@ To be able to execute the application in Eclipse, you first need to download all
 ./download-local-plugins-jars.sh
 ```
 
+And you need to start mongodb
+
+```bash
+./mongodb-start.sh
+```
+
 Then, run *InfraUiApp - TEST.launch*
 
 ## TEST in Docker
