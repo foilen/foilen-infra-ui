@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.infra.ui.services.ApiMachineManagementService;
 import com.foilen.smalltools.restapi.model.FormResult;

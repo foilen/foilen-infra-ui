@@ -9,10 +9,12 @@
  */
 package com.foilen.infra.ui.web.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
+import com.foilen.infra.plugin.v1.core.exception.IllegalUpdateException;
 import com.foilen.infra.plugin.v1.core.exception.ResourcePrimaryKeyCollisionException;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.service.IPPluginService;
@@ -41,13 +44,21 @@ import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.SecurityService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.core.visual.PageDefinition;
+import com.foilen.infra.plugin.v1.core.visual.PageItem;
 import com.foilen.infra.plugin.v1.core.visual.editor.ResourceEditor;
 import com.foilen.infra.plugin.v1.core.visual.pageItem.field.HiddenFieldPageItem;
+import com.foilen.infra.plugin.v1.core.visual.pageItem.field.SelectOptionsPageItem;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
+import com.foilen.infra.ui.MetaConstants;
 import com.foilen.infra.ui.services.EntitlementService;
+import com.foilen.infra.ui.services.ResourceManagementService;
+import com.foilen.infra.ui.services.UserPermissionsService;
+import com.foilen.infra.ui.services.exception.UserPermissionException;
+import com.foilen.infra.ui.services.hook.DefaultOwnerChangeExecutionHook;
 import com.foilen.infra.ui.visual.ResourceTypeAndDetails;
 import com.foilen.infra.ui.web.controller.response.ResourceSuggestResponse;
 import com.foilen.infra.ui.web.controller.response.ResourceUpdateResponse;
+import com.foilen.mvc.ui.UiException;
 import com.foilen.mvc.ui.UiSuccessErrorView;
 import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -76,7 +87,38 @@ public class PluginResourceController extends AbstractBasics {
     @Autowired
     private IPPluginService ipPluginService;
     @Autowired
+    private ResourceManagementService resourceManagementService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
+    private UserPermissionsService userPermissionsService;
+
+    @SuppressWarnings("unchecked")
+    private void addOwnerField(String userId, PageDefinition pageDefinition, Locale locale, IPResource editedResource) {
+        SelectOptionsPageItem ownerField = new SelectOptionsPageItem();
+        ownerField.setLabel(messageSource.getMessage("term.owner", null, locale));
+        ownerField.setFieldName("_owner");
+
+        Set<String> potentialOwners = userPermissionsService.findOwnersThatUserCanCreateAs(userId);
+        if (editedResource == null) {
+            // It is a new resource -> use the first one available
+            Optional<String> desiredOwner = potentialOwners.stream().sorted().findFirst();
+            if (desiredOwner.isPresent()) {
+                ownerField.setFieldValue(desiredOwner.get());
+            }
+        } else {
+            // There is a resource -> use the current owner of it
+            String currentOwner = editedResource.getMeta().get(MetaConstants.META_OWNER);
+            if (currentOwner != null) {
+                potentialOwners.add(currentOwner);
+                ownerField.setFieldValue(currentOwner);
+            }
+        }
+        potentialOwners.stream().sorted().forEach(o -> ownerField.getOptions().add(o));
+
+        // Add as the first field
+        ((List<PageItem>) pageDefinition.getPageItems()).add(0, ownerField);
+    }
 
     @GetMapping("create/{editorName}")
     public ModelAndView create(@PathVariable("editorName") String editorName) {
@@ -93,7 +135,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("createPageDefinition/{editorName}")
-    public ModelAndView createPageDefinition(@PathVariable("editorName") String editorName, HttpServletRequest httpServletRequest) {
+    public ModelAndView createPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, HttpServletRequest httpServletRequest, Locale locale) {
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
         Optional<ResourceEditor<?>> editor = ipPluginService.getResourceEditorByName(editorName);
@@ -113,6 +155,9 @@ public class PluginResourceController extends AbstractBasics {
             csrfField.setFieldValue(securityService.getCsrfValue(httpServletRequest));
             pageDefinition.addPageItem(csrfField);
 
+            // Available owners and selected
+            addOwnerField(authentication.getName(), pageDefinition, locale, null);
+
             modelAndView.addObject("pageDefinition", pageDefinition);
         } else {
             modelAndView.setViewName("error/single-partial");
@@ -123,7 +168,7 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("createPageDefinitionByType/{resourceType:.*}")
-    public ModelAndView createPageDefinitionByType(@PathVariable("resourceType") String resourceType, HttpServletRequest httpServletRequest) {
+    public ModelAndView createPageDefinitionByType(Authentication authentication, @PathVariable("resourceType") String resourceType, HttpServletRequest httpServletRequest, Locale locale) {
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
         Class<?> resourceClass = ReflectionTools.safelyGetClass(resourceType);
@@ -138,7 +183,7 @@ public class PluginResourceController extends AbstractBasics {
             modelAndView.setViewName("error/single-partial");
             modelAndView.addObject("error", "error.editorNotFound");
         } else {
-            return createPageDefinition(editors.get(0), httpServletRequest);
+            return createPageDefinition(authentication, editors.get(0), httpServletRequest, locale);
         }
 
         return modelAndView;
@@ -150,7 +195,6 @@ public class PluginResourceController extends AbstractBasics {
                 .setSuccessViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .setErrorViewName("redirect:/" + VIEW_BASE_PATH + "/list") //
                 .execute((ui, modelAndView) -> {
-                    entitlementService.canDeleteResourcesOrFailUi(authentication.getName());
                     ChangesContext changes = new ChangesContext(resourceService);
                     changes.resourceDelete(resourceId);
                     internalChangeService.changesExecute(changes);
@@ -158,32 +202,38 @@ public class PluginResourceController extends AbstractBasics {
     }
 
     @GetMapping("edit/{resourceId}")
-    public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") String resourceId) {
+    public ModelAndView edit(Authentication authentication, @PathVariable("resourceId") String resourceId, Locale locale) {
 
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/edit");
 
-        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
+        try {
 
-        Optional<IPResource> resourceOptional = resourceService.resourceFind(resourceId);
-        if (resourceOptional.isPresent()) {
+            entitlementService.canViewResourcesOrFailUi(authentication.getName(), resourceId);
 
-            IPResource resource = resourceOptional.get();
+            Optional<IPResource> resourceOptional = resourceService.resourceFind(resourceId);
+            if (resourceOptional.isPresent()) {
 
-            String editorName = resource.getResourceEditorName();
-            List<String> editorNames = ipPluginService.getResourceEditorNamesByResourceType(resource.getClass());
-            if (editorName == null) {
-                if (!editorNames.isEmpty()) {
-                    editorName = editorNames.get(0);
+                IPResource resource = resourceOptional.get();
+
+                String editorName = resource.getResourceEditorName();
+                List<String> editorNames = ipPluginService.getResourceEditorNamesByResourceType(resource.getClass());
+                if (editorName == null) {
+                    if (!editorNames.isEmpty()) {
+                        editorName = editorNames.get(0);
+                    }
                 }
+
+                modelAndView.addObject("editorName", editorName);
+                modelAndView.addObject("resourceId", resourceId);
+                modelAndView.addObject("resourceType", resource.getClass().getName());
+
+                modelAndView.addObject("resourceName", resource.getResourceName());
+
+                modelAndView.addObject("editorNames", editorNames);
             }
-
-            modelAndView.addObject("editorName", editorName);
-            modelAndView.addObject("resourceId", resourceId);
-            modelAndView.addObject("resourceType", resource.getClass().getName());
-
-            modelAndView.addObject("resourceName", resource.getResourceName());
-
-            modelAndView.addObject("editorNames", editorNames);
+        } catch (UiException e) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", messageSource.getMessage(e.getMessage(), e.getParams(), locale));
         }
 
         return modelAndView;
@@ -192,10 +242,10 @@ public class PluginResourceController extends AbstractBasics {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @GetMapping("editPageDefinition/{editorName}/{resourceId}")
     public ModelAndView editPageDefinition(Authentication authentication, @PathVariable("editorName") String editorName, @PathVariable("resourceId") String resourceId,
-            HttpServletRequest httpServletRequest) {
+            HttpServletRequest httpServletRequest, Locale locale) {
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/resource");
 
-        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
+        entitlementService.canViewResourcesOrFailUi(authentication.getName(), resourceId);
 
         Optional editorOptional = ipPluginService.getResourceEditorByName(editorName);
 
@@ -229,6 +279,9 @@ public class PluginResourceController extends AbstractBasics {
                 csrfField.setFieldValue(securityService.getCsrfValue(httpServletRequest));
                 pageDefinition.addPageItem(csrfField);
 
+                // Available owners and selected
+                addOwnerField(authentication.getName(), pageDefinition, locale, editedResource);
+
                 modelAndView.addObject("pageDefinition", pageDefinition);
             } else {
                 modelAndView.setViewName("error/single-partial");
@@ -247,54 +300,58 @@ public class PluginResourceController extends AbstractBasics {
             @RequestParam(value = "s", required = false) String search //
     ) {
 
-        String searchLower = search == null ? null : search.toLowerCase();
-        if (search != null) {
-            search = StringEscapeUtils.escapeHtml4(search);
-        }
-
-        entitlementService.isAdminOrFailUi(authentication.getName());
-
         ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/list");
 
-        List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
+        try {
 
-        Stream<ResourceTypeAndDetails> resourcesTypeAndDetailsStream = Stream.of();
+            String searchLower = search == null ? null : search.toLowerCase();
+            if (search != null) {
+                search = StringEscapeUtils.escapeHtml4(search);
+            }
 
-        for (IPResourceDefinition resourceDefinition : resourceDefinitions) {
-            String resourceType = resourceDefinition.getResourceType();
-            Stream<IPResource> resources = resourceService.resourceFindAll(resourceService.createResourceQuery(resourceType)).stream();
+            List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
 
-            // Filter by search
-            if (!Strings.isNullOrEmpty(searchLower)) {
+            Stream<ResourceTypeAndDetails> resourcesTypeAndDetailsStream = Stream.of();
 
-                resources = resources.filter(it -> {
-                    boolean hasOneMatch = resourceType.toLowerCase().contains(searchLower);
-                    if (it.getResourceName() != null) {
-                        hasOneMatch |= it.getResourceName().toLowerCase().contains(searchLower);
-                    }
-                    if (it.getResourceDescription() != null) {
-                        hasOneMatch |= it.getResourceDescription().toLowerCase().contains(searchLower);
-                    }
-                    return hasOneMatch;
-                });
+            for (IPResourceDefinition resourceDefinition : resourceDefinitions) {
+                String resourceType = resourceDefinition.getResourceType();
+                Stream<IPResource> resources = resourceManagementService.resourceFindAll(authentication.getName(), resourceService.createResourceQuery(resourceType)).stream();
+
+                // Filter by search
+                if (!Strings.isNullOrEmpty(searchLower)) {
+
+                    resources = resources.filter(it -> {
+                        boolean hasOneMatch = resourceType.toLowerCase().contains(searchLower);
+                        if (it.getResourceName() != null) {
+                            hasOneMatch |= it.getResourceName().toLowerCase().contains(searchLower);
+                        }
+                        if (it.getResourceDescription() != null) {
+                            hasOneMatch |= it.getResourceDescription().toLowerCase().contains(searchLower);
+                        }
+                        return hasOneMatch;
+                    });
+
+                }
+
+                resourcesTypeAndDetailsStream = Stream.concat(resourcesTypeAndDetailsStream, resources.map(it -> new ResourceTypeAndDetails(resourceType, it)));
 
             }
 
-            resourcesTypeAndDetailsStream = Stream.concat(resourcesTypeAndDetailsStream, resources.map(it -> new ResourceTypeAndDetails(resourceType, it)));
+            // Sorting
+            resourcesTypeAndDetailsStream = resourcesTypeAndDetailsStream.sorted((a, b) -> ComparisonChain.start() //
+                    .compare(a.getType(), b.getType()) //
+                    .compare(a.getResource().getResourceName(), b.getResource().getResourceName()) //
+                    .compare(a.getResource().getResourceDescription(), b.getResource().getResourceDescription()) //
+                    .result() //
+            );
 
+            List<ResourceTypeAndDetails> resourcesTypeAndDetails = resourcesTypeAndDetailsStream.collect(Collectors.toList());
+            modelAndView.addObject("resourcesTypeAndDetails", resourcesTypeAndDetails);
+            modelAndView.addObject("search", search);
+        } catch (UiException e) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", e.getMessage());
         }
-
-        // Sorting
-        resourcesTypeAndDetailsStream = resourcesTypeAndDetailsStream.sorted((a, b) -> ComparisonChain.start() //
-                .compare(a.getType(), b.getType()) //
-                .compare(a.getResource().getResourceName(), b.getResource().getResourceName()) //
-                .compare(a.getResource().getResourceDescription(), b.getResource().getResourceDescription()) //
-                .result() //
-        );
-
-        List<ResourceTypeAndDetails> resourcesTypeAndDetails = resourcesTypeAndDetailsStream.collect(Collectors.toList());
-        modelAndView.addObject("resourcesTypeAndDetails", resourcesTypeAndDetails);
-        modelAndView.addObject("search", search);
         return modelAndView;
 
     }
@@ -302,10 +359,7 @@ public class PluginResourceController extends AbstractBasics {
     @ResponseBody
     @GetMapping("suggest/{resourceType:.+}")
     public List<ResourceSuggestResponse> suggest(Authentication authentication, @PathVariable("resourceType") Class<? extends IPResource> resourceType) {
-
-        entitlementService.isAdminOrFailUi(authentication.getName());
-
-        return resourceService.resourceFindAll( //
+        return resourceManagementService.resourceFindAll(authentication.getName(), //
                 resourceService.createResourceQuery(resourceType) //
         ).stream() //
                 .map(it -> new ResourceSuggestResponse(it.getInternalId(), it.getResourceName(), it.getResourceDescription())) //
@@ -323,8 +377,6 @@ public class PluginResourceController extends AbstractBasics {
     @ResponseBody
     @PostMapping("update")
     public ResourceUpdateResponse update(Authentication authentication, @RequestParam Map<String, String> formValues, Locale locale) {
-
-        entitlementService.canUpdateResourcesOrFailUi(authentication.getName());
 
         ResourceUpdateResponse resourceUpdateResponse = new ResourceUpdateResponse();
 
@@ -364,6 +416,14 @@ public class PluginResourceController extends AbstractBasics {
                 Class<?> resourceType = resourceEditor.getForResourceType();
                 try {
                     resource = (IPResource) resourceType.getConstructor().newInstance();
+                } catch (UserPermissionException e) {
+                    logger.error("Could not create an empty resource of type {}", resourceType, e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
+                    return resourceUpdateResponse;
+                } catch (IllegalUpdateException e) {
+                    logger.error("Could not create an empty resource of type {}", resourceType, e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
+                    return resourceUpdateResponse;
                 } catch (Exception e) {
                     logger.error("Could not create an empty resource of type {}", resourceType, e);
                     resourceUpdateResponse.setTopError(messageSource.getMessage("error.internalError", new Object[] { e.getMessage() }, locale));
@@ -386,6 +446,13 @@ public class PluginResourceController extends AbstractBasics {
                 return resourceUpdateResponse;
             }
 
+            // Get the owner and set it in the transaction
+            String owner = formValues.get("_owner");
+            if (Strings.isNullOrEmpty(owner)) {
+                owner = null;
+            }
+            DefaultOwnerChangeExecutionHook defaultOwnerChangeExecutionHook = new DefaultOwnerChangeExecutionHook(owner);
+
             // No errors: save and give the redirection link if no issues
             String internalId;
             if (isUpdate) {
@@ -393,16 +460,25 @@ public class PluginResourceController extends AbstractBasics {
                 // Update existing resource
                 IPResource newResource = JsonTools.clone(resource);
                 newResource.setInternalId(resource.getInternalId());
+                newResource.getMeta().put(MetaConstants.META_OWNER, owner);
 
                 try {
                     ChangesContext changesContext = new ChangesContext(resourceService);
                     resourceEditor.fillResource(commonServicesContext, changesContext, formValues, newResource);
                     newResource.setResourceEditorName(editorName);
                     changesContext.resourceUpdate(resourceId, newResource);
-                    internalChangeService.changesExecute(changesContext);
+                    internalChangeService.changesExecute(changesContext, Collections.singletonList(defaultOwnerChangeExecutionHook));
                 } catch (ResourcePrimaryKeyCollisionException e) {
                     logger.error("Problem saving the resource", e);
                     resourceUpdateResponse.setTopError(messageSource.getMessage("error.duplicateResource", null, locale));
+                    return resourceUpdateResponse;
+                } catch (UserPermissionException e) {
+                    logger.error("Problem saving the resource", e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
+                    return resourceUpdateResponse;
+                } catch (IllegalUpdateException e) {
+                    logger.error("Problem saving the resource", e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
                     return resourceUpdateResponse;
                 } catch (Exception e) {
                     logger.error("Problem saving the resource", e);
@@ -421,11 +497,20 @@ public class PluginResourceController extends AbstractBasics {
                     resourceEditor.fillResource(commonServicesContext, changesContext, formValues, resource);
                     changesContext.resourceAdd(resource);
                     resource.setResourceEditorName(editorName);
-                    internalChangeService.changesExecute(changesContext);
+                    resource.getMeta().put(MetaConstants.META_OWNER, owner);
+                    internalChangeService.changesExecute(changesContext, Collections.singletonList(defaultOwnerChangeExecutionHook));
                     resource = resourceService.resourceFindByPk(resource).get();
                 } catch (ResourcePrimaryKeyCollisionException e) {
                     logger.error("Problem saving the resource", e);
                     resourceUpdateResponse.setTopError(messageSource.getMessage("error.duplicateResource", null, locale));
+                    return resourceUpdateResponse;
+                } catch (UserPermissionException e) {
+                    logger.error("Problem saving the resource", e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
+                    return resourceUpdateResponse;
+                } catch (IllegalUpdateException e) {
+                    logger.error("Problem saving the resource", e);
+                    resourceUpdateResponse.setTopError(e.getMessage());
                     return resourceUpdateResponse;
                 } catch (Exception e) {
                     logger.error("Problem saving the resource", e);

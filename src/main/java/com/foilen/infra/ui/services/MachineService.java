@@ -11,7 +11,7 @@ package com.foilen.infra.ui.services;
 
 import java.util.List;
 
-import com.foilen.infra.api.model.MachineSetup;
+import com.foilen.infra.api.model.machine.MachineSetup;
 import com.foilen.infra.resource.machine.Machine;
 
 public interface MachineService {
@@ -24,15 +24,6 @@ public interface MachineService {
      * @return the machine setup or null if not present
      */
     MachineSetup getMachineSetup(String machineName);
-
-    /**
-     * List the machines that the user can edit.
-     *
-     * @param userId
-     *            the user id
-     * @return the machine names
-     */
-    List<String> list(String userId);
 
     List<Machine> listMachines(String userId);
 

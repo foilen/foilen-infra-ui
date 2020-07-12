@@ -14,11 +14,13 @@
           <th scope="col"><table-header-search v-bind:title="$t('term.type')" v-model="queries.type" v-on:input="refresh(1)" width="93px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.action')" v-model="queries.action" v-on:input="refresh(1)" width="67px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.userType')" v-model="queries.userType" v-on:input="refresh(1)" width="77px"> </table-header-search></th>
-          <th scope="col"><table-header-search v-bind:title="$t('term.userName')" v-model="queries.userName" v-on:input="refresh(1)" width="86px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.userId')" v-model="queries.userName" v-on:input="refresh(1)" width="86px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.tagName')" v-model="queries.tagName" v-on:input="refresh(1)" width="76px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.resourceFirstType')" v-model="queries.resourceFirstType" v-on:input="refresh(1)" width="153px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.linkType')" v-model="queries.linkType" v-on:input="refresh(1)" width="117px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.resourceSecondType')" v-model="queries.resourceSecondType" v-on:input="refresh(1)" width="178px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.documentType')" v-model="queries.documentType" v-on:input="refresh(1)" width="178px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.documentId')" v-model="queries.documentId" v-on:input="refresh(1)" width="178px"> </table-header-search></th>
         </tr>
       </thead>
       <tbody>
@@ -35,6 +37,8 @@
           <td>{{item.resourceFirst?item.resourceFirst.resourceType:''}}</td>
           <td>{{item.linkType}}</td>
           <td>{{item.resourceSecond?item.resourceSecond.resourceType:''}}</td>
+          <td>{{item.documentType}}</td>
+          <td>{{item.documentId}}</td>
         </tr>
       </tbody>
     </table>

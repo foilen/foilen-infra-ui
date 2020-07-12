@@ -39,6 +39,7 @@ import com.foilen.infra.ui.services.ReportService;
 import com.foilen.infra.ui.services.hook.AuditingChangeExecutionHook;
 import com.foilen.infra.ui.services.hook.ReportingChangeExecutionHook;
 import com.foilen.infra.ui.services.hook.UserDetailsChangeExecutionHook;
+import com.foilen.infra.ui.services.hook.UserPermissionChangeExecutionHook;
 
 /**
  * The system configuration. Mostly copied from {@link ResourceServicesMongoDBSpringConfig}.
@@ -68,6 +69,7 @@ public class InfraUiSystemSpringConfig {
     public void init() {
         InternalChangeService internalChangeService = internalServicesContext.getInternalChangeService();
         internalChangeService.setInfiniteLoopTimeoutInMs(infiniteLoopTimeoutInMs);
+        internalChangeService.getDefaultChangeExecutionHooks().add(userPermissionChangeExecutionHook());
         internalChangeService.getDefaultChangeExecutionHooks().add(new AuditingChangeExecutionHook(auditingService));
         internalChangeService.getDefaultChangeExecutionHooks().add(new ReportingChangeExecutionHook(reportService));
         internalChangeService.getDefaultChangeExecutionHooks().add(userDetailsChangeExecutionHook());
@@ -108,6 +110,11 @@ public class InfraUiSystemSpringConfig {
     @Bean
     public ChangeExecutionHook userDetailsChangeExecutionHook() {
         return new UserDetailsChangeExecutionHook();
+    }
+
+    @Bean
+    public UserPermissionChangeExecutionHook userPermissionChangeExecutionHook() {
+        return new UserPermissionChangeExecutionHook();
     }
 
 }

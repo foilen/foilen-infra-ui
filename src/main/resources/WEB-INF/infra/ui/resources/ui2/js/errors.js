@@ -1,5 +1,9 @@
 function errorShow(message) {
 
+  if (!(message instanceof String)) {
+    message = message.timestamp + ' ' + message.uniqueId + ': ' + message.message
+  }
+
   const errors = document.getElementById("errors");
 
   const error = document.createElement('div');
@@ -8,7 +12,22 @@ function errorShow(message) {
 
   errors.appendChild(error);
 
-  console.log(message)
+  console.log('ERROR', message)
+}
+
+function successShow(message) {
+
+  const successes = document.getElementById("successes");
+
+  const success = document.createElement('div');
+  success.innerHTML = message + '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+  success.setAttribute('class', 'alert alert-success alert-dismissible fade show')
+
+  successes.appendChild(success);
+
+  jQuery(success).delay(20000).fadeOut();
+
+  console.log('SUCCESS', message)
 }
 
 function httpDelete(url, successCallback) {
@@ -21,7 +40,7 @@ function httpDelete(url, successCallback) {
     success : function(data) {
       --app.pendingAjax
       if (data.error) {
-        errorShow(data.error.message)
+        errorShow(data.error)
       } else {
         successCallback(data)
       }
@@ -41,7 +60,7 @@ function httpGet(url, successCallback) {
   jQuery.get(url).done(function(data) {
     --app.pendingAjax
     if (data.error) {
-      errorShow(data.error.message)
+      errorShow(data.error)
     } else {
       successCallback(data)
     }
@@ -62,7 +81,7 @@ function httpGetQueries(url, queries, successCallback) {
     success : function(data) {
       --app.pendingAjax
       if (data.error) {
-        errorShow(data.error.message)
+        errorShow(data.error)
       } else {
         successCallback(data)
       }
@@ -82,12 +101,16 @@ function httpPost(url, form, successCallback) {
   jQuery.ajax({
     type : "POST",
     url : url,
-    data : form,
+    data : JSON.stringify(form),
     dataType : 'json',
+    headers : {
+      'X-XSRF-TOKEN' : Cookies.get('XSRF-TOKEN'),
+      'Content-Type' : 'application/json',
+    },
     success : function(data) {
       --app.pendingAjax
       if (data.error) {
-        errorShow(data.error.message)
+        errorShow(data.error)
       } else {
         successCallback(data)
       }

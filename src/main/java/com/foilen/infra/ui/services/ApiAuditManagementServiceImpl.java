@@ -16,8 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.apitmp.model.AuditItemWithPagination;
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.model.audit.AuditItemWithPagination;
+import com.foilen.infra.api.request.RequestAuditItem;
 import com.foilen.infra.plugin.v1.core.service.TranslationService;
 import com.foilen.infra.ui.repositories.AuditItemRepository;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
@@ -77,7 +77,7 @@ public class ApiAuditManagementServiceImpl extends AbstractApiService implements
         }
 
         Page<AuditItem> items = auditItemDao.findAll(request);
-        paginationService.wrap(results, items, com.foilen.infra.apitmp.model.AuditItem.class);
+        paginationService.wrap(results, items, com.foilen.infra.api.model.audit.AuditItem.class);
         return results;
     }
 

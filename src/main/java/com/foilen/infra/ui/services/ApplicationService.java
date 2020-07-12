@@ -9,7 +9,7 @@
  */
 package com.foilen.infra.ui.services;
 
-import com.foilen.infra.apitmp.model.ApplicationDetailsResult;
+import com.foilen.infra.api.model.ui.ApplicationDetailsResult;
 
 public interface ApplicationService {
 

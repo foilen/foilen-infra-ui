@@ -9,14 +9,21 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 
 import com.foilen.smalltools.restapi.model.AbstractListResultWithPagination;
+import com.foilen.smalltools.restapi.model.AbstractSingleResult;
 
 public interface PaginationService {
 
     int getItemsPerPage();
 
     <T> void wrap(AbstractListResultWithPagination<T> results, Page<?> page, Class<T> apiType);
+
+    <T> void wrap(AbstractListResultWithPagination<T> results, Page<T> page);
+
+    <T> void wrap(AbstractSingleResult<T> result, Optional<?> item, Class<T> apiType);
 
 }

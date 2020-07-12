@@ -12,10 +12,12 @@ package com.foilen.infra.ui.services;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -24,8 +26,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 
-import com.foilen.infra.apitmp.model.ApplicationDetails;
-import com.foilen.infra.apitmp.model.ApplicationDetailsResult;
+import com.foilen.infra.api.model.ui.ApplicationDetails;
+import com.foilen.infra.api.model.ui.ApplicationDetailsResult;
+import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.ui.repositories.UserHumanRepository;
 import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
@@ -43,9 +46,12 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
     @Autowired
     private ReloadableResourceBundleMessageSource messageSource;
     @Autowired
+    private IPResourceService resourceService;
+    @Autowired
     private UserHumanRepository userHumanRepository;
 
     private Map<String, Object> translations = new TreeMap<>();
+    private List<String> resourceTypes;
 
     private String version = "TEST";
 
@@ -74,7 +80,8 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
                 .setVersion(version) //
                 .setUserId(userId) //
                 .setLang(LocaleContextHolder.getLocale().getLanguage()) //
-                .setTranslations(translations);
+                .setTranslations(translations) //
+                .setResourceTypes(resourceTypes) //
         ;
 
         // Logged in user
@@ -111,6 +118,12 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
             addTranslations(langEn, basename + "_en.properties");
             addTranslations(langFr, basename + "_fr.properties");
         }
+
+        // Resource Types
+        resourceTypes = resourceService.getResourceDefinitions().stream() //
+                .map(it -> it.getResourceType()) //
+                .sorted() //
+                .collect(Collectors.toList());
 
     }
 

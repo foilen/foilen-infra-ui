@@ -14,7 +14,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.restapi.model.FormResult;

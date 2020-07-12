@@ -22,7 +22,7 @@ import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.request.RequestAuditItem;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.infra.ui.services.PaginationService;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -72,6 +72,9 @@ public class AuditItemRepositoryImpl extends AbstractBasics implements AuditItem
 
         notNullValue(query, "linkType", request.getLinkType());
         notNullValue(query, "tagName", request.getTagName());
+
+        notNullValue(query, "documentType", request.getDocumentType());
+        notNullValue(query, "documentId", request.getDocumentId());
 
         // Make the request
         List<AuditItem> results = mongoOperations.find(query, AuditItem.class);

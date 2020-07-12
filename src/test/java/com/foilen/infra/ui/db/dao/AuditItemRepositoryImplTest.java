@@ -19,13 +19,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.request.RequestAuditItem;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.resource.example.JunitResource;
 import com.foilen.infra.ui.repositories.AuditItemRepository;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.infra.ui.services.AuditingService;
-import com.foilen.infra.ui.services.PaginationServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.DateTools;
@@ -37,8 +36,6 @@ public class AuditItemRepositoryImplTest extends AbstractSpringTests {
     private AuditItemRepository auditItemRepository;
     @Autowired
     private AuditingService auditingService;
-    @Autowired
-    private PaginationServiceImpl paginationServiceImpl;
 
     public AuditItemRepositoryImplTest() {
         super(false);
@@ -46,8 +43,6 @@ public class AuditItemRepositoryImplTest extends AbstractSpringTests {
 
     @Before
     public void createAuditData() {
-        paginationServiceImpl.setItemsPerPage(100);
-
         auditingService.resourceAdd("tx1", true, AuditUserType.USER, "12345", new JunitResource("r1"));
         auditingService.resourceAdd("tx1", false, AuditUserType.USER, "12345", new JunitResource("r2"));
 

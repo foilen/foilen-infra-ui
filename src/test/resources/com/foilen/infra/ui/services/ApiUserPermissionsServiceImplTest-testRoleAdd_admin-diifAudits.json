@@ -1,0 +1,17 @@
+{
+  "added" : [ {
+    "explicitChange" : true,
+    "type" : "DOCUMENT",
+    "action" : "ADD",
+    "userType" : "API",
+    "userName" : "AADMIN",
+    "documentType" : "role",
+    "documentId" : "newRole",
+    "documentTo" : {
+      "name" : "newRole",
+      "resources" : [ ],
+      "links" : [ ]
+    }
+  } ],
+  "removed" : [ ]
+}

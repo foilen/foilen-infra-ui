@@ -9,8 +9,8 @@
  */
 package com.foilen.infra.ui.services;
 
-import com.foilen.infra.apitmp.model.AuditItemWithPagination;
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.model.audit.AuditItemWithPagination;
+import com.foilen.infra.api.request.RequestAuditItem;
 
 public interface ApiAuditManagementService {
 

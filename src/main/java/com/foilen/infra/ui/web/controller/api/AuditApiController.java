@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.foilen.infra.apitmp.model.AuditItemWithPagination;
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.model.audit.AuditItemWithPagination;
+import com.foilen.infra.api.request.RequestAuditItem;
 import com.foilen.infra.ui.services.ApiAuditManagementService;
 
 @RequestMapping(value = "api/audit", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)

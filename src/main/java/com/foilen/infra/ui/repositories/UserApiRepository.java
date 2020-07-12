@@ -11,6 +11,8 @@ package com.foilen.infra.ui.repositories;
 
 import java.util.Date;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.foilen.infra.ui.repositories.documents.UserApi;
@@ -18,5 +20,7 @@ import com.foilen.infra.ui.repositories.documents.UserApi;
 public interface UserApiRepository extends MongoRepository<UserApi, String>, UserApiCustomRepository {
 
     void deleteAllByExpireOnLessThanEqual(Date now);
+
+    Page<UserApi> findAllByUserIdLike(String userId, Pageable pageable);
 
 }

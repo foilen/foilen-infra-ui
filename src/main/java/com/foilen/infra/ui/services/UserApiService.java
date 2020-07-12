@@ -10,28 +10,17 @@
 package com.foilen.infra.ui.services;
 
 import java.util.Date;
-import java.util.List;
 
 import com.foilen.infra.ui.repositories.documents.UserApi;
 import com.foilen.infra.ui.repositories.documents.UserApiMachine;
-import com.foilen.smalltools.tuple.Tuple2;
 
 public interface UserApiService {
-
-    /**
-     * Create a new API User.
-     *
-     * @return the user id and password
-     */
-    Tuple2<String, String> createAdminUser();
 
     void deleteExpired();
 
     void deleteExpired(Date now);
 
     void deleteUser(String userId);
-
-    List<UserApi> findAll();
 
     UserApi findByUserIdAndActive(String userId);
 

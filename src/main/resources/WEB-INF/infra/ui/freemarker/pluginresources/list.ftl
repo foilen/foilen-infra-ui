@@ -9,6 +9,7 @@
     <th><@spring.message "resources.type"/></th>
     <th><@spring.message "resources.name"/></th>
     <th><@spring.message "resources.description"/></th>
+    <th><@spring.message "term.owner"/></th>
     <th><@spring.message "term.actions"/></th>
   </tr>
   <#list resourcesTypeAndDetails as resourceTypeAndDetails>
@@ -16,6 +17,7 @@
       <td>${resourceTypeAndDetails.type}</td>
       <td>${resourceTypeAndDetails.resource.resourceName}</td>
       <td>${resourceTypeAndDetails.resource.resourceDescription!}</td>
+      <td>${resourceTypeAndDetails.resource.meta.UI_OWNER!}</td>
       <td>
         
         <#assign resourceNameArgs = [resourceTypeAndDetails.resource.resourceName]/>

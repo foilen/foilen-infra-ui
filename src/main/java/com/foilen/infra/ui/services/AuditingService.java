@@ -17,6 +17,12 @@ import com.foilen.infra.ui.repositories.documents.AuditItem;
 
 public interface AuditingService {
 
+    void documentAdd(String userName, Object document);
+
+    void documentDelete(String userName, Object document);
+
+    void documentEdit(String userName, Object documentFrom, Object documentTo);
+
     Page<AuditItem> findAllByTxId(String txId, int pageId, int itemsPerPage);
 
     void linkAdd(String txId, boolean explicitChange, //

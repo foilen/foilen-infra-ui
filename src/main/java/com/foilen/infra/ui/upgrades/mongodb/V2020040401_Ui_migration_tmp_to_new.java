@@ -21,7 +21,6 @@ import org.bson.Document;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.foilen.infra.plugin.core.system.common.service.IPPluginServiceImpl;
@@ -33,7 +32,6 @@ import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.Plugin
 import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.PluginResourceLink;
 import com.foilen.infra.plugin.core.system.mongodb.service.ResourceDefinitionService;
 import com.foilen.infra.plugin.core.system.mongodb.service.ResourceDefinitionServiceImpl;
-import com.foilen.infra.plugin.core.system.mongodb.upgrader.MongoDbUpgraderConstants;
 import com.foilen.infra.plugin.v1.core.context.CommonServicesContext;
 import com.foilen.infra.plugin.v1.core.context.internal.InternalServicesContext;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
@@ -57,21 +55,18 @@ import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpIPResourceServiceImpl;
 import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpInternalIPResourceServiceImpl;
 import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpTimerServiceImpl;
 import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpTranslationServiceImpl;
-import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.BufferBatchesTools;
 import com.foilen.smalltools.tools.CollectionsTools;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tuple.Tuple2;
-import com.foilen.smalltools.upgrader.tasks.UpgradeTask;
 import com.google.common.util.concurrent.RateLimiter;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 
 @Component
-public class V2020040401_Ui_migration_tmp_to_new extends AbstractBasics implements UpgradeTask {
+public class V2020040401_Ui_migration_tmp_to_new extends AbstractMongoUpgradeTask {
 
     @Autowired
     private AuditItemRepository auditItemRepository;
@@ -79,8 +74,6 @@ public class V2020040401_Ui_migration_tmp_to_new extends AbstractBasics implemen
     private MachineStatisticsRepository machineStatisticsRepository;
     @Autowired
     private MessageRepository messageRepository;
-    @Autowired
-    private MongoClient mongoClient;
     @Autowired
     private PluginResourceRepository pluginResourceRepository;
     @Autowired
@@ -93,22 +86,6 @@ public class V2020040401_Ui_migration_tmp_to_new extends AbstractBasics implemen
     private UserApiRepository userApiRepository;
     @Autowired
     private UserHumanRepository userHumanRepository;
-
-    @Value("${spring.data.mongodb.database}")
-    private String databaseName;
-
-    @SafeVarargs
-    private void addIndex(String collectionName, Tuple2<String, Object>... keys) {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
-
-        logger.info("Create index for collection {} , with keys {}", collectionName, keys);
-        MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
-        Document keysDocument = new Document();
-        for (Tuple2<String, Object> key : keys) {
-            keysDocument.put(key.getA(), key.getB());
-        }
-        collection.createIndex(keysDocument);
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -621,11 +598,6 @@ public class V2020040401_Ui_migration_tmp_to_new extends AbstractBasics implemen
 
     private void rename(Map<String, Object> m, String oldName, String newName) {
         m.put(newName, m.remove(oldName));
-    }
-
-    @Override
-    public String useTracker() {
-        return MongoDbUpgraderConstants.TRACKER;
     }
 
 }

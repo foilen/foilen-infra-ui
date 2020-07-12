@@ -9,7 +9,10 @@
  */
 package com.foilen.infra.ui.web.controller;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,7 @@ import com.foilen.chart.Chart;
 import com.foilen.infra.ui.services.EntitlementService;
 import com.foilen.infra.ui.services.MachineService;
 import com.foilen.infra.ui.services.MachineStatisticsService;
+import com.foilen.mvc.ui.UiException;
 
 @Controller
 @RequestMapping("machineGraphics")
@@ -31,6 +35,8 @@ public class MachineGraphicsController {
     private MachineService machineService;
     @Autowired
     private MachineStatisticsService machineStatisticsService;
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     private EntitlementService entitlementService;
 
@@ -78,10 +84,17 @@ public class MachineGraphicsController {
     }
 
     @GetMapping("view/{name:.+}")
-    public ModelAndView view(Authentication authentication, @PathVariable String name) {
+    public ModelAndView view(Authentication authentication, Locale locale, @PathVariable String name) {
+
         ModelAndView modelAndView = new ModelAndView("machineGraphics/view");
-        modelAndView.addObject("machineName", name);
+        try {
+            modelAndView.addObject("machineName", name);
+        } catch (UiException e) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", messageSource.getMessage(e.getMessage(), e.getParams(), locale));
+        }
         return modelAndView;
+
     }
 
 }

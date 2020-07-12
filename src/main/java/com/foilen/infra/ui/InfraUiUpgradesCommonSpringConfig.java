@@ -23,8 +23,10 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.foilen.infra.plugin.core.system.mongodb.upgrader.MongoDbUpgraderConstants;
+import com.foilen.infra.plugin.v1.core.service.TranslationService;
 import com.foilen.infra.ui.services.PaginationService;
 import com.foilen.infra.ui.services.PaginationServiceImpl;
+import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpTranslationServiceImpl;
 import com.foilen.smalltools.upgrader.UpgraderTools;
 import com.foilen.smalltools.upgrader.tasks.UpgradeTask;
 import com.foilen.smalltools.upgrader.trackers.DatabaseUpgraderTracker;
@@ -58,6 +60,11 @@ public class InfraUiUpgradesCommonSpringConfig {
     @Bean
     public PaginationService paginationService() {
         return new PaginationServiceImpl();
+    }
+
+    @Bean
+    public TranslationService translationService() {
+        return new TmpTranslationServiceImpl();
     }
 
     @Bean

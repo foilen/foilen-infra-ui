@@ -1,0 +1,14 @@
+{
+  "added" : [ {
+    "userId" : "333333",
+    "roles" : [ "alpha_admin" ],
+    "email" : "alpha@@example1.com",
+    "admin" : false
+  } ],
+  "removed" : [ {
+    "userId" : "333333",
+    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "email" : "alpha@@example1.com",
+    "admin" : false
+  } ]
+}

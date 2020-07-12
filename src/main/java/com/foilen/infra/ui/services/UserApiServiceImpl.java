@@ -11,10 +11,8 @@ package com.foilen.infra.ui.services;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,15 +39,6 @@ public class UserApiServiceImpl extends AbstractBasics implements UserApiService
     private UserApiMachineRepository userApiMachineRepository;
 
     @Override
-    public Tuple2<String, String> createAdminUser() {
-        Tuple2<String, String> generated = genIdAndKey();
-        UserApi apiUser = new UserApi(generated.getA(), BCrypt.hashpw(generated.getB(), BCrypt.gensalt(13)), "Admin");
-        apiUser.setAdmin(true);
-        userApiRepository.save(apiUser);
-        return generated;
-    }
-
-    @Override
     public void deleteExpired() {
         deleteExpired(new Date());
     }
@@ -64,11 +53,6 @@ public class UserApiServiceImpl extends AbstractBasics implements UserApiService
     public void deleteUser(String userId) {
         userApiRepository.deleteById(userId);
         userApiMachineRepository.deleteById(userId);
-    }
-
-    @Override
-    public List<UserApi> findAll() {
-        return userApiRepository.findAll(Sort.by("userId"));
     }
 
     @Override

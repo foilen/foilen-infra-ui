@@ -30,7 +30,7 @@ public class FoilenLoginSecurityFakeUserConfig extends AbstractBasics {
         logger.info("create Stub User");
 
         if (!userHumanRepository.existsById(USER_ID)) {
-            userHumanRepository.save(new UserHuman(USER_ID, true));
+            userHumanRepository.save(new UserHuman(USER_ID, true).setEmail("fake@example.com"));
         }
 
     }

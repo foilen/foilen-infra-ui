@@ -1,0 +1,23 @@
+{
+  "items" : [ {
+    "admin" : false,
+    "email" : "beta@@example1.com",
+    "roles" : [ "beta_admin", "infra", "shared_nachine" ],
+    "userId" : "222222"
+  }, {
+    "admin" : false,
+    "email" : "alpha@@example1.com",
+    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "userId" : "333333"
+  } ],
+  "pagination" : {
+    "currentPage" : 0,
+    "currentPageUi" : 1,
+    "firstPage" : true,
+    "itemsPerPage" : 100,
+    "lastPage" : true,
+    "totalItems" : 2,
+    "totalPages" : 1
+  },
+  "success" : true
+}

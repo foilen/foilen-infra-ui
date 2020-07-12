@@ -1,0 +1,9 @@
+class com.foilen.infra.resource.application.Application ; infra_url_redirection_http-f001_node_example_com ; infra
+class com.foilen.infra.resource.application.Application ; infra_web-f001_node_example_com ; infra
+class com.foilen.infra.resource.dns.DnsPointer ; myredir.foilen-lab.com ; alpha
+class com.foilen.infra.resource.domain.Domain ; foilen-lab.com ; alpha
+class com.foilen.infra.resource.domain.Domain ; myredir.foilen-lab.com ; alpha
+class com.foilen.infra.resource.unixuser.UnixUser ; infra_url_redirection ; infra
+class com.foilen.infra.resource.unixuser.UnixUser ; infra_web ; infra
+class com.foilen.infra.resource.urlredirection.UrlRedirection ; myredir.foilen-lab.com ; alpha
+class com.foilen.infra.resource.website.Website ; HTTP Redirection of myredir.foilen-lab.com ; alpha

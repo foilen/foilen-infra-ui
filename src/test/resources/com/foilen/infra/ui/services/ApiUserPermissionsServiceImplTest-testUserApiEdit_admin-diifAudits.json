@@ -1,0 +1,26 @@
+{
+  "added" : [ {
+    "explicitChange" : true,
+    "type" : "DOCUMENT",
+    "action" : "ADD",
+    "userType" : "API",
+    "userName" : "AADMIN",
+    "documentType" : "userApi",
+    "documentId" : "AUSER",
+    "documentFrom" : {
+      "userId" : "AUSER",
+      "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+      "userHashedKey" : "$2a$13$CXFWBseE7qnfRndtunCj/OoQgLLz7AOe2e3aNdNFwmqkTQfoduVMy",
+      "description" : "A normal user",
+      "admin" : false
+    },
+    "documentTo" : {
+      "userId" : "AUSER",
+      "roles" : [ "alpha_admin" ],
+      "userHashedKey" : "$2a$13$CXFWBseE7qnfRndtunCj/OoQgLLz7AOe2e3aNdNFwmqkTQfoduVMy",
+      "description" : "A normal user",
+      "admin" : false
+    }
+  } ],
+  "removed" : [ ]
+}

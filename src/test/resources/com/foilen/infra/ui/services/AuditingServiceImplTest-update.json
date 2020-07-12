@@ -1,12 +1,8 @@
 [ {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -15,7 +11,6 @@
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com / A",
     "type" : "A"
   },
@@ -25,27 +20,20 @@
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com"
   },
-  "linkType" : "MANAGES",
-  "tagName" : null
+  "linkType" : "MANAGES"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "example.com"
   },
   "resourceSecondType" : "Domain",
@@ -54,20 +42,14 @@
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com"
   },
-  "linkType" : "SUBDOMAIN",
-  "tagName" : null
+  "linkType" : "SUBDOMAIN"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "DELETE",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -76,7 +58,6 @@
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com / A",
     "type" : "A"
   },
@@ -86,64 +67,40 @@
     "name" : "d1.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d1.example.com"
   },
-  "linkType" : "MANAGES",
-  "tagName" : null
+  "linkType" : "MANAGES"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "RESOURCE",
   "action" : "DELETE",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "d1.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d1.example.com"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : true,
   "type" : "RESOURCE",
   "action" : "UPDATE",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -164,10 +121,7 @@
     "name" : "d3.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
-    "resourceEditorName" : null,
     "resourceName" : "d3.example.com / A",
     "type" : "A"
-  },
-  "linkType" : null,
-  "tagName" : null
+  }
 } ]

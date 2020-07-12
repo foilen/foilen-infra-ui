@@ -11,7 +11,7 @@ package com.foilen.infra.ui.repositories;
 
 import org.springframework.data.domain.Page;
 
-import com.foilen.infra.apitmp.request.RequestAuditItem;
+import com.foilen.infra.api.request.RequestAuditItem;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 
 public interface AuditItemCustomRepository {

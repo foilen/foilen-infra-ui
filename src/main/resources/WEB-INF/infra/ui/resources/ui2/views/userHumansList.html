@@ -1,0 +1,85 @@
+<div class="row">
+
+  <div class="col-12">
+
+    <div class="modal fade" id="editModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">{{ $t('button.edit') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.userId') }}</label> <input type="text" class="form-control" v-model="form.userId" autocomplete="off" disabled="disabled">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.userId">
+                <p v-for="errorCode in formResult.validationErrorsByField.userId">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <h2>{{ $t('term.roles') }}</h2>
+
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ $t('term.role') }}</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(role, roleIdx) in form.roles">
+                    <td><input type="text" class="form-control" v-on:keypress="userHumanRoleUpdate(roleIdx, $event)" v-on:change="userHumanRoleUpdate(roleIdx, $event)" autocomplete="off" v-bind:value="role"></td>
+                    <td><button class="btn btn-sm btn-danger" v-on:click="userHumanRoleRemove(roleIdx)">X</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <button class="btn btn-sm btn-primary" v-on:click="userHumanRoleAdd()">{{ $t('button.add') }}</button>
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.roles">
+                <p v-for="errorCode in formResult.validationErrorsByField.roles">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-primary" v-on:click="edit()">{{ $t('button.edit') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <input type="text" class="form-control" v-model="queries.search" v-bind:placeholder="$t('term.search')" v-on:keyup.enter="refresh(1)" />
+    <pagination class="float-right" v-bind:pagination="pagination" v-on:changePage="refresh($event.pageId)"></pagination>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('term.userId') }}</th>
+          <th scope="col">{{ $t('term.email') }}</th>
+          <th scope="col">{{ $t('term.isAdmin') }}</th>
+          <th scope="col" width="200px">{{ $t('term.actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in items">
+          <td><a v-on:click="editShow(item)">{{item.userId}}</a></td>
+          <td>{{item.email}}</td>
+          <td>{{item.admin}}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" v-on:click="editShow(item)">{{ $t('button.edit') }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

@@ -11,10 +11,10 @@ package com.foilen.infra.ui.services.hook;
 
 import org.springframework.data.domain.Page;
 
-import com.foilen.infra.api.model.AuditAction;
-import com.foilen.infra.api.model.AuditItemSmall;
-import com.foilen.infra.api.model.AuditType;
-import com.foilen.infra.api.model.ResourceDetailsSmall;
+import com.foilen.infra.api.model.audit.AuditAction;
+import com.foilen.infra.api.model.audit.AuditItemSmall;
+import com.foilen.infra.api.model.audit.AuditType;
+import com.foilen.infra.api.model.resource.ResourceDetailsSmall;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangeExecutionHook;
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.ChangesInTransactionContext;

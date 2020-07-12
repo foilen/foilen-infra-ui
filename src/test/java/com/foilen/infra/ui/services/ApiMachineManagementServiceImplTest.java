@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.foilen.infra.api.model.MachineSetup;
+import com.foilen.infra.api.model.machine.MachineSetup;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
@@ -56,7 +56,7 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
 
     @Test
     public void testGetMachineSetup_FAIL_ApiUser_Not_Admin() {
-        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_ID_USER, "You are not allowed");
+        testGetMachineSetup_FAIL(FakeDataServiceImpl.API_USER_ID_USER_ALPHA, "You are not allowed");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
 
     @Test
     public void testGetMachineSetup_FAIL_User_Not_Admin() {
-        testGetMachineSetup_FAIL(FakeDataServiceImpl.USER_ID_USER, "You are not allowed");
+        testGetMachineSetup_FAIL(FakeDataServiceImpl.USER_ID_BETA, "You are not allowed");
     }
 
     private void testGetMachineSetup_OK(String userId) {

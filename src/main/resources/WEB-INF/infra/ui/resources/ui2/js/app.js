@@ -1,11 +1,25 @@
 // Vue Router: https://router.vuejs.org
-const routes = [ {
-  path : '/',
-  component : Home
-}, {
-  path : '/audits',
-  component : AuditsList
-}, ]
+const routes = [ 
+  {
+    path : '/',
+    component : Home
+  }, {
+    path : '/audits',
+    component : AuditsList
+  }, {
+    path : '/ownerRules',
+    component : OwnerRulesList
+  }, {
+    path : '/userApis',
+    component : UserApisList
+  }, {
+    path : '/userHumans',
+    component : UserHumansList
+  }, {
+    path : '/roles',
+    component : RolesList
+  }, 
+]
 
 const router = new VueRouter({
   routes : routes

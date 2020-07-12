@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.foilen.infra.apitmp.model.ApplicationDetailsResult;
+import com.foilen.infra.api.model.ui.ApplicationDetailsResult;
 import com.foilen.infra.ui.services.ApplicationService;
 
 @RequestMapping(value = "api/app", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)

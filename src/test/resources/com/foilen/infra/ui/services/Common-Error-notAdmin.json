@@ -1,0 +1,8 @@
+{
+  "error" : {
+    "message" : "You are not an admin",
+    "timestamp" : "--hastime--",
+    "uniqueId" : "--hasid--"
+  },
+  "success" : false
+}

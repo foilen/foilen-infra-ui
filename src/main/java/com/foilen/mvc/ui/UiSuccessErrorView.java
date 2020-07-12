@@ -15,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.foilen.infra.ui.services.exception.UserPermissionException;
+
 public class UiSuccessErrorView {
 
     private RedirectAttributes redirectAttributes;
@@ -64,6 +66,30 @@ public class UiSuccessErrorView {
                 // Add the error
                 modelAndView.addObject("errorCode", e.getMessage());
                 modelAndView.addObject("errorParams", e.getParams());
+
+                // Add the form
+                modelAndView.addObject("form", form);
+                modelAndView.addObject("formErrors", formErrors);
+            }
+
+        } catch (UserPermissionException e) {
+
+            viewName = errorViewName;
+
+            // Check redirect or not
+            boolean isRedirection = viewName.startsWith("redirect:");
+            if (isRedirection) {
+                // Add the error
+                redirectAttributes.addFlashAttribute("errorCode", e.getMessage());
+                redirectAttributes.addFlashAttribute("errorParams", new Object[] {});
+
+                // Add the form
+                redirectAttributes.addFlashAttribute("form", form);
+                redirectAttributes.addFlashAttribute("formErrors", formErrors);
+            } else {
+                // Add the error
+                modelAndView.addObject("errorCode", e.getMessage());
+                modelAndView.addObject("errorParams", new Object[] {});
 
                 // Add the form
                 modelAndView.addObject("form", form);

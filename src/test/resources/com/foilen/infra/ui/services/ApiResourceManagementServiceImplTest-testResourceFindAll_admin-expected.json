@@ -1,0 +1,177 @@
+[ {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f001",
+    "resourceName" : "f1"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceName" : "f1indirect"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "A not attached application",
+    "resourceName" : "notattached"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "",
+    "resourceName" : "example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "",
+    "resourceName" : "f001.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "",
+    "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "",
+    "resourceName" : "node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=example.com, enumeration=B, date=null, integerNumber=3, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceName" : "example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=t1_aaa, enumeration=A, date=Sat Jan 01 00:00:00 EST 2000, integerNumber=1, longNumber=1, doubleNumber=1.0, floatNumber=1.0, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, two]]",
+    "resourceName" : "t1_aaa"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=t2_aaa, enumeration=C, date=Thu Jun 01 00:00:00 EDT 2000, integerNumber=5, longNumber=8, doubleNumber=1.5, floatNumber=7.3, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, three]]",
+    "resourceName" : "t2_aaa"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=www.example.com, enumeration=A, date=null, integerNumber=1, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceName" : "www.example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=www.example.com, enumeration=A, date=null, integerNumber=2, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceName" : "www.example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "JunitResource [text=zz, enumeration=B, date=Sat Apr 01 00:00:00 EST 2000, integerNumber=80, longNumber=4, doubleNumber=77.6, floatNumber=3.1, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceName" : "zz"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "f001.node.example.com",
+    "resourceName" : "f001.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "f002.node.example.com",
+    "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "/home/root",
+    "resourceName" : "root"
+  },
+  "resourceType" : "System Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "/home/root",
+    "resourceName" : "root"
+  },
+  "resourceType" : "System Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/f1",
+    "resourceName" : "f1"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/f12",
+    "resourceName" : "f12"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/f2",
+    "resourceName" : "f2"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/indirectlyattached",
+    "resourceName" : "indirectlyattached"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/notattached",
+    "resourceName" : "notattached"
+  },
+  "resourceType" : "Unix User"
+} ]

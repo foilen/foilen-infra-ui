@@ -1,0 +1,31 @@
+{
+  "items" : [ {
+    "admin" : true,
+    "email" : "admin@@example.com",
+    "userId" : "111111"
+  }, {
+    "admin" : false,
+    "email" : "beta@@example1.com",
+    "roles" : [ "beta_admin", "infra", "shared_nachine" ],
+    "userId" : "222222"
+  }, {
+    "admin" : false,
+    "email" : "alpha@@example1.com",
+    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "userId" : "333333"
+  }, {
+    "admin" : false,
+    "email" : "lost@@example.com",
+    "userId" : "444444"
+  } ],
+  "pagination" : {
+    "currentPage" : 0,
+    "currentPageUi" : 1,
+    "firstPage" : true,
+    "itemsPerPage" : 100,
+    "lastPage" : true,
+    "totalItems" : 4,
+    "totalPages" : 1
+  },
+  "success" : true
+}

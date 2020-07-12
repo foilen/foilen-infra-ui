@@ -9,34 +9,10 @@
  */
 package com.foilen.infra.ui.upgrades.mongodb;
 
-import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.foilen.infra.plugin.core.system.mongodb.upgrader.MongoDbUpgraderConstants;
-import com.foilen.smalltools.tools.AbstractBasics;
-import com.foilen.smalltools.upgrader.tasks.UpgradeTask;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 @Component
-public class V2020040402_Ui_migration_delete_tmp_collections extends AbstractBasics implements UpgradeTask {
-
-    @Autowired
-    private MongoClient mongoClient;
-
-    @Value("${spring.data.mongodb.database}")
-    private String databaseName;
-
-    private void dropCollection(String collectionName) {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
-
-        logger.info("Drop collection {}", collectionName);
-        MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
-        collection.drop();
-    }
+public class V2020040402_Ui_migration_delete_tmp_collections extends AbstractMongoUpgradeTask {
 
     @Override
     public void execute() {
@@ -57,11 +33,6 @@ public class V2020040402_Ui_migration_delete_tmp_collections extends AbstractBas
         dropCollection("tmp_report_execution");
         dropCollection("tmp_report_time");
         dropCollection("tmp_user");
-    }
-
-    @Override
-    public String useTracker() {
-        return MongoDbUpgraderConstants.TRACKER;
     }
 
 }

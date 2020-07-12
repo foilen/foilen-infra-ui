@@ -28,7 +28,7 @@ public class TmpTranslationServiceImpl extends AbstractBasics implements Transla
 
     @Override
     public String translate(String messageCode) {
-        throw new RuntimeException("Not mocked");
+        return messageCode;
     }
 
     @Override

@@ -10,12 +10,13 @@
 package com.foilen.infra.ui.services;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.foilen.infra.api.model.MachineSetup;
+import com.foilen.infra.api.model.machine.MachineSetup;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
@@ -24,6 +25,7 @@ import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.ui.test.AbstractSpringTests;
+import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
 
@@ -109,6 +111,24 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         MachineSetup machineSetup = machineService.getMachineSetup("none.node.example.com");
         Assert.assertNull(machineSetup);
 
+    }
+
+    @Test
+    public void testListMonitor_admin() {
+        List<String> machines = machineService.listMonitor(FakeDataServiceImpl.USER_ID_ADMIN);
+        AssertTools.assertJsonComparisonWithoutNulls("MachineServiceImplTest-testListMonitor_admin.json", getClass(), machines);
+    }
+
+    @Test
+    public void testListMonitor_none() {
+        List<String> machines = machineService.listMonitor(FakeDataServiceImpl.USER_ID_NOPERM);
+        AssertTools.assertJsonComparisonWithoutNulls("MachineServiceImplTest-testListMonitor_none.json", getClass(), machines);
+    }
+
+    @Test
+    public void testListMonitor_user() {
+        List<String> machines = machineService.listMonitor(FakeDataServiceImpl.USER_ID_ALPHA);
+        AssertTools.assertJsonComparisonWithoutNulls("MachineServiceImplTest-testListMonitor_user.json", getClass(), machines);
     }
 
 }

@@ -9,40 +9,12 @@
  */
 package com.foilen.infra.ui.upgrades.mongodb;
 
-import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.foilen.infra.plugin.core.system.mongodb.upgrader.MongoDbUpgraderConstants;
-import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tuple.Tuple2;
-import com.foilen.smalltools.upgrader.tasks.UpgradeTask;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 @Component
-public class V2020040102_Ui_Indexes extends AbstractBasics implements UpgradeTask {
-
-    @Autowired
-    private MongoClient mongoClient;
-
-    @Value("${spring.data.mongodb.database}")
-    private String databaseName;
-
-    @SafeVarargs
-    private void addIndex(String collectionName, Tuple2<String, Object>... keys) {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
-
-        logger.info("Create index for collection {} , with keys {}", collectionName, keys);
-        MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
-        Document keysDocument = new Document();
-        for (Tuple2<String, Object> key : keys) {
-            keysDocument.put(key.getA(), key.getB());
-        }
-        collection.createIndex(keysDocument);
-    }
+public class V2020040102_Ui_Indexes extends AbstractMongoUpgradeTask {
 
     @Override
     public void execute() {
@@ -68,11 +40,6 @@ public class V2020040102_Ui_Indexes extends AbstractBasics implements UpgradeTas
         addIndex("userApiMachine", new Tuple2<>("userId", 1), new Tuple2<>("expireOn", 1));
         addIndex("userApiMachine", new Tuple2<>("machineName", 1), new Tuple2<>("expireOn", 1));
 
-    }
-
-    @Override
-    public String useTracker() {
-        return MongoDbUpgraderConstants.TRACKER;
     }
 
 }

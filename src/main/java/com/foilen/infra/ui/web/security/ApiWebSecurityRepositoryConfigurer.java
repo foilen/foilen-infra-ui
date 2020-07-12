@@ -16,22 +16,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.foilen.infra.ui.repositories.UserApiMachineRepository;
-import com.foilen.infra.ui.repositories.UserApiRepository;
+import com.foilen.infra.ui.services.EntitlementService;
 
 @Order(1) // To ensure it is checked before FoilenLoginWebSecurityConfigurerAdapter
 public class ApiWebSecurityRepositoryConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserApiRepository userApiRepository;
-    @Autowired
-    private UserApiMachineRepository userApiMachineRepository;
+    private EntitlementService entitlementService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        ApiUsersUserDetailsService apiUsersUserDetailsService = new ApiUsersUserDetailsService();
-        apiUsersUserDetailsService.setUserApiMachineRepository(userApiMachineRepository);
-        apiUsersUserDetailsService.setUserApiRepository(userApiRepository);
+        ApiUsersUserDetailsService apiUsersUserDetailsService = new ApiUsersUserDetailsService(entitlementService);
 
         auth.userDetailsService(apiUsersUserDetailsService) //
                 .passwordEncoder(new BCryptPasswordEncoder(13));

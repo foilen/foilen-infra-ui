@@ -96,8 +96,12 @@ public class InfraUiSpringConfig {
         menuEntry.addChild("plugin").setUri("/plugin/list").addUriStartsWith("/plugin/");
         menuEntry.addChild("pluginresources").setUri("/pluginresources/list").addUriStartsWith("/pluginresources/");
 
-        // ApiUser
-        menuEntry.addChild("apiUser").setUri("/apiUser/list").addUriStartsWith("/apiUser/");
+        // Users
+        child = menuEntry.addChild("users");
+        child.addChild("roles").setUri("/index.html#/roles").addUriStartsWith("/index.html#/roles");
+        child.addChild("ownerRules").setUri("/index.html#/ownerRules").addUriStartsWith("/index.html#/ownerRules");
+        child.addChild("userHumans").setUri("/index.html#/userHumans").addUriStartsWith("/index.html#/userHumans");
+        child.addChild("userApis").setUri("/index.html#/userApis").addUriStartsWith("/index.html#/userApis");
 
         // Audits
         menuEntry.addChild("audits").setUri("/index.html#/audits").addUriStartsWith("/index.html#/audits");

@@ -11,7 +11,7 @@ package com.foilen.infra.ui.services;
 
 import java.util.List;
 
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.smalltools.restapi.model.FormResult;
 

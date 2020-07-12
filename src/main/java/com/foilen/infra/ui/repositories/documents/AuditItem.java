@@ -34,6 +34,7 @@ public class AuditItem {
     private String userType;
     private String userName;
 
+    // Resources
     private String resourceFirstType;
     private Object resourceFirst;
     private String resourceSecondType;
@@ -42,11 +43,33 @@ public class AuditItem {
     private String linkType;
     private String tagName;
 
+    // Other
+    private String documentType;
+    private String documentId;
+    private Object documentFrom;
+    private Object documentTo;
+
     public AuditItem() {
     }
 
     public String getAction() {
         return action;
+    }
+
+    public Object getDocumentFrom() {
+        return documentFrom;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public Object getDocumentTo() {
+        return documentTo;
+    }
+
+    public String getDocumentType() {
+        return documentType;
     }
 
     public String getId() {
@@ -103,6 +126,26 @@ public class AuditItem {
 
     public AuditItem setAction(String action) {
         this.action = action;
+        return this;
+    }
+
+    public AuditItem setDocumentFrom(Object documentFrom) {
+        this.documentFrom = documentFrom;
+        return this;
+    }
+
+    public AuditItem setDocumentId(String documentId) {
+        this.documentId = documentId;
+        return this;
+    }
+
+    public AuditItem setDocumentTo(Object documentTo) {
+        this.documentTo = documentTo;
+        return this;
+    }
+
+    public AuditItem setDocumentType(String documentType) {
+        this.documentType = documentType;
         return this;
     }
 

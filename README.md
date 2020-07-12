@@ -2,6 +2,8 @@
 
 The UI to manage the infrastructure of multiple Linux machines.
 
+You can find more documentation in the "docs" directory.
+
 # Usage
 
 # Configuration environment

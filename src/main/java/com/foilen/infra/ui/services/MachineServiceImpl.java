@@ -22,7 +22,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.api.model.MachineSetup;
+import com.foilen.infra.api.model.machine.MachineSetup;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
@@ -48,6 +48,8 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
     private IPResourceService ipResourceService;
     @Autowired
     private EntitlementService entitlementService;
+    @Autowired
+    private ResourceManagementService resourceManagementService;
 
     @Value("${infraUi.baseUrl}")
     private String uiApiBaseUrl;
@@ -77,9 +79,9 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
 
         // Retrieve what is installed on this machine
         List<Application> applications = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(Application.class, LinkTypeConstants.INSTALLED_ON, machine);
-        machineSetup.setApplications(applications.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.Application.class)).collect(Collectors.toList()));
+        machineSetup.setApplications(applications.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.Application.class)).collect(Collectors.toList()));
         List<UnixUser> unixUsers = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(UnixUser.class, LinkTypeConstants.INSTALLED_ON, machine);
-        machineSetup.setUnixUsers(unixUsers.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.UnixUser.class)).collect(Collectors.toList()));
+        machineSetup.setUnixUsers(unixUsers.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.UnixUser.class)).collect(Collectors.toList()));
 
         // Add any missing users that are used by the applications
         Set<UnixUser> additionnalUnixUsers = new HashSet<>();
@@ -104,35 +106,15 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
     }
 
     @Override
-    public List<String> list(String userId) {
-        if (entitlementService.canManageAllMachines(userId)) {
-            return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //
-                    .map(it -> it.getName()) //
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
     public List<Machine> listMachines(String userId) {
-        if (entitlementService.canManageAllMachines(userId)) {
-            return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class));
-        } else {
-            return Collections.emptyList();
-        }
+        return resourceManagementService.resourceFindAll(userId, ipResourceService.createResourceQuery(Machine.class));
     }
 
     @Override
     public List<String> listMonitor(String userId) {
-        if (entitlementService.canManageAllMachines(userId)) {
-            return ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //
-                    .map(it -> it.getName()) //
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
-
+        return resourceManagementService.resourceFindAll(userId, ipResourceService.createResourceQuery(Machine.class)).stream() //
+                .map(it -> it.getName()) //
+                .collect(Collectors.toList());
     }
 
     @Override

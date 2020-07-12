@@ -70,7 +70,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
                     return cloned;
                 }) //
                 .collect(Collectors.toList());
-        AssertTools.assertJsonComparison("AuditingServiceImplTest-add.json", getClass(), items);
+        AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-add.json", getClass(), items);
 
         // Update
         auditItemDao.deleteAll();
@@ -90,7 +90,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
                     return cloned;
                 }) //
                 .collect(Collectors.toList());
-        AssertTools.assertJsonComparison("AuditingServiceImplTest-update.json", getClass(), items);
+        AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-update.json", getClass(), items);
 
         // Delete links and tags
         auditItemDao.deleteAll();
@@ -110,7 +110,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
                     return cloned;
                 }) //
                 .collect(Collectors.toList());
-        AssertTools.assertJsonComparison("AuditingServiceImplTest-delete.json", getClass(), items);
+        AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-delete.json", getClass(), items);
 
     }
 

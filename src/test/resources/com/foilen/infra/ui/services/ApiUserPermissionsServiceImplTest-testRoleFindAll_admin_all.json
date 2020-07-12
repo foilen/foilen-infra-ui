@@ -1,0 +1,21 @@
+{
+  "items" : [ {
+    "name" : "alpha_admin"
+  }, {
+    "name" : "beta_admin"
+  }, {
+    "name" : "infra"
+  }, {
+    "name" : "shared_nachine"
+  } ],
+  "pagination" : {
+    "currentPage" : 0,
+    "currentPageUi" : 1,
+    "firstPage" : true,
+    "itemsPerPage" : 100,
+    "lastPage" : true,
+    "totalItems" : 4,
+    "totalPages" : 1
+  },
+  "success" : true
+}

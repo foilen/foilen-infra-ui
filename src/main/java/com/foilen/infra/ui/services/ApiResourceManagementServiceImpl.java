@@ -9,6 +9,8 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -19,24 +21,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import com.foilen.infra.api.model.PartialLinkDetails;
-import com.foilen.infra.api.model.ResourceBucket;
-import com.foilen.infra.api.model.ResourceDetails;
-import com.foilen.infra.api.model.ResourceTypeDetails;
+import com.foilen.infra.api.model.resource.PartialLinkDetails;
+import com.foilen.infra.api.model.resource.ResourceBucket;
+import com.foilen.infra.api.model.resource.ResourceDetails;
+import com.foilen.infra.api.model.resource.ResourceTypeDetails;
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.api.response.ResponseResourceBucket;
 import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.api.response.ResponseResourceTypesDetails;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
+import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.PluginResource;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceDefinition;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
-import com.foilen.smalltools.restapi.model.ApiError;
+import com.foilen.infra.ui.repositories.PluginResourceInUiRepository;
+import com.foilen.mvc.ui.UiException;
 import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.JsonTools;
+import com.foilen.smalltools.tools.StringTools;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 
@@ -46,6 +52,10 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     @Autowired
     private ConversionService conversionService;
     @Autowired
+    private PluginResourceInUiRepository pluginResourceInUiRepository;
+    @Autowired
+    private PluginResourceRepository pluginResourceRepository;
+    @Autowired
     private IPResourceService resourceService;
     @Autowired
     private ResourceManagementService resourceManagementService;
@@ -53,11 +63,6 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     @Override
     public ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes) {
         ResponseResourceAppliedChanges formResult = new ResponseResourceAppliedChanges();
-
-        if (!entitlementService.isAdmin(userId)) {
-            formResult.getGlobalErrors().add("You are not an admin");
-            return formResult;
-        }
 
         wrapExecution(formResult, () -> {
 
@@ -143,7 +148,7 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             // If no errors, execute
             if (formResult.isSuccess()) {
                 try {
-                    resourceManagementService.changesExecute(changesContext, formResult);
+                    resourceManagementService.changesExecute(changesContext, changes.getDefaultOwner(), formResult);
                 } catch (Exception e) {
                     formResult.getGlobalErrors().add("Problem executing the update: " + e.getMessage());
                 }
@@ -194,9 +199,9 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
         }
     }
 
-    private ResourceBucket createResourceBucket(IPResource resource) {
+    private ResourceBucket createResourceBucket(IPResource resource, boolean limitDetails) {
         ResourceBucket resourceBucket = new ResourceBucket();
-        resourceBucket.setResourceDetails(createResourceDetails(resource));
+        resourceBucket.setResourceDetails(createResourceDetails(resource, limitDetails));
         resourceService.linkFindAllRelatedByResource(resource).stream() //
                 .sorted((a, b) -> ComparisonChain.start() //
                         .compare(a.getA().getResourceName(), b.getA().getResourceName()) //
@@ -205,18 +210,34 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
                         .result())//
                 .forEach(link -> {
                     if (link.getA().equals(resource)) {
-                        resourceBucket.getLinksTo().add(new PartialLinkDetails(createResourceDetails(link.getC()), link.getB()));
+                        resourceBucket.getLinksTo().add(new PartialLinkDetails(createResourceDetails(link.getC(), true), link.getB()));
                     } else {
-                        resourceBucket.getLinksFrom().add(new PartialLinkDetails(createResourceDetails(link.getA()), link.getB()));
+                        resourceBucket.getLinksFrom().add(new PartialLinkDetails(createResourceDetails(link.getA(), true), link.getB()));
                     }
                 });
         resourceBucket.setTags(resourceService.tagFindAllByResource(resource).stream().sorted().collect(Collectors.toList()));
         return resourceBucket;
     }
 
-    private ResourceDetails createResourceDetails(IPResource resource) {
+    private ResourceDetails createResourceDetails(IPResource resource, boolean limitDetails) {
         String resourceType = resourceService.getResourceDefinition(resource).getResourceType();
-        return new ResourceDetails(resourceType, resource);
+        if (limitDetails) {
+            Map<String, String> limitedResource = new HashMap<>();
+            limitedResource.put("internalId", resource.getInternalId());
+            limitedResource.put("resourceName", resource.getResourceName());
+            limitedResource.put("resourceDescription", resource.getResourceDescription());
+            limitedResource.put("resourceEditorName", resource.getResourceEditorName());
+            return new ResourceDetails(resourceType, limitedResource);
+        } else {
+            return new ResourceDetails(resourceType, resource);
+        }
+    }
+
+    private ResourceBucket createResourceNoLinks(IPResource resource, boolean limitDetails) {
+        ResourceBucket resourceBucket = new ResourceBucket();
+        resourceBucket.setResourceDetails(createResourceDetails(resource, limitDetails));
+        resourceBucket.setTags(resourceService.tagFindAllByResource(resource).stream().sorted().collect(Collectors.toList()));
+        return resourceBucket;
     }
 
     private IPResource getPersistedResourceByPk(String context, int posContext, ResourceDetails resourcePkDetails, FormResult formResult) {
@@ -234,12 +255,8 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
     @Override
     public ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch) {
-        ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
 
-        if (!entitlementService.isAdmin(userId)) {
-            responseResourceBuckets.setError(new ApiError("You are not an admin"));
-            return responseResourceBuckets;
-        }
+        ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
 
         wrapExecution(responseResourceBuckets, () -> {
             IPResourceQuery<IPResource> query = resourceService.createResourceQuery(resourceSearch.getResourceType());
@@ -252,8 +269,8 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
                 query.tagAddAnd(resourceSearch.getTag());
             }
 
-            responseResourceBuckets.setItems(resourceService.resourceFindAll(query).stream() //
-                    .map(resource -> createResourceBucket(resource)) //
+            responseResourceBuckets.setItems(resourceManagementService.resourceFindAll(userId, query).stream() //
+                    .map(resource -> createResourceBucket(resource, true)) //
                     .collect(Collectors.toList()));
         });
 
@@ -261,13 +278,53 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     }
 
     @Override
-    public ResponseResourceBucket resourceFindOne(String userId, RequestResourceSearch resourceSearch) {
+    public ResponseResourceBuckets resourceFindAllWithoutOwner(String userId) {
+        ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
+
+        wrapExecution(responseResourceBuckets, () -> {
+
+            // Permission
+            entitlementService.isAdminOrFailUi(userId);
+
+            // Get them
+            responseResourceBuckets.setItems(pluginResourceInUiRepository.findAllWithoutOwner().stream() //
+                    .map(it -> it.getResource()) //
+                    .sorted((a, b) -> StringTools.safeComparisonNullFirst(a.getResourceName(), b.getResourceName())) //
+                    .map(resource -> createResourceNoLinks(resource, false)) //
+                    .collect(Collectors.toList()));
+        });
+
+        return responseResourceBuckets;
+    }
+
+    @Override
+    public ResponseResourceBucket resourceFindById(String userId, String resourceId) {
         ResponseResourceBucket responseResourceBucket = new ResponseResourceBucket();
 
-        if (!entitlementService.isAdmin(userId)) {
-            responseResourceBucket.setError(new ApiError("You are not an admin"));
-            return responseResourceBucket;
-        }
+        wrapExecution(responseResourceBucket, () -> {
+
+            entitlementService.canViewResourcesOrFailUi(userId, resourceId);
+
+            Optional<PluginResource> pluginResourceO = pluginResourceRepository.findById(resourceId);
+
+            // Resource does not exist
+            if (pluginResourceO.isEmpty()) {
+                throw new UiException("error.forbidden");
+            }
+            PluginResource pluginResource = pluginResourceO.get();
+
+            // Fill
+            IPResource resource = pluginResource.getResource();
+            responseResourceBucket.setItem(createResourceBucket(resource, false));
+
+        });
+
+        return responseResourceBucket;
+    }
+
+    @Override
+    public ResponseResourceBucket resourceFindOne(String userId, RequestResourceSearch resourceSearch) {
+        ResponseResourceBucket responseResourceBucket = new ResponseResourceBucket();
 
         wrapExecution(responseResourceBucket, () -> {
             IPResourceQuery<IPResource> query = resourceService.createResourceQuery(resourceSearch.getResourceType());
@@ -289,7 +346,9 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
             Optional<IPResource> optional = resourceService.resourceFind(query);
             if (optional.isPresent()) {
-                responseResourceBucket.setItem(createResourceBucket(optional.get()));
+                IPResource resource = optional.get();
+                entitlementService.canViewResourcesOrFailUi(userId, resource.getInternalId());
+                responseResourceBucket.setItem(createResourceBucket(resource, false));
             }
 
         });

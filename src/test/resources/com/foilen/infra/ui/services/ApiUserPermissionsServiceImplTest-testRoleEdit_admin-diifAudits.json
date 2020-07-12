@@ -1,0 +1,72 @@
+{
+  "added" : [ {
+    "explicitChange" : true,
+    "type" : "DOCUMENT",
+    "action" : "ADD",
+    "userType" : "API",
+    "userName" : "AADMIN",
+    "documentType" : "role",
+    "documentId" : "alpha_admin",
+    "documentFrom" : {
+      "name" : "alpha_admin",
+      "resources" : [ {
+        "action" : "ALL",
+        "explicitChange" : true,
+        "owner" : "alpha",
+        "partial" : false,
+        "type" : "*"
+      } ],
+      "links" : [ {
+        "action" : "ALL",
+        "explicitChange" : true,
+        "fromOwner" : "alpha",
+        "fromType" : "*",
+        "linkType" : "*",
+        "partial" : true
+      }, {
+        "action" : "ALL",
+        "explicitChange" : true,
+        "linkType" : "*",
+        "partial" : true,
+        "toOwner" : "alpha",
+        "toType" : "*"
+      } ]
+    },
+    "documentTo" : {
+      "name" : "alpha_admin",
+      "resources" : [ {
+        "action" : "ALL",
+        "explicitChange" : false,
+        "partial" : true
+      }, {
+        "action" : "ADD",
+        "explicitChange" : true,
+        "owner" : "alpha",
+        "partial" : false,
+        "type" : "*"
+      } ],
+      "links" : [ {
+        "action" : "ALL",
+        "explicitChange" : false,
+        "partial" : true
+      }, {
+        "action" : "ADD",
+        "explicitChange" : true,
+        "fromOwner" : "alpha",
+        "fromType" : "Application",
+        "linkType" : "USES",
+        "partial" : true
+      }, {
+        "action" : "DELETE",
+        "explicitChange" : true,
+        "fromOwner" : "alpha",
+        "fromType" : "*",
+        "linkType" : "INSTALLED_ON",
+        "partial" : false,
+        "toOwner" : "alpha",
+        "toType" : "Machine"
+      } ]
+    }
+  } ],
+  "removed" : [ ]
+}

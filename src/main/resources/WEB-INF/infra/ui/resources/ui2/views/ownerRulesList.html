@@ -1,0 +1,131 @@
+<div class="row">
+
+  <div class="col-12">
+
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createModal">{{ $t('button.create') }}</button>
+
+    <div class="modal fade" id="createModal" data-backdrop="static" tabindex="-1" ownerRule="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+      <div class="modal-dialog" ownerRule="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createModalLabel">{{ $t('button.create') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.resourceNameStartsWith') }}</label> <input type="text" class="form-control" v-model="form.resourceNameStartsWith" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.resourceNameStartsWith">
+                <p v-for="errorCode in formResult.validationErrorsByField.resourceNameStartsWith">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.resourceNameEndsWith') }}</label> <input type="text" class="form-control" v-model="form.resourceNameEndsWith" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.resourceNameEndsWith">
+                <p v-for="errorCode in formResult.validationErrorsByField.resourceNameEndsWith">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.assignOwner') }}</label> <input type="text" class="form-control" v-model="form.assignOwner" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.assignOwner">
+                <p v-for="errorCode in formResult.validationErrorsByField.assignOwner">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-success" v-on:click="create()">{{ $t('button.create') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editModal" data-backdrop="static" tabindex="-1" ownerRule="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" ownerRule="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">{{ $t('button.edit') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.id') }}</label> <input type="text" class="form-control" v-model="form.id" autocomplete="off" disabled="disabled">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.id">
+                <p v-for="errorCode in formResult.validationErrorsByField.id">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.resourceNameStartsWith') }}</label> <input type="text" class="form-control" v-model="form.resourceNameStartsWith" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.resourceNameStartsWith">
+                <p v-for="errorCode in formResult.validationErrorsByField.resourceNameStartsWith">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.resourceNameEndsWith') }}</label> <input type="text" class="form-control" v-model="form.resourceNameEndsWith" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.resourceNameEndsWith">
+                <p v-for="errorCode in formResult.validationErrorsByField.resourceNameEndsWith">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.assignOwner') }}</label> <input type="text" class="form-control" v-model="form.assignOwner" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.assignOwner">
+                <p v-for="errorCode in formResult.validationErrorsByField.assignOwner">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-primary" v-on:click="edit()">{{ $t('button.edit') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <input type="text" class="form-control" v-model="queries.search" v-bind:placeholder="$t('term.search')" v-on:keyup.enter="refresh(1)" />
+    <pagination class="float-right" v-bind:pagination="pagination" v-on:changePage="refresh($event.pageId)"></pagination>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('term.id') }}</th>
+          <th scope="col">{{ $t('term.resourceNameStartsWith') }}</th>
+          <th scope="col">{{ $t('term.resourceNameEndsWith') }}</th>
+          <th scope="col">{{ $t('term.assignOwner') }}</th>
+          <th scope="col" width="200px">{{ $t('term.actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in items">
+          <td><a v-on:click="editShow(item)">{{item.id}}</a></td>
+          <td>{{item.resourceNameStartsWith}}</td>
+          <td>{{item.resourceNameEndsWith}}</td>
+          <td>{{item.assignOwner}}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" v-on:click="editShow(item)">{{ $t('button.edit') }}</button>
+            <button class="btn btn-sm btn-danger" v-on:click="deleteOne(item)">{{ $t('button.delete') }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

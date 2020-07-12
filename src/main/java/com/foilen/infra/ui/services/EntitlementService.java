@@ -9,11 +9,9 @@
  */
 package com.foilen.infra.ui.services;
 
-import java.util.List;
+import com.foilen.infra.ui.repositories.documents.AbstractUser;
 
 public interface EntitlementService {
-
-    void canDeleteResourcesOrFailUi(String userId);
 
     boolean canGetSetupForMachine(String userId, String machineName);
 
@@ -29,21 +27,16 @@ public interface EntitlementService {
 
     boolean canSendAlert(String userId);
 
-    void canUpdateResourcesOrFailUi(String userId);
+    boolean canViewResources(String userId, String resourceId);
+
+    void canViewResourcesOrFailUi(String userId, String resourceId);
+
+    AbstractUser getUser(String userId);
 
     boolean isAdmin(String userId);
 
     void isAdminOrFailUi(String userId);
 
     boolean isTheMachine(String userId, String machineName);
-
-    /**
-     * Get the list of machines names where the user can install resources.
-     *
-     * @param userId
-     *            the user id
-     * @return the list of machines names
-     */
-    List<String> listCanInstallOnMachine(String userId);
 
 }

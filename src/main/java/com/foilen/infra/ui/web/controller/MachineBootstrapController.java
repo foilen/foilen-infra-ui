@@ -9,7 +9,10 @@
  */
 package com.foilen.infra.ui.web.controller;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,18 +20,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.foilen.infra.api.model.MachineSetup;
+import com.foilen.infra.api.model.machine.MachineSetup;
 import com.foilen.infra.ui.services.EntitlementService;
 import com.foilen.infra.ui.services.MachineService;
+import com.foilen.mvc.ui.UiException;
 
 @Controller
 @RequestMapping("machineBootstrap")
 public class MachineBootstrapController {
 
     @Autowired
+    private EntitlementService entitlementService;
+    @Autowired
     private MachineService machineService;
     @Autowired
-    private EntitlementService entitlementService;
+    private MessageSource messageSource;
 
     @GetMapping("list")
     public ModelAndView list(Authentication authentication) {
@@ -38,16 +44,22 @@ public class MachineBootstrapController {
     }
 
     @GetMapping("view/{machineName:.+}")
-    public ModelAndView view(Authentication authentication, @PathVariable String machineName) {
-
-        entitlementService.canGetSetupForMachineOrFailUi(authentication.getName(), machineName);
+    public ModelAndView view(Authentication authentication, Locale locale, @PathVariable String machineName) {
 
         ModelAndView modelAndView = new ModelAndView("machineBootstrap/view");
-        MachineSetup machineSetup = machineService.getMachineSetup(machineName);
-        modelAndView.addObject("machineName", machineName);
-        modelAndView.addObject("uiApiBaseUrl", machineSetup.getUiApiBaseUrl());
-        modelAndView.addObject("uiApiUserId", machineSetup.getUiApiUserId());
-        modelAndView.addObject("uiApiUserKey", machineSetup.getUiApiUserKey());
+        try {
+
+            entitlementService.canGetSetupForMachineOrFailUi(authentication.getName(), machineName);
+
+            MachineSetup machineSetup = machineService.getMachineSetup(machineName);
+            modelAndView.addObject("machineName", machineName);
+            modelAndView.addObject("uiApiBaseUrl", machineSetup.getUiApiBaseUrl());
+            modelAndView.addObject("uiApiUserId", machineSetup.getUiApiUserId());
+            modelAndView.addObject("uiApiUserKey", machineSetup.getUiApiUserKey());
+        } catch (UiException e) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", messageSource.getMessage(e.getMessage(), e.getParams(), locale));
+        }
         return modelAndView;
     }
 

@@ -1,0 +1,179 @@
+<div class="row">
+
+  <div class="col-12">
+
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createModal">{{ $t('button.create') }}</button>
+
+    <div class="modal fade" id="createModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createModalLabel">{{ $t('button.create') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.name') }}</label> <input type="text" class="form-control" v-model="form.name" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.name">
+                <p v-for="errorCode in formResult.validationErrorsByField.name">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-success" v-on:click="create()">{{ $t('button.create') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">{{ $t('button.edit') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="name">{{ $t('term.name') }}</label> <input type="text" class="form-control" v-model="form.name" autocomplete="off" disabled="disabled">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.name">
+                <p v-for="errorCode in formResult.validationErrorsByField.name">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <p class="bg-info">{{ $t('instructions.permissions') }}</p>
+
+            <div class="form-group">
+              <h2>{{ $t('term.resources') }}</h2>
+
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ $t('term.action') }}</th>
+                    <th scope="col">{{ $t('term.isExplicitChange') }}</th>
+                    <th scope="col">{{ $t('term.type') }}</th>
+                    <th scope="col">{{ $t('term.owner') }}</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(resource, resourceIdx) in form.resources">
+                    <td><select class="form-control" v-model="resource.action">
+                        <option>ALL</option>
+                        <option>LIST</option>
+                        <option>VIEW</option>
+                        <option>ADD</option>
+                        <option>UPDATE</option>
+                        <option>DELETE</option>
+                    </select></td>
+                    <td><input type="checkbox" v-model="resource.explicitChange"></td>
+                    <td><select class="form-control" v-model="resource.type">
+                        <option></option>
+                        <option>*</option>
+                        <option v-for="type in $parent.appDetails.resourceTypes">{{type}}</option>
+                    </select></td>
+                    <td><input type="text" class="form-control" v-model="resource.owner" autocomplete="off"></td>
+                    <td><button class="btn btn-sm btn-danger" v-on:click="roleResourceRemove(resourceIdx)">X</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <button class="btn btn-sm btn-primary" v-on:click="roleResourceAdd()">{{ $t('button.add') }}</button>
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.resources">
+                <p v-for="errorCode in formResult.validationErrorsByField.resources">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <h2>{{ $t('term.links') }}</h2>
+
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ $t('term.action') }}</th>
+                    <th scope="col">{{ $t('term.isExplicitChange') }}</th>
+                    <th scope="col">{{ $t('term.fromType') }}</th>
+                    <th scope="col">{{ $t('term.fromOwner') }}</th>
+                    <th scope="col">{{ $t('term.linkType') }}</th>
+                    <th scope="col">{{ $t('term.toType') }}</th>
+                    <th scope="col">{{ $t('term.toOwner') }}</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(link, linkIdx) in form.links">
+                    <td><select class="form-control" v-model="link.action">
+                        <option>ALL</option>
+                        <option>ADD</option>
+                        <option>DELETE</option>
+                    </select></td>
+                    <td><input type="checkbox" v-model="link.explicitChange"></td>
+                    <td><select class="form-control" v-model="link.fromType">
+                        <option></option>
+                        <option>*</option>
+                        <option v-for="type in $parent.appDetails.resourceTypes">{{type}}</option>
+                    </select></td>
+                    <td><input type="text" class="form-control" v-model="link.fromOwner" autocomplete="off"></td>
+                    <td><input type="text" class="form-control" v-model="link.linkType" autocomplete="off"></td>
+                    <td><select class="form-control" v-model="link.toType">
+                        <option></option>
+                        <option>*</option>
+                        <option v-for="type in $parent.appDetails.resourceTypes">{{type}}</option>
+                    </select></td>
+                    <td><input type="text" class="form-control" v-model="link.toOwner" autocomplete="off"></td>
+                    <td><button class="btn btn-sm btn-danger" v-on:click="roleLinkRemove(linkIdx)">X</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <button class="btn btn-sm btn-primary" v-on:click="roleLinkAdd()">{{ $t('button.add') }}</button>
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.links">
+                <p v-for="errorCode in formResult.validationErrorsByField.links">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-primary" v-on:click="edit()">{{ $t('button.edit') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <input type="text" class="form-control" v-model="queries.search" v-bind:placeholder="$t('term.search')" v-on:keyup.enter="refresh(1)" />
+    <pagination class="float-right" v-bind:pagination="pagination" v-on:changePage="refresh($event.pageId)"></pagination>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('term.name') }}</th>
+          <th scope="col" width="200px">{{ $t('term.actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in items">
+          <td><a v-on:click="editShow(item)">{{item.name}}</a></td>
+          <td>
+            <button class="btn btn-sm btn-primary" v-on:click="editShow(item)">{{ $t('button.edit') }}</button>
+            <button class="btn btn-sm btn-danger" v-on:click="deleteOne(item)">{{ $t('button.delete') }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

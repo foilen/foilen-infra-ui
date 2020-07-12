@@ -23,6 +23,7 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
 
 import com.foilen.infra.ui.web.controller.api.SwaggerExpose;
 import com.foilen.infra.ui.web.interceptor.AddUserDetailsModelExtension;
+import com.foilen.infra.ui.web.interceptor.AddUserInDatabaseInterceptor;
 import com.foilen.infra.ui.web.interceptor.AddVisualModelExtension;
 import com.foilen.infra.ui.web.interceptor.RemoveModelOnRedirection;
 import com.foilen.smalltools.spring.resourceresolver.BundleResourceResolver;
@@ -40,6 +41,7 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(addUserInDatabaseInterceptor());
         registry.addInterceptor(addUserDetailsModelExtension());
         registry.addInterceptor(addVisualModelExtension());
         registry.addInterceptor(removeModelOnRedirection());
@@ -82,6 +84,7 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         bundleResourceResolver.addBundleResource("all-vendors.css", "/WEB-INF/infra/ui/resources/ui2/css/vendors/vis-network-6.1.1.min.css");
 
         bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/jquery-3.4.1.min.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/js-cookie-2.2.1.min.js");
         bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/bootstrap-4.3.1.bundle.min.js");
         if (isProd) {
             bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vue-2.6.10.min.js");
@@ -93,7 +96,12 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vis-network-6.1.1.min.js");
 
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/errors.js");
-        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-home.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-audits.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-ownerRules.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-userApis.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-userHumans.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-roles.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/components.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/app.js");
 
@@ -108,6 +116,11 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
     @Bean
     public AddUserDetailsModelExtension addUserDetailsModelExtension() {
         return new AddUserDetailsModelExtension();
+    }
+
+    @Bean
+    public AddUserInDatabaseInterceptor addUserInDatabaseInterceptor() {
+        return new AddUserInDatabaseInterceptor();
     }
 
     @Bean

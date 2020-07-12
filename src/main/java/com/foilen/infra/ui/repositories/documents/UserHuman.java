@@ -9,42 +9,36 @@
  */
 package com.foilen.infra.ui.repositories.documents;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class UserHuman {
+public class UserHuman extends AbstractUser {
 
-    @Id
-    private String userId;
     @Version
     private long version;
 
-    private boolean isAdmin;
+    private String email;
 
     public UserHuman() {
     }
 
     public UserHuman(String userId, boolean isAdmin) {
-        this.userId = userId;
-        this.isAdmin = isAdmin;
+        super(userId, isAdmin);
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getEmail() {
+        return email;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    @Override
+    public String getUserHashedKey() {
+        return null;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public UserHuman setEmail(String email) {
+        this.email = email;
+        return this;
     }
 
 }

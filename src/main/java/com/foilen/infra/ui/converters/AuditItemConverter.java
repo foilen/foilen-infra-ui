@@ -12,18 +12,18 @@ package com.foilen.infra.ui.converters;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.foilen.infra.api.model.AuditAction;
-import com.foilen.infra.api.model.AuditType;
-import com.foilen.infra.api.model.ResourceDetails;
+import com.foilen.infra.api.model.audit.AuditAction;
+import com.foilen.infra.api.model.audit.AuditType;
+import com.foilen.infra.api.model.resource.ResourceDetails;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 @Component
-public class AuditItemConverter extends AbstractBasics implements Converter<AuditItem, com.foilen.infra.apitmp.model.AuditItem> {
+public class AuditItemConverter extends AbstractBasics implements Converter<AuditItem, com.foilen.infra.api.model.audit.AuditItem> {
 
     @Override
-    public com.foilen.infra.apitmp.model.AuditItem convert(AuditItem source) {
-        com.foilen.infra.apitmp.model.AuditItem target = new com.foilen.infra.apitmp.model.AuditItem();
+    public com.foilen.infra.api.model.audit.AuditItem convert(AuditItem source) {
+        com.foilen.infra.api.model.audit.AuditItem target = new com.foilen.infra.api.model.audit.AuditItem();
 
         target.setId(source.getId());
         target.setTimestamp(source.getTimestamp());
@@ -41,6 +41,11 @@ public class AuditItemConverter extends AbstractBasics implements Converter<Audi
         }
         target.setLinkType(source.getLinkType());
         target.setTagName(source.getTagName());
+
+        target.setDocumentType(source.getDocumentType());
+        target.setDocumentId(source.getDocumentId());
+        target.setDocumentFrom(source.getDocumentFrom());
+        target.setDocumentTo(source.getDocumentTo());
 
         return target;
     }

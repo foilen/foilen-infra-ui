@@ -17,8 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.api.model.DiskStat;
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.DiskStat;
+import com.foilen.infra.api.model.machine.SystemStats;
+import com.foilen.infra.api.model.permission.LinkAction;
+import com.foilen.infra.api.model.permission.PermissionLink;
+import com.foilen.infra.api.model.permission.PermissionResource;
+import com.foilen.infra.api.model.permission.ResourceAction;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceLinkRepository;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
@@ -32,33 +36,53 @@ import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
 import com.foilen.infra.resource.unixuser.UnixUserEditor;
 import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
+import com.foilen.infra.ui.MetaConstants;
 import com.foilen.infra.ui.repositories.AuditItemRepository;
 import com.foilen.infra.ui.repositories.MachineStatisticsRepository;
+import com.foilen.infra.ui.repositories.OwnerRuleRepository;
 import com.foilen.infra.ui.repositories.ReportExecutionRepository;
+import com.foilen.infra.ui.repositories.RoleRepository;
 import com.foilen.infra.ui.repositories.UserApiMachineRepository;
 import com.foilen.infra.ui.repositories.UserApiRepository;
 import com.foilen.infra.ui.repositories.UserHumanRepository;
+import com.foilen.infra.ui.repositories.documents.OwnerRule;
+import com.foilen.infra.ui.repositories.documents.Role;
 import com.foilen.infra.ui.repositories.documents.UserApi;
 import com.foilen.infra.ui.repositories.documents.UserApiMachine;
 import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.infra.ui.services.MachineStatisticsService;
+import com.foilen.infra.ui.services.UserPermissionsServiceImpl;
 import com.foilen.smalltools.systemusage.results.NetworkInfo;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.DateTools;
+import com.foilen.smalltools.tools.JsonTools;
 
 @Service
 @Transactional
 public class FakeDataServiceImpl extends AbstractBasics implements FakeDataService {
 
+    public static final String OWNER_ALPHA = "alpha";
+    public static final String OWNER_BETA = "beta";
+    public static final String OWNER_SHARED = "shared";
+    public static final String OWNER_INFRA = "infra";
+
+    public static final String ROLE_SHARED_MACHINE = "shared_nachine";
+    public static final String ROLE_ALPHA_ADMIN = "alpha_admin";
+    public static final String ROLE_BETA_ADMIN = "beta_admin";
+    public static final String ROLE_INFRA = "infra";
+
     public static final String USER_ID_ADMIN = "111111";
-    public static final String USER_ID_USER = "222222";
-    public static final String USER_ID_TEST_1 = "333333";
+    public static final String USER_ID_BETA = "222222";
+    public static final String USER_ID_ALPHA = "333333";
+    public static final String USER_ID_NOPERM = "444444";
 
     public static final String API_USER_MACHINE_ID_F001 = "MF001";
     public static final String API_USER_MACHINE_ID_F002 = "MF002";
 
     public static final String API_USER_ID_ADMIN = "AADMIN";
-    public static final String API_USER_ID_USER = "AUSER";
+    public static final String API_USER_ID_USER_ALPHA = "AUSER";
+    public static final String API_USER_ID_USER_ALPHA_NO_MACHINE = "AUSERNOMACHINE";
+    public static final String API_USER_ID_USER_BETA = "ATEST1";
 
     public static final String API_PASSWORD = "01234567";
     public static final String API_PASSWORD_HASH = "$2a$13$CXFWBseE7qnfRndtunCj/OoQgLLz7AOe2e3aNdNFwmqkTQfoduVMy";
@@ -76,11 +100,15 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
     @Autowired
     private MachineStatisticsService machineStatisticsService;
     @Autowired
+    private OwnerRuleRepository ownerRuleRepository;
+    @Autowired
     private PluginResourceRepository pluginResourceRepository;
     @Autowired
     private PluginResourceLinkRepository pluginResourceLinkRepository;
     @Autowired
     private ReportExecutionRepository reportExecutionRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private UserApiRepository userApiRepository;
     @Autowired
@@ -95,6 +123,8 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
         reportExecutionRepository.deleteAll();
 
+        ownerRuleRepository.deleteAll();
+        roleRepository.deleteAll();
         userApiMachineRepository.deleteAll();
         userApiRepository.deleteAll();
         auditItemRepository.deleteAll();
@@ -114,6 +144,10 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
         logger.info("Begin CREATE ALL");
 
+        createOwnerRule();
+
+        createRoles();
+
         createUsers();
         createMachines();
         createMachineStatistics();
@@ -131,7 +165,7 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
         return application;
     }
 
-    public void createApplications() {
+    protected void createApplications() {
 
         logger.info("createApplications");
 
@@ -151,11 +185,13 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
     }
 
-    public void createMachines() {
+    protected void createMachines() {
         logger.info("createMachines");
 
         ChangesContext changes = new ChangesContext(ipResourceService);
-        changes.resourceAdd(new Machine("f001.node.example.com"));
+        Machine machine = new Machine("f001.node.example.com");
+        machine.getMeta().put(MetaConstants.META_OWNER, OWNER_SHARED);
+        changes.resourceAdd(machine);
         changes.resourceAdd(new Machine("f002.node.example.com"));
         internalChangeService.changesExecute(changes);
 
@@ -163,7 +199,7 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
         userApiMachineRepository.save(new UserApiMachine(API_USER_MACHINE_ID_F002, API_PASSWORD, API_PASSWORD_HASH, "f002.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
     }
 
-    public void createMachineStatistics() {
+    protected void createMachineStatistics() {
         logger.info("createMachineStatistics");
 
         ipResourceService.resourceFindAll(ipResourceService.createResourceQuery(Machine.class)).stream() //
@@ -218,7 +254,112 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
     }
 
-    public void createUnixUsers() {
+    protected void createOwnerRule() {
+
+        logger.info("createOwnerRule");
+        ownerRuleRepository.save(new OwnerRule().setResourceNameStartsWith("infra_").setAssignOwner("infra"));
+
+    }
+
+    protected void createRoles() {
+        logger.info("createRoles");
+
+        Role role = new Role(ROLE_ALPHA_ADMIN);
+        role.getResources().add(JsonTools.clone(UserPermissionsServiceImpl.ALL_PERMISSION_RESOURCE).setOwner(OWNER_ALPHA));
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(true) //
+                .setFromOwner(OWNER_ALPHA) //
+                .setFromType("*") //
+                .setLinkType("*") //
+                .setToOwner(null) //
+                .setToType(null) //
+        );
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(true) //
+                .setFromOwner(null) //
+                .setFromType(null) //
+                .setLinkType("*") //
+                .setToOwner(OWNER_ALPHA) //
+                .setToType("*") //
+        );
+        roleRepository.save(role);
+
+        role = new Role(ROLE_BETA_ADMIN);
+        role.getResources().add(JsonTools.clone(UserPermissionsServiceImpl.ALL_PERMISSION_RESOURCE).setOwner(OWNER_BETA));
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(true) //
+                .setFromOwner(OWNER_BETA) //
+                .setFromType("*") //
+                .setLinkType("*") //
+                .setToOwner(null) //
+                .setToType(null) //
+        );
+        roleRepository.save(role);
+
+        role = new Role(ROLE_SHARED_MACHINE);
+        role.getResources().add(new PermissionResource() //
+                .setAction(ResourceAction.LIST) //
+                .setExplicitChange(false) //
+                .setType(Machine.RESOURCE_TYPE) //
+                .setOwner(OWNER_SHARED) //
+        );
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(true) //
+                .setFromOwner(null) //
+                .setFromType(null) //
+                .setLinkType(LinkTypeConstants.INSTALLED_ON) //
+                .setToOwner(OWNER_SHARED) //
+                .setToType(Machine.RESOURCE_TYPE) //
+        );
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(false) //
+                .setFromOwner(OWNER_SHARED) //
+                .setFromType(Machine.RESOURCE_TYPE) //
+                .setLinkType("*") //
+                .setToOwner(null) //
+                .setToType(null) //
+        );
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(false) //
+                .setFromOwner(null) //
+                .setFromType(null) //
+                .setLinkType("*") //
+                .setToOwner(OWNER_SHARED) //
+                .setToType(Machine.RESOURCE_TYPE) //
+        );
+        roleRepository.save(role);
+
+        role = new Role(ROLE_INFRA);
+        role.getResources().add(JsonTools.clone(UserPermissionsServiceImpl.ALL_PERMISSION_RESOURCE).setOwner(OWNER_INFRA).setExplicitChange(false));
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(false) //
+                .setFromOwner(OWNER_INFRA) //
+                .setFromType("*") //
+                .setLinkType("*") //
+                .setToOwner(null) //
+                .setToType(null) //
+        );
+        role.getLinks().add(new PermissionLink() //
+                .setAction(LinkAction.ALL) //
+                .setExplicitChange(false) //
+                .setFromOwner(null) //
+                .setFromType(null) //
+                .setLinkType("*") //
+                .setToOwner(OWNER_INFRA) //
+                .setToType("*") //
+        );
+        roleRepository.save(role);
+
+    }
+
+    protected void createUnixUsers() {
         logger.info("createUnixUsers");
 
         UnixUserAvailableIdHelper.init(ipResourceService);
@@ -246,20 +387,39 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
     }
 
-    public void createUsers() {
+    protected void createUsers() {
         logger.info("createUsers");
 
-        userHumanRepository.save(new UserHuman(USER_ID_ADMIN, true));
-        userHumanRepository.save(new UserHuman(USER_ID_USER, false));
-        userHumanRepository.save(new UserHuman(USER_ID_TEST_1, false));
-        userHumanRepository.save(new UserHuman("444444", false));
+        userHumanRepository.save(newUserHuman(USER_ID_ADMIN, true, "admin@@example.com"));
+        userHumanRepository.save(newUserHuman(USER_ID_ALPHA, false, "alpha@@example1.com", ROLE_ALPHA_ADMIN, ROLE_SHARED_MACHINE, ROLE_INFRA));
+        userHumanRepository.save(newUserHuman(USER_ID_BETA, false, "beta@@example1.com", ROLE_BETA_ADMIN, ROLE_SHARED_MACHINE, ROLE_INFRA));
+        userHumanRepository.save(newUserHuman(USER_ID_NOPERM, false, "lost@@example.com"));
 
-        userApiRepository.save(new UserApi(API_USER_ID_ADMIN, API_PASSWORD_HASH, "An admin").setAdmin(true));
-        userApiRepository.save(new UserApi(API_USER_ID_USER, API_PASSWORD_HASH, "A normal user"));
+        userApiRepository.save(newUserApi(API_USER_ID_ADMIN, API_PASSWORD_HASH, "An admin", true));
+        userApiRepository.save(newUserApi(API_USER_ID_USER_ALPHA, API_PASSWORD_HASH, "A normal user", false, ROLE_ALPHA_ADMIN, ROLE_SHARED_MACHINE, ROLE_INFRA));
+        userApiRepository.save(newUserApi(API_USER_ID_USER_ALPHA_NO_MACHINE, API_PASSWORD_HASH, "A normal user without machine", false, ROLE_ALPHA_ADMIN, ROLE_INFRA));
+        userApiRepository.save(newUserApi(API_USER_ID_USER_BETA, API_PASSWORD_HASH, "A normal user", false, ROLE_BETA_ADMIN, ROLE_SHARED_MACHINE, ROLE_INFRA));
     }
 
     protected UnixUser findUnixUser(String name) {
         return ipResourceService.resourceFind(ipResourceService.createResourceQuery(UnixUser.class).propertyEquals(UnixUser.PROPERTY_NAME, name)).get();
+    }
+
+    private UserApi newUserApi(String userId, String userHashedKey, String description, boolean isAdmin, String... roles) {
+        UserApi user = new UserApi(userId, userHashedKey, description);
+        user.setAdmin(isAdmin);
+        for (String role : roles) {
+            user.addRole(role);
+        }
+        return user;
+    }
+
+    private UserHuman newUserHuman(String userId, boolean isAdmin, String email, String... roles) {
+        UserHuman user = new UserHuman(userId, isAdmin).setEmail(email);
+        for (String role : roles) {
+            user.addRole(role);
+        }
+        return user;
     }
 
     private void setResourceEditor(String editorName, IPResource... resources) {

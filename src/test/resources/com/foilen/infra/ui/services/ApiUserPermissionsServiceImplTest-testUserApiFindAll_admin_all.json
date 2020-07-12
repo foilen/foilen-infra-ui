@@ -1,0 +1,32 @@
+{
+  "items" : [ {
+    "admin" : true,
+    "description" : "An admin",
+    "userId" : "AADMIN"
+  }, {
+    "admin" : false,
+    "description" : "A normal user",
+    "roles" : [ "beta_admin", "infra", "shared_nachine" ],
+    "userId" : "ATEST1"
+  }, {
+    "admin" : false,
+    "description" : "A normal user",
+    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "userId" : "AUSER"
+  }, {
+    "admin" : false,
+    "description" : "A normal user without machine",
+    "roles" : [ "alpha_admin", "infra" ],
+    "userId" : "AUSERNOMACHINE"
+  } ],
+  "pagination" : {
+    "currentPage" : 0,
+    "currentPageUi" : 1,
+    "firstPage" : true,
+    "itemsPerPage" : 100,
+    "lastPage" : true,
+    "totalItems" : 4,
+    "totalPages" : 1
+  },
+  "success" : true
+}

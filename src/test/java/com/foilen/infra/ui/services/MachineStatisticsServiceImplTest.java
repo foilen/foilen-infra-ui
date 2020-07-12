@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.SystemStats;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.PluginResource;
 import com.foilen.infra.resource.machine.Machine;

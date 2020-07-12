@@ -25,6 +25,12 @@
       <div id="errors"></div>
     </div>
     <!-- /errors -->
+    
+    <!-- successes -->
+    <div class="row">
+      <div id="successes"></div>
+    </div>
+    <!-- /successes -->
 
     <!-- Nav Bar -->
     <nav id="main-nav" class="navbar navbar-expand-sm navbar-light bg-light">
@@ -46,7 +52,15 @@
 
           <li class="nav-item"><a href="/plugin/list" class="nav-link" >{{ $t('menu.plugin') }}</a></li>
           <li class="nav-item"><a href="/pluginresources/list" class="nav-link" >{{ $t('menu.pluginresources') }}</a></li>
-          <li class="nav-item"><a href="/apiUser/list" class="nav-link" >{{ $t('menu.apiUser') }}</a></li>
+          
+          <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $t('menu.users') }}</a>
+            <div class="dropdown-menu" aria-labelledby="userDropdown">
+              <router-link class="dropdown-item" to="/roles" v-bind:class="{active: $route.path == '/roles'}">{{ $t('menu.roles') }}</router-link>
+              <router-link class="dropdown-item" to="/ownerRules" v-bind:class="{active: $route.path == '/ownerRules'}">{{ $t('menu.ownerRules') }}</router-link>
+              <router-link class="dropdown-item" to="/userHumans" v-bind:class="{active: $route.path == '/userHumans'}">{{ $t('menu.userHumans') }}</router-link>
+              <router-link class="dropdown-item" to="/userApis" v-bind:class="{active: $route.path == '/userApis'}">{{ $t('menu.userApis') }}</router-link>
+            </div>
+          </li>
           
           <li class="nav-item"><router-link class="nav-link" to="/audits" v-bind:class="{active: $route.path == '/audits'}">{{ $t('menu.audits') }}</router-link></li>
         </ul>

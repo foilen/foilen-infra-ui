@@ -1,12 +1,8 @@
 [ {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -25,20 +21,14 @@
     "name" : "d1.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d1.example.com"
   },
-  "linkType" : "MANAGES",
-  "tagName" : null
+  "linkType" : "MANAGES"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -57,27 +47,20 @@
     "name" : "d2.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d2.example.com"
   },
-  "linkType" : "MANAGES",
-  "tagName" : null
+  "linkType" : "MANAGES"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "example.com"
   },
   "resourceSecondType" : "Domain",
@@ -86,27 +69,20 @@
     "name" : "d1.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d1.example.com"
   },
-  "linkType" : "SUBDOMAIN",
-  "tagName" : null
+  "linkType" : "SUBDOMAIN"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "example.com"
   },
   "resourceSecondType" : "Domain",
@@ -115,20 +91,14 @@
     "name" : "d2.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d2.example.com"
   },
-  "linkType" : "SUBDOMAIN",
-  "tagName" : null
+  "linkType" : "SUBDOMAIN"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : true,
   "type" : "LINK",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -153,17 +123,12 @@
     "resourceName" : "d2.example.com / A",
     "type" : "A"
   },
-  "linkType" : "USES",
-  "tagName" : null
+  "linkType" : "USES"
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : true,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -175,20 +140,12 @@
     "resourceEditorName" : "Manual DnsEntry",
     "resourceName" : "d1.example.com / A",
     "type" : "A"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : true,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -200,86 +157,51 @@
     "resourceEditorName" : "Manual DnsEntry",
     "resourceName" : "d2.example.com / A",
     "type" : "A"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "d1.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d1.example.com"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "d2.example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "d2.example.com"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : false,
   "type" : "RESOURCE",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Domain",
   "resourceFirst" : {
     "meta" : { },
     "name" : "example.com",
     "resourceCategory" : "NET",
     "resourceDescription" : "",
-    "resourceEditorName" : null,
     "resourceName" : "example.com"
-  },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
-  "tagName" : null
+  }
 }, {
-  "id" : null,
-  "timestamp" : null,
-  "txId" : null,
   "explicitChange" : true,
   "type" : "TAG",
   "action" : "ADD",
   "userType" : "SYSTEM",
-  "userName" : null,
   "resourceFirstType" : "Dns Entry",
   "resourceFirst" : {
     "details" : "127.0.0.1",
@@ -292,8 +214,5 @@
     "resourceName" : "d1.example.com / A",
     "type" : "A"
   },
-  "resourceSecondType" : null,
-  "resourceSecond" : null,
-  "linkType" : null,
   "tagName" : "super"
 } ]

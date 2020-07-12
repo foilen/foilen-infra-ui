@@ -12,7 +12,7 @@ package com.foilen.infra.ui.services;
 import java.util.List;
 
 import com.foilen.chart.Chart;
-import com.foilen.infra.api.model.SystemStats;
+import com.foilen.infra.api.model.machine.SystemStats;
 
 public interface MachineStatisticsService {
 

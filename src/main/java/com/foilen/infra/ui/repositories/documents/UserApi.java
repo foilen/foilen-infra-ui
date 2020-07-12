@@ -11,24 +11,19 @@ package com.foilen.infra.ui.repositories.documents;
 
 import java.util.Date;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.foilen.smalltools.tools.DateTools;
 
 @Document
-public class UserApi {
+public class UserApi extends AbstractUser {
 
-    @Id
-    private String userId;
     @Version
     private long version;
 
     private String userHashedKey;
     private String description;
-
-    private boolean isAdmin;
 
     private Date createdOn = new Date();
     private Date expireOn;
@@ -37,7 +32,7 @@ public class UserApi {
     }
 
     public UserApi(String userId, String userHashedKey, String description) {
-        this.userId = userId;
+        super(userId);
         this.userHashedKey = userHashedKey;
         this.description = description;
     }
@@ -62,21 +57,9 @@ public class UserApi {
         return DateTools.formatFull(expireOn);
     }
 
+    @Override
     public String getUserHashedKey() {
         return userHashedKey;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public UserApi setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-        return this;
     }
 
     public UserApi setCreatedOn(Date createdOn) {
@@ -96,11 +79,6 @@ public class UserApi {
 
     public UserApi setUserHashedKey(String userHashedKey) {
         this.userHashedKey = userHashedKey;
-        return this;
-    }
-
-    public UserApi setUserId(String userId) {
-        this.userId = userId;
         return this;
     }
 
