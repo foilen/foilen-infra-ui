@@ -66,7 +66,7 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
     public static final String OWNER_SHARED = "shared";
     public static final String OWNER_INFRA = "infra";
 
-    public static final String ROLE_SHARED_MACHINE = "shared_nachine";
+    public static final String ROLE_SHARED_MACHINE = "shared_machine";
     public static final String ROLE_ALPHA_ADMIN = "alpha_admin";
     public static final String ROLE_BETA_ADMIN = "beta_admin";
     public static final String ROLE_INFRA = "infra";

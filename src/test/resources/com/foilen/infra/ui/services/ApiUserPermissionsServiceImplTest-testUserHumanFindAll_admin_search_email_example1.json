@@ -2,12 +2,12 @@
   "items" : [ {
     "admin" : false,
     "email" : "beta@@example1.com",
-    "roles" : [ "beta_admin", "infra", "shared_nachine" ],
+    "roles" : [ "beta_admin", "infra", "shared_machine" ],
     "userId" : "222222"
   }, {
     "admin" : false,
     "email" : "alpha@@example1.com",
-    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "roles" : [ "alpha_admin", "infra", "shared_machine" ],
     "userId" : "333333"
   } ],
   "pagination" : {

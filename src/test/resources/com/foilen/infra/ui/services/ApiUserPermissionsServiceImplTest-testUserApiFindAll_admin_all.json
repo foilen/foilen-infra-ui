@@ -6,12 +6,12 @@
   }, {
     "admin" : false,
     "description" : "A normal user",
-    "roles" : [ "beta_admin", "infra", "shared_nachine" ],
+    "roles" : [ "beta_admin", "infra", "shared_machine" ],
     "userId" : "ATEST1"
   }, {
     "admin" : false,
     "description" : "A normal user",
-    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "roles" : [ "alpha_admin", "infra", "shared_machine" ],
     "userId" : "AUSER"
   }, {
     "admin" : false,

@@ -9,7 +9,7 @@
     "documentId" : "333333",
     "documentFrom" : {
       "userId" : "333333",
-      "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+      "roles" : [ "alpha_admin", "infra", "shared_machine" ],
       "email" : "alpha@@example1.com",
       "admin" : false
     },

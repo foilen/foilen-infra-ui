@@ -33,7 +33,7 @@ import com.foilen.infra.ui.repositories.documents.Role;
 public class V2020071201_Ui_Common_Roles extends AbstractMongoUpgradeTask {
 
     private static final String INFRA = "infra";
-    private static final String SHARED_MACHINE = "shared_nachine";
+    private static final String SHARED_MACHINE = "shared_machine";
 
     @Autowired
     private MongoOperations mongoOperations;

@@ -8,7 +8,7 @@
   } ],
   "removed" : [ {
     "userId" : "AUSER",
-    "roles" : [ "alpha_admin", "infra", "shared_nachine" ],
+    "roles" : [ "alpha_admin", "infra", "shared_machine" ],
     "userHashedKey" : "$2a$13$CXFWBseE7qnfRndtunCj/OoQgLLz7AOe2e3aNdNFwmqkTQfoduVMy",
     "description" : "A normal user",
     "admin" : false
