@@ -319,6 +319,87 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
     }
 
     @Test
+    public void testResourceFindAllWithDetails_admin() {
+
+        List<ResourceDetails> resourcesTypeAndDetails = testResourceFindAllWithDetailsForUser(FakeDataServiceImpl.USER_ID_ADMIN);
+
+        AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindAllWithDetails_admin-expected.json", getClass(), resourcesTypeAndDetails);
+
+    }
+
+    @Test
+    public void testResourceFindAllWithDetails_alphaUser() {
+
+        List<ResourceDetails> resourcesTypeAndDetails = testResourceFindAllWithDetailsForUser(FakeDataServiceImpl.USER_ID_ALPHA);
+
+        AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindAllWithDetails_alphaUser-expected.json", getClass(), resourcesTypeAndDetails);
+
+    }
+
+    @Test
+    public void testResourceFindAllWithDetails_nopermUser() {
+
+        List<ResourceDetails> resourcesTypeAndDetails = testResourceFindAllWithDetailsForUser(FakeDataServiceImpl.USER_ID_NOPERM);
+
+        AssertTools.assertJsonComparison(Collections.emptyList(), resourcesTypeAndDetails);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<ResourceDetails> testResourceFindAllWithDetailsForUser(String userId) {
+        // Change all junits to owned by alpha
+        ChangesContext changes = new ChangesContext(resourceService);
+        internalServicesContext.getInternalIPResourceService().resourceFindAll().stream() //
+                .filter(it -> it instanceof JunitResource) //
+                .forEach(it -> {
+                    it.getMeta().put(MetaConstants.META_OWNER, FakeDataServiceImpl.OWNER_ALPHA);
+                    changes.resourceUpdate(it);
+                });
+        internalChangeService.changesExecute(changes);
+
+        // Execute
+        List<IPResourceDefinition> resourceDefinitions = resourceService.getResourceDefinitions();
+
+        Stream<ResourceDetails> resourceDetailsStream = Stream.of();
+
+        for (IPResourceDefinition resourceDefinition : resourceDefinitions) {
+            String resourceType = resourceDefinition.getResourceType();
+            Stream<ResourceBucket> resources = apiResourceManagementService.resourceFindAllWithDetails(userId, new RequestResourceSearch().setResourceType(resourceType)).getItems().stream();
+
+            resourceDetailsStream = Stream.concat(resourceDetailsStream, resources.map(it -> it.getResourceDetails()));
+
+        }
+
+        // Sorting
+        resourceDetailsStream = resourceDetailsStream.sorted((a, b) -> {
+            Map<String, Object> ra = JsonTools.clone(a.getResource(), Map.class);
+            Map<String, Object> rb = JsonTools.clone(b.getResource(), Map.class);
+            return ComparisonChain.start() //
+                    .compare(a.getResourceType(), b.getResourceType()) //
+                    .compare(ra.get("resourceName").toString(), rb.get("resourceName").toString()) //
+                    .compare(ra.get("resourceDescription").toString(), rb.get("resourceDescription").toString()) //
+                    .result();
+        } //
+        );
+
+        // Clear the changing id
+        return resourceDetailsStream.peek(r -> {
+
+            if (r.getResource() instanceof Map) {
+                Map<String, Object> resource = (Map<String, Object>) r.getResource();
+                if (resource.containsKey("internalId")) {
+                    resource.put("internalId", "--SET--");
+                }
+            } else {
+                AbstractIPResource resource = (AbstractIPResource) r.getResource();
+                if (resource.getInternalId() != null) {
+                    resource.setInternalId("--SET--");
+                }
+            }
+        }).collect(Collectors.toList());
+    }
+
+    @Test
     public void testResourceFindAllWithoutOwner() {
         ResponseResourceBuckets result = apiResourceManagementService.resourceFindAllWithoutOwner(FakeDataServiceImpl.USER_ID_ADMIN);
         result.getItems().forEach(r -> {

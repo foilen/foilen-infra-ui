@@ -1,0 +1,441 @@
+[ {
+  "resource" : {
+    "applicationDefinition" : {
+      "_nextAssetId" : 1,
+      "assetsBundles" : [ ],
+      "assetsPathAndContent" : [ ],
+      "buildSteps" : [ ],
+      "command" : null,
+      "containerUsersToChangeId" : [ ],
+      "copyWhenStartedPathAndContentFiles" : [ ],
+      "entrypoint" : null,
+      "environments" : { },
+      "executeWhenStartedCommands" : [ ],
+      "from" : "ubuntu:16.04",
+      "hostToIpMapping" : [ ],
+      "portsEndpoint" : { },
+      "portsExposed" : { },
+      "portsRedirect" : [ ],
+      "runAs" : 70002,
+      "services" : [ ],
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "workingDirectory" : null
+    },
+    "description" : "Attached to machine f001",
+    "domainNames" : [ ],
+    "executionCronDetails" : null,
+    "executionPolicy" : "ALWAYS_ON",
+    "meta" : { },
+    "name" : "f1",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001",
+    "resourceEditorName" : null,
+    "resourceName" : "f1"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "applicationDefinition" : {
+      "_nextAssetId" : 1,
+      "assetsBundles" : [ ],
+      "assetsPathAndContent" : [ ],
+      "buildSteps" : [ ],
+      "command" : null,
+      "containerUsersToChangeId" : [ ],
+      "copyWhenStartedPathAndContentFiles" : [ ],
+      "entrypoint" : null,
+      "environments" : { },
+      "executeWhenStartedCommands" : [ ],
+      "from" : "ubuntu:16.04",
+      "hostToIpMapping" : [ ],
+      "portsEndpoint" : { },
+      "portsExposed" : { },
+      "portsRedirect" : [ ],
+      "runAs" : 70001,
+      "services" : [ ],
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "workingDirectory" : null
+    },
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "domainNames" : [ ],
+    "executionCronDetails" : null,
+    "executionPolicy" : "ALWAYS_ON",
+    "meta" : { },
+    "name" : "f1indirect",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceEditorName" : null,
+    "resourceName" : "f1indirect"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "applicationDefinition" : {
+      "_nextAssetId" : 1,
+      "assetsBundles" : [ ],
+      "assetsPathAndContent" : [ ],
+      "buildSteps" : [ ],
+      "command" : null,
+      "containerUsersToChangeId" : [ ],
+      "copyWhenStartedPathAndContentFiles" : [ ],
+      "entrypoint" : null,
+      "environments" : { },
+      "executeWhenStartedCommands" : [ ],
+      "from" : "ubuntu:16.04",
+      "hostToIpMapping" : [ ],
+      "portsEndpoint" : { },
+      "portsExposed" : { },
+      "portsRedirect" : [ ],
+      "runAs" : null,
+      "services" : [ ],
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "workingDirectory" : null
+    },
+    "description" : "A not attached application",
+    "domainNames" : [ ],
+    "executionCronDetails" : null,
+    "executionPolicy" : "ALWAYS_ON",
+    "meta" : { },
+    "name" : "notattached",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "A not attached application",
+    "resourceEditorName" : null,
+    "resourceName" : "notattached"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "f001.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f001.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "f002.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "bool" : false,
+    "date" : null,
+    "doubleNumber" : null,
+    "enumeration" : "B",
+    "floatNumber" : null,
+    "integerNumber" : 3,
+    "longNumber" : 0,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=example.com, enumeration=B, date=null, integerNumber=3, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceEditorName" : null,
+    "resourceName" : "example.com",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ ],
+    "text" : "example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "bool" : true,
+    "date" : 946702800000,
+    "doubleNumber" : 1.0,
+    "enumeration" : "A",
+    "floatNumber" : 1.0,
+    "integerNumber" : 1,
+    "longNumber" : 1,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t1_aaa, enumeration=A, date=Sat Jan 01 00:00:00 EST 2000, integerNumber=1, longNumber=1, doubleNumber=1.0, floatNumber=1.0, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, two]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t1_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "two" ],
+    "text" : "t1_aaa"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "bool" : false,
+    "date" : 959832000000,
+    "doubleNumber" : 1.5,
+    "enumeration" : "C",
+    "floatNumber" : 7.3,
+    "integerNumber" : 5,
+    "longNumber" : 8,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t2_aaa, enumeration=C, date=Thu Jun 01 00:00:00 EDT 2000, integerNumber=5, longNumber=8, doubleNumber=1.5, floatNumber=7.3, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, three]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t2_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "three" ],
+    "text" : "t2_aaa"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "bool" : false,
+    "date" : null,
+    "doubleNumber" : null,
+    "enumeration" : "A",
+    "floatNumber" : null,
+    "integerNumber" : 1,
+    "longNumber" : 0,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=www.example.com, enumeration=A, date=null, integerNumber=1, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceEditorName" : null,
+    "resourceName" : "www.example.com",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ ],
+    "text" : "www.example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "bool" : false,
+    "date" : null,
+    "doubleNumber" : null,
+    "enumeration" : "A",
+    "floatNumber" : null,
+    "integerNumber" : 2,
+    "longNumber" : 0,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=www.example.com, enumeration=A, date=null, integerNumber=2, longNumber=0, doubleNumber=null, floatNumber=null, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceEditorName" : null,
+    "resourceName" : "www.example.com",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ ],
+    "text" : "www.example.com"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "bool" : true,
+    "date" : 954565200000,
+    "doubleNumber" : 77.6,
+    "enumeration" : "B",
+    "floatNumber" : 3.1,
+    "integerNumber" : 80,
+    "longNumber" : 4,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=zz, enumeration=B, date=Sat Apr 01 00:00:00 EST 2000, integerNumber=80, longNumber=4, doubleNumber=77.6, floatNumber=3.1, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceEditorName" : null,
+    "resourceName" : "zz",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ ],
+    "text" : "zz"
+  },
+  "resourceType" : "Junit"
+}, {
+  "resource" : {
+    "meta" : {
+      "UI_OWNER" : "shared"
+    },
+    "name" : "f001.node.example.com",
+    "publicIp" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "f001.node.example.com",
+    "resourceEditorName" : null,
+    "resourceName" : "f001.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "f002.node.example.com",
+    "publicIp" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "f002.node.example.com",
+    "resourceEditorName" : null,
+    "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/root",
+    "id" : 0,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "root",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/root",
+    "resourceEditorName" : null,
+    "resourceName" : "root",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "System Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/root",
+    "id" : 0,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "root",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/root",
+    "resourceEditorName" : null,
+    "resourceName" : "root",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "System Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "homeFolder" : "/home/f1",
+    "id" : 70002,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f1",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f1",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f1",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "homeFolder" : "/home/f12",
+    "id" : 70004,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f12",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f12",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f12",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/f2",
+    "id" : 70003,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f2",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f2",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f2",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/indirectlyattached",
+    "id" : 70001,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "indirectlyattached",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/indirectlyattached",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "indirectlyattached",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/notattached",
+    "id" : 70000,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "notattached",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/notattached",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "notattached",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+} ]

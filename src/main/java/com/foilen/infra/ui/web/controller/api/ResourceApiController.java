@@ -44,6 +44,11 @@ public class ResourceApiController {
         return apiResourceManagementService.resourceFindAll(authentication.getName(), resourceSearch);
     }
 
+    @PostMapping("resourceFindAllWithDetails")
+    public ResponseResourceBuckets resourceFindAllWithDetails(Authentication authentication, @RequestBody RequestResourceSearch resourceSearch) {
+        return apiResourceManagementService.resourceFindAllWithDetails(authentication.getName(), resourceSearch);
+    }
+
     @GetMapping("resourceFindAllWithoutOwner")
     public ResponseResourceBuckets resourceFindAllWithoutOwner(Authentication authentication) {
         return apiResourceManagementService.resourceFindAllWithoutOwner(authentication.getName());

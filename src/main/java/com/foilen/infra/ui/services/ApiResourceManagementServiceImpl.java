@@ -278,6 +278,31 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     }
 
     @Override
+    public ResponseResourceBuckets resourceFindAllWithDetails(String userId, RequestResourceSearch resourceSearch) {
+
+        ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
+
+        wrapExecution(responseResourceBuckets, () -> {
+            IPResourceQuery<IPResource> query = resourceService.createResourceQuery(resourceSearch.getResourceType());
+
+            if (resourceSearch.getProperties() != null) {
+                resourceSearch.getProperties().forEach((name, value) -> query.propertyEquals(name, value));
+            }
+
+            if (!Strings.isNullOrEmpty(resourceSearch.getTag())) {
+                query.tagAddAnd(resourceSearch.getTag());
+            }
+
+            responseResourceBuckets.setItems(resourceManagementService.resourceFindAll(userId, query).stream() //
+                    .map(resource -> createResourceBucket(resource, !entitlementService.canViewResources(userId, resource.getInternalId()))) //
+                    .collect(Collectors.toList()));
+        });
+
+        return responseResourceBuckets;
+
+    }
+
+    @Override
     public ResponseResourceBuckets resourceFindAllWithoutOwner(String userId) {
         ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
 

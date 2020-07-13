@@ -31,6 +31,8 @@ public interface ApiResourceManagementService {
 
     ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch);
 
+    ResponseResourceBuckets resourceFindAllWithDetails(String userId, RequestResourceSearch resourceSearch);
+
     ResponseResourceBuckets resourceFindAllWithoutOwner(String userId);
 
     ResponseResourceBucket resourceFindById(String userId, String resourceId);
