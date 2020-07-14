@@ -88,8 +88,9 @@ function updateResourceEditor(form, config) {
       resourceType = encodeURI(resourceType);
     }
     var editorName = form.data('editorName')
+    var encodedEditorName = editorName
     if (editorName) {
-      editorName = encodeURI(editorName);
+      encodedEditorName = encodeURI(editorName);
     }
     
     var addButton = function() {
@@ -136,13 +137,13 @@ function updateResourceEditor(form, config) {
       // When there is a selected editor
       if (resourceId) { 
         // When it is an existing resource
-        form.load(baseUrl + '/editPageDefinition/' + editorName + '/' + resourceId, function() {
+        form.load(baseUrl + '/editPageDefinition/' + encodedEditorName + '/' + resourceId, function() {
           updateResourceFieldPageItems(form);
           addButton();
         });
       } else {
         // When it is a new resource
-        form.load(baseUrl + '/createPageDefinition/' + editorName, function() {
+        form.load(baseUrl + '/createPageDefinition/' + encodedEditorName, function() {
           updateResourceFieldPageItems(form);
           addButton();
         });
