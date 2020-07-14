@@ -141,7 +141,10 @@ public class PluginResourceController extends AbstractBasics {
         Optional<ResourceEditor<?>> editor = ipPluginService.getResourceEditorByName(editorName);
 
         if (editor.isPresent()) {
-            PageDefinition pageDefinition = editor.get().providePageDefinition(commonServicesContext, null);
+            @SuppressWarnings("unchecked")
+            ResourceEditor<IPResource> resourceEditor = (ResourceEditor<IPResource>) editor.get();
+            IPResource defaultResource = ReflectionTools.instantiate(resourceEditor.getForResourceType());
+            PageDefinition pageDefinition = resourceEditor.providePageDefinition(commonServicesContext, defaultResource);
 
             // _editorName
             HiddenFieldPageItem editorNameField = new HiddenFieldPageItem();
