@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,10 +137,25 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         Machine machine = machineOptional.get();
         if (!StringTools.safeEquals(ipPublic, machine.getPublicIp())) {
             logger.info("Updating machine {} IP to {}", machineName, ipPublic);
-            ChangesContext changes = new ChangesContext(ipResourceService);
-            machine.setPublicIp(ipPublic);
-            changes.resourceUpdate(machine.getInternalId(), machine);
-            internalChangeService.changesExecute(changes);
+
+            // Make the change as the SYSTEM if it is the machine itself
+            SecurityContext oldContext = null;
+            if (entitlementService.isTheMachine(userId, machineName)) {
+                logger.info("The user is the machine, switching to SYSTEM as the user");
+                oldContext = SecurityContextHolder.getContext();
+                SecurityContextHolder.clearContext();
+            }
+
+            try {
+                ChangesContext changes = new ChangesContext(ipResourceService);
+                machine.setPublicIp(ipPublic);
+                changes.resourceUpdate(machine.getInternalId(), machine);
+                internalChangeService.changesExecute(changes);
+            } finally {
+                if (oldContext != null) {
+                    SecurityContextHolder.setContext(oldContext);
+                }
+            }
         }
     }
 

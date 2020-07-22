@@ -9,15 +9,20 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.foilen.infra.api.model.machine.MachineSetup;
+import com.foilen.infra.api.model.machine.SystemStats;
 import com.foilen.infra.api.response.ResponseMachineSetup;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.restapi.model.ApiError;
+import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.test.asserts.AssertTools;
 
 public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
@@ -31,11 +36,44 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
         super(true);
     }
 
+    @Test
+    public void testAddSystemStats_FAIL() {
+
+        String userId = FakeDataServiceImpl.API_USER_MACHINE_ID_F002;
+
+        setApiAuth(userId);
+
+        List<SystemStats> systemStats = Arrays.asList(new SystemStats());
+        FormResult result = apiMachineManagementService.addSystemStats(userId, MACHINE_NAME, systemStats);
+
+        FormResult expected = new FormResult();
+        expected.getGlobalErrors().add("You are not allowed");
+
+        AssertTools.assertJsonComparisonWithoutNulls(expected, result);
+    }
+
+    @Test
+    public void testAddSystemStats_OK() {
+
+        String userId = FakeDataServiceImpl.API_USER_MACHINE_ID_F001;
+
+        setApiAuth(userId);
+
+        List<SystemStats> systemStats = Arrays.asList(new SystemStats());
+        FormResult result = apiMachineManagementService.addSystemStats(userId, MACHINE_NAME, systemStats);
+
+        FormResult expected = new FormResult();
+        AssertTools.assertJsonComparisonWithoutNulls(expected, result);
+    }
+
     private void testGetMachineSetup_FAIL(String userId, String expectedError) {
         testGetMachineSetup_FAIL(MACHINE_NAME, userId, expectedError);
     }
 
     private void testGetMachineSetup_FAIL(String machineName, String userId, String expectedError) {
+
+        setApiAuth(userId);
+
         ResponseMachineSetup result = apiMachineManagementService.getMachineSetup(userId, machineName);
 
         if (result.getError() != null) {
@@ -75,6 +113,9 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
     }
 
     private void testGetMachineSetup_OK(String userId) {
+
+        setApiAuth(userId);
+
         ResponseMachineSetup result = apiMachineManagementService.getMachineSetup(userId, MACHINE_NAME);
 
         if (result.getItem() != null) {
@@ -100,6 +141,53 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
     @Test
     public void testGetMachineSetup_OK_User_Admin() {
         testGetMachineSetup_OK(FakeDataServiceImpl.USER_ID_ADMIN);
+    }
+
+    private void testGetMachineSetup_WithIpChange_FAIL(String userId, String expectedError) {
+        testGetMachineSetup_WithIpChange_FAIL(MACHINE_NAME, userId, expectedError);
+    }
+
+    private void testGetMachineSetup_WithIpChange_FAIL(String machineName, String userId, String expectedError) {
+
+        setApiAuth(userId);
+
+        ResponseMachineSetup result = apiMachineManagementService.getMachineSetup(userId, machineName, "11.0.0.10");
+
+        if (result.getError() != null) {
+            result.getError().setTimestamp(null);
+            result.getError().setUniqueId(null);
+        }
+
+        ResponseMachineSetup expected = new ResponseMachineSetup();
+        expected.setError(new ApiError((String) null, (String) null, expectedError));
+
+        AssertTools.assertJsonComparisonWithoutNulls(expected, result);
+    }
+
+    @Test
+    public void testGetMachineSetup_WithIpChange_FAIL_ApiMachineUser_another_one() {
+        testGetMachineSetup_WithIpChange_FAIL(FakeDataServiceImpl.API_USER_MACHINE_ID_F002, "You are not allowed");
+    }
+
+    private void testGetMachineSetup_WithIpChange_OK(String userId) {
+
+        setApiAuth(userId);
+
+        ResponseMachineSetup result = apiMachineManagementService.getMachineSetup(userId, MACHINE_NAME, "11.0.0.10");
+
+        if (result.getItem() != null) {
+            result.setItem(new MachineSetup());
+        }
+
+        ResponseMachineSetup expected = new ResponseMachineSetup();
+        expected.setItem(new MachineSetup());
+
+        AssertTools.assertJsonComparisonWithoutNulls(expected, result);
+    }
+
+    @Test
+    public void testGetMachineSetup_WithIpChange_OK_ApiMachineUser_right_one() {
+        testGetMachineSetup_WithIpChange_OK(FakeDataServiceImpl.API_USER_MACHINE_ID_F001);
     }
 
     @Test
