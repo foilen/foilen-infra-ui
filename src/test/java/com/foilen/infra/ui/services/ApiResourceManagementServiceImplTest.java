@@ -26,6 +26,7 @@ import com.foilen.infra.api.model.resource.ResourceDetails;
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
+import com.foilen.infra.api.response.ResponseResourceBucket;
 import com.foilen.infra.api.response.ResponseResourceBuckets;
 import com.foilen.infra.plugin.core.system.junits.JunitsHelper;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
@@ -37,6 +38,7 @@ import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalIPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.AbstractIPResource;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
+import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.example.JunitResource;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.urlredirection.UrlRedirection;
@@ -77,6 +79,21 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
 
         String expected = ResourceTools.getResourceAsString("ApiResourceManagementServiceImplTest-assertResourcesOwnership.txt", getClass());
         Assert.assertEquals(expected, lineReturn.join(actualOwners));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void clearInternalId(ResourceDetails resourceDetails) {
+        if (resourceDetails.getResource() instanceof Map) {
+            Map<String, Object> resource = (Map<String, Object>) resourceDetails.getResource();
+            if (resource.containsKey("internalId")) {
+                resource.put("internalId", "--SET--");
+            }
+        } else {
+            AbstractIPResource resource = (AbstractIPResource) resourceDetails.getResource();
+            if (resource.getInternalId() != null) {
+                resource.setInternalId("--SET--");
+            }
+        }
     }
 
     @Override
@@ -409,6 +426,42 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
             }
         });
         AssertTools.assertJsonComparisonWithoutNulls("ApiResourceManagementServiceImplTest-testResourceFindAllWithoutOwner.json", getClass(), result);
+    }
+
+    @Test
+    public void testResourceFindById_application_admin() {
+
+        // Find the application
+        Application application = resourceService.resourceFindByPk(new Application("f1")).get();
+
+        // Execute
+        ResponseResourceBucket responseResourceBucket = apiResourceManagementService.resourceFindById(FakeDataServiceImpl.USER_ID_ADMIN, application.getInternalId());
+
+        // Clear the changing ids
+        clearInternalId(responseResourceBucket.getItem().getResourceDetails());
+        responseResourceBucket.getItem().getLinksFrom().forEach(i -> clearInternalId(i.getOtherResource()));
+        responseResourceBucket.getItem().getLinksTo().forEach(i -> clearInternalId(i.getOtherResource()));
+
+        AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindById_application_admin-expected.json", getClass(), responseResourceBucket);
+
+    }
+
+    @Test
+    public void testResourceFindById_machine_admin() {
+
+        // Find the machine
+        Machine machine = resourceService.resourceFindByPk(new Machine("f001.node.example.com")).get();
+
+        // Execute
+        ResponseResourceBucket responseResourceBucket = apiResourceManagementService.resourceFindById(FakeDataServiceImpl.USER_ID_ADMIN, machine.getInternalId());
+
+        // Clear the changing ids
+        clearInternalId(responseResourceBucket.getItem().getResourceDetails());
+        responseResourceBucket.getItem().getLinksFrom().forEach(i -> clearInternalId(i.getOtherResource()));
+        responseResourceBucket.getItem().getLinksTo().forEach(i -> clearInternalId(i.getOtherResource()));
+
+        AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindById_machine_admin-expected.json", getClass(), responseResourceBucket);
+
     }
 
 }

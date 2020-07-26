@@ -1,0 +1,76 @@
+{
+  "item" : {
+    "linksFrom" : [ {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : "Unix User",
+          "resourceDescription" : "/home/f1",
+          "resourceName" : "f1"
+        },
+        "resourceType" : "Unix User"
+      }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001",
+          "resourceName" : "f1"
+        },
+        "resourceType" : "Application"
+      }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : "Unix User",
+          "resourceDescription" : "/home/f12",
+          "resourceName" : "f12"
+        },
+        "resourceType" : "Unix User"
+      }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+          "resourceName" : "f1indirect"
+        },
+        "resourceType" : "Application"
+      }
+    } ],
+    "linksTo" : [ {
+      "linkType" : "MANAGES",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "",
+          "resourceName" : "f001.node.example.com"
+        },
+        "resourceType" : "Domain"
+      }
+    } ],
+    "resourceDetails" : {
+      "resource" : {
+        "meta" : {
+          "UI_OWNER" : "shared"
+        },
+        "name" : "f001.node.example.com",
+        "publicIp" : null,
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "f001.node.example.com",
+        "resourceEditorName" : null,
+        "resourceName" : "f001.node.example.com"
+      },
+      "resourceType" : "Machine"
+    }
+  },
+  "success" : true
+}

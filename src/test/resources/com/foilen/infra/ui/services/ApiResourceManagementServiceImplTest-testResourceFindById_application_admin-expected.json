@@ -1,0 +1,65 @@
+{
+  "item" : {
+    "linksTo" : [ {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "f001.node.example.com",
+          "resourceName" : "f001.node.example.com"
+        },
+        "resourceType" : "Machine"
+      }
+    }, {
+      "linkType" : "RUN_AS",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : "Unix User",
+          "resourceDescription" : "/home/f1",
+          "resourceName" : "f1"
+        },
+        "resourceType" : "Unix User"
+      }
+    } ],
+    "resourceDetails" : {
+      "resource" : {
+        "applicationDefinition" : {
+          "_nextAssetId" : 1,
+          "assetsBundles" : [ ],
+          "assetsPathAndContent" : [ ],
+          "buildSteps" : [ ],
+          "command" : null,
+          "containerUsersToChangeId" : [ ],
+          "copyWhenStartedPathAndContentFiles" : [ ],
+          "entrypoint" : null,
+          "environments" : { },
+          "executeWhenStartedCommands" : [ ],
+          "from" : "ubuntu:16.04",
+          "hostToIpMapping" : [ ],
+          "portsEndpoint" : { },
+          "portsExposed" : { },
+          "portsRedirect" : [ ],
+          "runAs" : 70002,
+          "services" : [ ],
+          "udpPortsExposed" : { },
+          "volumes" : [ ],
+          "workingDirectory" : null
+        },
+        "description" : "Attached to machine f001",
+        "domainNames" : [ ],
+        "executionCronDetails" : null,
+        "executionPolicy" : "ALWAYS_ON",
+        "meta" : { },
+        "name" : "f1",
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "Attached to machine f001",
+        "resourceEditorName" : null,
+        "resourceName" : "f1"
+      },
+      "resourceType" : "Application"
+    }
+  },
+  "success" : true
+}

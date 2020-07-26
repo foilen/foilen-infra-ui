@@ -209,7 +209,7 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
                         .compare(a.getC().getResourceName(), b.getC().getResourceName()) //
                         .result())//
                 .forEach(link -> {
-                    if (link.getA().equals(resource)) {
+                    if (StringTools.safeEquals(link.getA().getInternalId(), resource.getInternalId())) {
                         resourceBucket.getLinksTo().add(new PartialLinkDetails(createResourceDetails(link.getC(), true), link.getB()));
                     } else {
                         resourceBucket.getLinksFrom().add(new PartialLinkDetails(createResourceDetails(link.getA(), true), link.getB()));
