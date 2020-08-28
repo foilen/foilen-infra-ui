@@ -99,6 +99,8 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
     @Override
     public ResponseMachineSetup getMachineSetup(String userId, String machineName, String ipPublic) {
 
+        logger.debug("getMachineSetup userId: {} ; machineName: {} ; ipPublic: {}", userId, machineName, ipPublic);
+
         ResponseMachineSetup response = new ResponseMachineSetup();
 
         if (!entitlementService.canGetSetupForMachine(userId, machineName)) {
@@ -107,10 +109,17 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
         }
 
         // Update the IP if is the machine
-        if (ipPublic != null && isIp4AndPublic(ipPublic)) {
+        if (ipPublic != null) {
 
-            if (entitlementService.isTheMachine(userId, machineName)) {
-                machineService.updateIpIfAvailable(userId, machineName, ipPublic);
+            if (isIp4AndPublic(ipPublic)) {
+                logger.debug("IP is an IPv4 address and public");
+
+                if (entitlementService.isTheMachine(userId, machineName)) {
+                    logger.debug("The user is the machine");
+                    machineService.updateIpIfAvailable(userId, machineName, ipPublic);
+                }
+            } else {
+                logger.debug("IP is not an IPv4 address or public");
             }
         }
 

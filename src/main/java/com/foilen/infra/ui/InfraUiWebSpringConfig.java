@@ -26,6 +26,7 @@ import com.foilen.infra.ui.web.interceptor.AddUserDetailsModelExtension;
 import com.foilen.infra.ui.web.interceptor.AddUserInDatabaseInterceptor;
 import com.foilen.infra.ui.web.interceptor.AddVisualModelExtension;
 import com.foilen.infra.ui.web.interceptor.RemoveModelOnRedirection;
+import com.foilen.infra.ui.web.interceptor.ThreadUniqueIdByRequestInterceptor;
 import com.foilen.smalltools.spring.resourceresolver.BundleResourceResolver;
 
 import springfox.documentation.builders.PathSelectors;
@@ -45,6 +46,7 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         registry.addInterceptor(addUserDetailsModelExtension());
         registry.addInterceptor(addVisualModelExtension());
         registry.addInterceptor(removeModelOnRedirection());
+        registry.addInterceptor(threadUniqueIdByRequestInterceptor());
     }
 
     @Override
@@ -140,6 +142,11 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
     @Bean
     public RemoveModelOnRedirection removeModelOnRedirection() {
         return new RemoveModelOnRedirection();
+    }
+
+    @Bean
+    public ThreadUniqueIdByRequestInterceptor threadUniqueIdByRequestInterceptor() {
+        return new ThreadUniqueIdByRequestInterceptor();
     }
 
 }

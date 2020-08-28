@@ -122,6 +122,8 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
     @Override
     public void updateIpIfAvailable(String userId, String machineName, String ipPublic) {
 
+        logger.debug("updateIpIfAvailable: userId: {} ; machineName: {} ; ipPublic: {} ; ", userId, machineName, ipPublic);
+
         if (!entitlementService.canManageMachine(userId, machineName)) {
             throw new AccessDeniedException("Cannot manage the machine");
         }
@@ -130,12 +132,17 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         Optional<Machine> machineOptional = ipResourceService.resourceFind(ipResourceService.createResourceQuery(Machine.class) //
                 .propertyEquals(Machine.PROPERTY_NAME, machineName));
         if (!machineOptional.isPresent()) {
+            logger.debug("The machine {} does not exist", machineName);
             return;
         }
 
         // Change the ip if different
         Machine machine = machineOptional.get();
-        if (!StringTools.safeEquals(ipPublic, machine.getPublicIp())) {
+        String machineIp = machine.getPublicIp();
+        logger.debug("The machine {} has IP {}", machineName, machineIp);
+        if (StringTools.safeEquals(ipPublic, machineIp)) {
+            logger.debug("The IP is the same");
+        } else {
             logger.info("Updating machine {} IP to {}", machineName, ipPublic);
 
             // Make the change as the SYSTEM if it is the machine itself
