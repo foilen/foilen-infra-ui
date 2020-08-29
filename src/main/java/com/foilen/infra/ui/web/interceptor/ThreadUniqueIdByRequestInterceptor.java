@@ -95,6 +95,10 @@ public class ThreadUniqueIdByRequestInterceptor extends HandlerInterceptorAdapte
             threadNameStateTool.appendText("ACTION");
             threadNameStateTool.appendText(controllerName);
             threadNameStateTool.appendText(controllerAction);
+        } else {
+            threadNameStateTool.appendText("URL");
+            threadNameStateTool.appendText(request.getMethod());
+            threadNameStateTool.appendText(request.getRequestURI());
         }
 
         // Update the thread's name

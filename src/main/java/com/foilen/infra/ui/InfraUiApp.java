@@ -220,6 +220,8 @@ public class InfraUiApp {
             // Check if debug
             if (options.debug) {
                 LogbackTools.changeConfig("/logback-debug.xml");
+            } else {
+                LogbackTools.changeConfig("/logback-normal.xml");
             }
 
         } catch (Exception e) {
