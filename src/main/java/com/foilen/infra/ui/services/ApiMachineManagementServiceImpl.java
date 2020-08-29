@@ -22,7 +22,7 @@ import com.foilen.smalltools.restapi.model.FormResult;
 @Service
 public class ApiMachineManagementServiceImpl extends AbstractApiService implements ApiMachineManagementService {
 
-    protected static boolean isIp4AndPublic(String ipPublic) {
+    protected static boolean isIp4AndPublic(String ipPublic) { // 165.22.228.192
 
         // Is IPv4
         int dots = 0;
@@ -58,10 +58,12 @@ public class ApiMachineManagementServiceImpl extends AbstractApiService implemen
         }
 
         // 172.16.0.0 to 172.31.255.255
-        String[] parts = ipPublic.split("\\.");
-        int b = Integer.valueOf(parts[1]);
-        if (b >= 16 && b <= 31) {
-            return false;
+        if (ipPublic.startsWith("172.")) {
+            String[] parts = ipPublic.split("\\.");
+            int b = Integer.valueOf(parts[1]);
+            if (b >= 16 && b <= 31) {
+                return false;
+            }
         }
 
         return true;

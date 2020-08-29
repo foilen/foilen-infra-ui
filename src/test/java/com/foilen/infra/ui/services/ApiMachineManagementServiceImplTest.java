@@ -192,8 +192,12 @@ public class ApiMachineManagementServiceImplTest extends AbstractSpringTests {
 
     @Test
     public void testIsIp4AndPublic() {
-        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("167.99.185.12"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("138.197.140.49"));
         Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("138.197.169.2"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("142.93.155.229"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("165.22.228.192"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("167.99.185.12"));
+        Assert.assertTrue(ApiMachineManagementServiceImpl.isIp4AndPublic("178.128.232.111"));
 
         // Not IPv4
         Assert.assertFalse(ApiMachineManagementServiceImpl.isIp4AndPublic("138.197.169.2.3"));
