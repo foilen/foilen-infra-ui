@@ -5,13 +5,13 @@ buildscript {
   }
 }
 plugins {
-  id 'org.springframework.boot' version '2.2.5.RELEASE'
+  id "com.jfrog.bintray" version "$bintrayVersion"
+  id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
+  id 'org.springframework.boot' version "$springBootVersion"
 }
 
 apply plugin: 'eclipse'
 apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
-
 
 group = 'com.foilen'
 version = System.getenv('VERSION')?:'master-SNAPSHOT'
@@ -78,15 +78,15 @@ dependencies {
   testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
   testCompile "com.h2database:h2"
   testCompileOnly 'junit:junit'
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-  testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
-  testCompile 'org.junit.platform:junit-platform-commons:1.5.2'
-  testCompile 'org.junit.platform:junit-platform-engine:1.5.2'
+  testImplementation "org.junit.jupiter:junit-jupiter-api"
+  testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
+  testCompile 'org.junit.platform:junit-platform-commons'
+  testCompile 'org.junit.platform:junit-platform-engine'
   testCompile "org.springframework:spring-test"
   testCompile "org.springframework.boot:spring-boot-starter-test"
-  testCompile "com.foilen:foilen-infra-resource-example:0.5.0"
-  testCompile "com.foilen:foilen-infra-resource-example-failing:0.4.0"
-  testCompile "com.foilen:foilen-infra-resource-testing-controller:0.4.0"
+  testCompile "com.foilen:foilen-infra-resource-testing-controller:$foilenInfraResourceTestingControllerVersion"
+  testCompile "com.foilen:foilen-infra-resource-example:$foilenInfraResourceExampleVersion"
+  testCompile "com.foilen:foilen-infra-resource-example-failing:$foilenInfraResourceExampleFailingVersion"
   
 }
 

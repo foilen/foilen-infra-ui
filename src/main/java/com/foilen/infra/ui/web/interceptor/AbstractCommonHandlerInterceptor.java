@@ -9,10 +9,10 @@
  */
 package com.foilen.infra.ui.web.interceptor;
 
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-public abstract class AbstractCommonHandlerInterceptor extends HandlerInterceptorAdapter {
+public abstract class AbstractCommonHandlerInterceptor implements HandlerInterceptor {
 
     protected boolean isRedirect(ModelAndView modelAndView) {
         return modelAndView.getViewName().startsWith("redirect:");

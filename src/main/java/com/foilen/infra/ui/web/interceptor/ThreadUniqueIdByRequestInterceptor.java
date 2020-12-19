@@ -21,8 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.foilen.smalltools.tools.SecureRandomTools;
 import com.foilen.smalltools.tools.ThreadNameStateTool;
@@ -31,7 +31,7 @@ import com.foilen.smalltools.tools.ThreadTools;
 /**
  * Rename the current thread to have a unique ID per thread.
  */
-public class ThreadUniqueIdByRequestInterceptor extends HandlerInterceptorAdapter {
+public class ThreadUniqueIdByRequestInterceptor implements HandlerInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(ThreadUniqueIdByRequestInterceptor.class);
 
