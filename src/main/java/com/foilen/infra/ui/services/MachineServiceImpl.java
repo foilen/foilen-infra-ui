@@ -83,7 +83,6 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         List<Application> applications = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(Application.class, LinkTypeConstants.INSTALLED_ON, machine);
         machineSetup.setApplications(applications.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.Application.class)).collect(Collectors.toList()));
         List<UnixUser> unixUsers = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(UnixUser.class, LinkTypeConstants.INSTALLED_ON, machine);
-        machineSetup.setUnixUsers(unixUsers.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.UnixUser.class)).collect(Collectors.toList()));
 
         // Add any missing users that are used by the applications
         Set<UnixUser> additionnalUnixUsers = new HashSet<>();
@@ -103,6 +102,8 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
 
         Collections.sort(applications);
         Collections.sort(unixUsers, (a, b) -> Long.compare(a.getId(), b.getId()));
+
+        machineSetup.setUnixUsers(unixUsers.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.UnixUser.class)).collect(Collectors.toList()));
 
         return machineSetup;
     }

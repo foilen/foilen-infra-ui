@@ -73,16 +73,16 @@
   "uiApiUserKey" : "_SET_",
   "unixUsers" : [ {
     "hashedPassword" : null,
-    "homeFolder" : "/home/root",
-    "id" : 0,
+    "homeFolder" : "/home/indirectlyattached",
+    "id" : 70001,
     "keepClearPassword" : false,
     "meta" : { },
-    "name" : "root",
+    "name" : "indirectlyattached",
     "password" : null,
     "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/root",
-    "resourceEditorName" : null,
-    "resourceName" : "root",
+    "resourceDescription" : "/home/indirectlyattached",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "indirectlyattached",
     "shell" : "/bin/bash"
   }, {
     "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
