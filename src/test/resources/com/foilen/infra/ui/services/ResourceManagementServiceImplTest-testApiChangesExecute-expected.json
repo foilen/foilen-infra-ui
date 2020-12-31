@@ -88,8 +88,6 @@
     }
   },
   "executionTimeInMsByActionHandler" : {
-    "BackupToGoogleCloudActionHandler" : 1,
-    "BackupToSftpActionHandler" : 1,
     "DnsEntryValidationChangesEventHandler$$Lambda$NUM" : 1,
     "DomainChangesEventHandler$$Lambda$NUM" : 1,
     "MachineChangesEventHandler$$Lambda$NUM" : 1,

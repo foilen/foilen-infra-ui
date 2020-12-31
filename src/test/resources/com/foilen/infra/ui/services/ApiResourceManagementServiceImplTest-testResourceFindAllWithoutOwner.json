@@ -68,6 +68,28 @@
   }, {
     "resourceDetails" : {
       "resource" : {
+        "meta" : { },
+        "name" : "f003.node.example.com",
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "f003.node.example.com",
+        "resourceName" : "f003.node.example.com"
+      },
+      "resourceType" : "Machine"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "meta" : { },
+        "name" : "f003.node.example.com",
+        "resourceCategory" : "NET",
+        "resourceDescription" : "",
+        "resourceName" : "f003.node.example.com"
+      },
+      "resourceType" : "Domain"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
         "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
         "homeFolder" : "/home/f1",
         "id" : 70002,
@@ -184,6 +206,54 @@
   }, {
     "resourceDetails" : {
       "resource" : {
+        "homeFolder" : "/home/f3",
+        "id" : 70006,
+        "keepClearPassword" : false,
+        "meta" : { },
+        "name" : "f3",
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "/home/f3",
+        "resourceName" : "f3",
+        "shell" : "/bin/bash"
+      },
+      "resourceType" : "Unix User"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "applicationDefinition" : {
+          "_nextAssetId" : 1,
+          "assetsBundles" : [ ],
+          "assetsPathAndContent" : [ ],
+          "buildSteps" : [ ],
+          "containerUsersToChangeId" : [ ],
+          "copyWhenStartedPathAndContentFiles" : [ ],
+          "environments" : { },
+          "executeWhenStartedCommands" : [ ],
+          "from" : "ubuntu:16.04",
+          "hostToIpMapping" : [ ],
+          "portsEndpoint" : { },
+          "portsExposed" : { },
+          "portsRedirect" : [ ],
+          "runAs" : 70006,
+          "services" : [ ],
+          "udpPortsExposed" : { },
+          "volumes" : [ ]
+        },
+        "description" : "Attached to machine f003",
+        "domainNames" : [ ],
+        "executionPolicy" : "ALWAYS_ON",
+        "meta" : { },
+        "name" : "f3",
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "Attached to machine f003",
+        "resourceName" : "f3"
+      },
+      "resourceType" : "Application"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
         "homeFolder" : "/home/indirectlyattached",
         "id" : 70001,
         "keepClearPassword" : false,
@@ -193,6 +263,22 @@
         "resourceDescription" : "/home/indirectlyattached",
         "resourceEditorName" : "Unix User",
         "resourceName" : "indirectlyattached",
+        "shell" : "/bin/bash"
+      },
+      "resourceType" : "Unix User"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "homeFolder" : "/home/indirectlyattached2",
+        "id" : 70005,
+        "keepClearPassword" : false,
+        "meta" : { },
+        "name" : "indirectlyattached2",
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "/home/indirectlyattached2",
+        "resourceEditorName" : "Unix User",
+        "resourceName" : "indirectlyattached2",
         "shell" : "/bin/bash"
       },
       "resourceType" : "Unix User"
@@ -320,6 +406,63 @@
         "text" : "t2_aaa"
       },
       "resourceType" : "Junit"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "command" : "/bin/sleep 10m",
+        "description" : "Attached to machine f001",
+        "meta" : { },
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "Attached to machine f001",
+        "resourceName" : "uid-f1",
+        "time" : "* * * * * *",
+        "uid" : "uid-f1"
+      },
+      "resourceType" : "CronJob"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "command" : "/bin/sleep 10m",
+        "description" : "Attached to machine f001 and attaching another unixuser",
+        "meta" : { },
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+        "resourceName" : "uid-f1indirect",
+        "time" : "* * * * * *",
+        "uid" : "uid-f1indirect"
+      },
+      "resourceType" : "CronJob"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "command" : "/bin/sleep 10m",
+        "description" : "Attached to machine f001, but application on f3",
+        "meta" : { },
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "Attached to machine f001, but application on f3",
+        "resourceName" : "uid-f3",
+        "time" : "* * * * * *",
+        "uid" : "uid-f3"
+      },
+      "resourceType" : "CronJob"
+    }
+  }, {
+    "resourceDetails" : {
+      "resource" : {
+        "command" : "/bin/sleep 10m",
+        "description" : "A not attached cron job",
+        "meta" : { },
+        "resourceCategory" : "INFRASTRUCTURE",
+        "resourceDescription" : "A not attached cron job",
+        "resourceName" : "uid-notattached",
+        "time" : "* * * * * *",
+        "uid" : "uid-notattached",
+        "workingDirectory" : "/tmp"
+      },
+      "resourceType" : "CronJob"
     }
   }, {
     "resourceDetails" : {

@@ -44,6 +44,39 @@
         },
         "resourceType" : "Application"
       }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001",
+          "resourceName" : "uid-f1"
+        },
+        "resourceType" : "CronJob"
+      }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+          "resourceName" : "uid-f1indirect"
+        },
+        "resourceType" : "CronJob"
+      }
+    }, {
+      "linkType" : "INSTALLED_ON",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001, but application on f3",
+          "resourceName" : "uid-f3"
+        },
+        "resourceType" : "CronJob"
+      }
     } ],
     "linksTo" : [ {
       "linkType" : "MANAGES",

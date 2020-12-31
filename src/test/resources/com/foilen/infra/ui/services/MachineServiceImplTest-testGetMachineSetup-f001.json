@@ -2,69 +2,49 @@
   "applications" : [ {
     "applicationDefinition" : {
       "_nextAssetId" : 1,
-      "assetsBundles" : [ ],
-      "assetsPathAndContent" : [ ],
-      "buildSteps" : [ ],
-      "command" : null,
-      "containerUsersToChangeId" : [ ],
-      "copyWhenStartedPathAndContentFiles" : [ ],
-      "entrypoint" : null,
-      "environments" : { },
-      "executeWhenStartedCommands" : [ ],
       "from" : "ubuntu:16.04",
-      "hostToIpMapping" : [ ],
-      "portsEndpoint" : { },
-      "portsExposed" : { },
-      "portsRedirect" : [ ],
-      "runAs" : 70002,
-      "services" : [ ],
-      "udpPortsExposed" : { },
-      "volumes" : [ ],
-      "workingDirectory" : null
+      "runAs" : 70002
     },
     "description" : "Attached to machine f001",
-    "domainNames" : [ ],
-    "executionCronDetails" : null,
     "executionPolicy" : "ALWAYS_ON",
-    "meta" : { },
-    "name" : "f1",
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "Attached to machine f001",
-    "resourceEditorName" : null,
-    "resourceName" : "f1"
+    "name" : "f1"
   }, {
     "applicationDefinition" : {
       "_nextAssetId" : 1,
-      "assetsBundles" : [ ],
-      "assetsPathAndContent" : [ ],
-      "buildSteps" : [ ],
-      "command" : null,
-      "containerUsersToChangeId" : [ ],
-      "copyWhenStartedPathAndContentFiles" : [ ],
-      "entrypoint" : null,
-      "environments" : { },
-      "executeWhenStartedCommands" : [ ],
       "from" : "ubuntu:16.04",
-      "hostToIpMapping" : [ ],
-      "portsEndpoint" : { },
-      "portsExposed" : { },
-      "portsRedirect" : [ ],
-      "runAs" : 70001,
-      "services" : [ ],
-      "udpPortsExposed" : { },
-      "volumes" : [ ],
-      "workingDirectory" : null
+      "runAs" : 70001
     },
     "description" : "Attached to machine f001 and attaching another unixuser",
-    "domainNames" : [ ],
-    "executionCronDetails" : null,
     "executionPolicy" : "ALWAYS_ON",
-    "meta" : { },
-    "name" : "f1indirect",
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
-    "resourceEditorName" : null,
-    "resourceName" : "f1indirect"
+    "name" : "f1indirect"
+  } ],
+  "cronJobs" : [ {
+    "applicationName" : "f1",
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001",
+    "runAs" : {
+      "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+      "homeFolder" : "/home/f1",
+      "id" : 70002,
+      "keepClearPassword" : false,
+      "name" : "f1",
+      "shell" : "/bin/bash"
+    },
+    "time" : "* * * * * *",
+    "uid" : "uid-f1"
+  }, {
+    "applicationName" : "f1",
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "runAs" : {
+      "homeFolder" : "/home/indirectlyattached2",
+      "id" : 70005,
+      "keepClearPassword" : false,
+      "name" : "indirectlyattached2",
+      "shell" : "/bin/bash"
+    },
+    "time" : "* * * * * *",
+    "uid" : "uid-f1indirect"
   } ],
   "machineName" : "f001.node.example.com",
   "redirectorBridgePort" : 11000,
@@ -72,43 +52,36 @@
   "uiApiUserId" : "_SET_",
   "uiApiUserKey" : "_SET_",
   "unixUsers" : [ {
-    "hashedPassword" : null,
     "homeFolder" : "/home/indirectlyattached",
     "id" : 70001,
     "keepClearPassword" : false,
-    "meta" : { },
     "name" : "indirectlyattached",
-    "password" : null,
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/indirectlyattached",
-    "resourceEditorName" : "Unix User",
-    "resourceName" : "indirectlyattached",
     "shell" : "/bin/bash"
   }, {
     "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
     "homeFolder" : "/home/f1",
     "id" : 70002,
     "keepClearPassword" : false,
-    "meta" : { },
     "name" : "f1",
-    "password" : null,
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/f1",
-    "resourceEditorName" : "Unix User",
-    "resourceName" : "f1",
     "shell" : "/bin/bash"
   }, {
     "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
     "homeFolder" : "/home/f12",
     "id" : 70004,
     "keepClearPassword" : false,
-    "meta" : { },
     "name" : "f12",
-    "password" : null,
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/f12",
-    "resourceEditorName" : "Unix User",
-    "resourceName" : "f12",
+    "shell" : "/bin/bash"
+  }, {
+    "homeFolder" : "/home/indirectlyattached2",
+    "id" : 70005,
+    "keepClearPassword" : false,
+    "name" : "indirectlyattached2",
+    "shell" : "/bin/bash"
+  }, {
+    "homeFolder" : "/home/f3",
+    "id" : 70006,
+    "keepClearPassword" : false,
+    "name" : "f3",
     "shell" : "/bin/bash"
   } ]
 }

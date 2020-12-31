@@ -1,5 +1,28 @@
 {
   "item" : {
+    "linksFrom" : [ {
+      "linkType" : "USES",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001",
+          "resourceName" : "uid-f1"
+        },
+        "resourceType" : "CronJob"
+      }
+    }, {
+      "linkType" : "USES",
+      "otherResource" : {
+        "resource" : {
+          "internalId" : "--SET--",
+          "resourceEditorName" : null,
+          "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+          "resourceName" : "uid-f1indirect"
+        },
+        "resourceType" : "CronJob"
+      }
+    } ],
     "linksTo" : [ {
       "linkType" : "INSTALLED_ON",
       "otherResource" : {

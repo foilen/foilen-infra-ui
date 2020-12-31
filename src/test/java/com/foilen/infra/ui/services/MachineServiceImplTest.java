@@ -60,8 +60,7 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
         // Assert
-        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup-f001.json", MachineSetup.class, getClass());
-        AssertTools.assertIgnoreLineFeed(JsonTools.prettyPrint(expectedMachineSetup), JsonTools.prettyPrint(machineSetup));
+        AssertTools.assertJsonComparisonWithoutNulls("MachineServiceImplTest-testGetMachineSetup-f001.json", getClass(), machineSetup);
 
     }
 
@@ -82,8 +81,7 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
         // Assert
-        MachineSetup expectedMachineSetup = JsonTools.readFromResource("MachineServiceImplTest-testGetMachineSetup_f001_withInfraDockerManagerUser.json", MachineSetup.class, getClass());
-        AssertTools.assertIgnoreLineFeed(JsonTools.prettyPrint(expectedMachineSetup), JsonTools.prettyPrint(machineSetup));
+        AssertTools.assertJsonComparisonWithoutNulls("MachineServiceImplTest-testGetMachineSetup_f001_withInfraDockerManagerUser.json", getClass(), machineSetup);
 
     }
 

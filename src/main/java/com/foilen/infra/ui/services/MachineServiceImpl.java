@@ -30,6 +30,7 @@ import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.application.Application;
+import com.foilen.infra.resource.cronjob.CronJob;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
@@ -82,13 +83,37 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         // Retrieve what is installed on this machine
         List<Application> applications = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(Application.class, LinkTypeConstants.INSTALLED_ON, machine);
         machineSetup.setApplications(applications.stream().map(it -> JsonTools.clone(it, com.foilen.infra.api.model.machine.Application.class)).collect(Collectors.toList()));
+        // Retrieve cron jobs
+        List<CronJob> cronJobs = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(CronJob.class, LinkTypeConstants.INSTALLED_ON, machine);
+        Set<UnixUser> cronJobsUnixUsers = new HashSet<>();
+        machineSetup.setCronJobs(cronJobs.stream() //
+                .map(it -> {
+                    com.foilen.infra.api.model.machine.CronJob apiCronJob = JsonTools.clone(it, com.foilen.infra.api.model.machine.CronJob.class);
+                    List<Application> cronApps = ipResourceService.linkFindAllByFromResourceAndLinkTypeAndToResourceClass(it, LinkTypeConstants.USES, Application.class);
+                    if (!cronApps.isEmpty()) {
+                        apiCronJob.setApplicationName(cronApps.get(0).getName());
+                    }
+                    List<UnixUser> cronUnixUsers = ipResourceService.linkFindAllByFromResourceAndLinkTypeAndToResourceClass(it, LinkTypeConstants.RUN_AS, UnixUser.class);
+                    if (!cronUnixUsers.isEmpty()) {
+                        UnixUser cronUnixUser = cronUnixUsers.get(0);
+                        apiCronJob.setRunAs(JsonTools.clone(cronUnixUser, com.foilen.infra.api.model.machine.UnixUser.class));
+                        cronJobsUnixUsers.add(cronUnixUser);
+                    }
+                    return apiCronJob;
+                }) //
+                .filter(cron -> cron.getRunAs() != null) //
+                .filter(cron -> cron.getApplicationName() != null) //
+                .filter(cron -> applications.stream().anyMatch(app -> app.getName().equals(cron.getApplicationName()))) //
+                .collect(Collectors.toList()));
+
         List<UnixUser> unixUsers = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(UnixUser.class, LinkTypeConstants.INSTALLED_ON, machine);
 
-        // Add any missing users that are used by the applications
+        // Add any missing users that are used by the applications and cron jobs
         Set<UnixUser> additionnalUnixUsers = new HashSet<>();
         for (Application application : applications) {
             additionnalUnixUsers.addAll(ipResourceService.linkFindAllByFromResourceAndLinkTypeAndToResourceClass(application, LinkTypeConstants.RUN_AS, UnixUser.class));
         }
+        additionnalUnixUsers.addAll(cronJobsUnixUsers);
         additionnalUnixUsers.removeAll(unixUsers);
 
         // Add unix users that must be on all machines

@@ -88,6 +88,42 @@
       "portsEndpoint" : { },
       "portsExposed" : { },
       "portsRedirect" : [ ],
+      "runAs" : 70006,
+      "services" : [ ],
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "workingDirectory" : null
+    },
+    "description" : "Attached to machine f003",
+    "domainNames" : [ ],
+    "executionCronDetails" : null,
+    "executionPolicy" : "ALWAYS_ON",
+    "meta" : { },
+    "name" : "f3",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f003",
+    "resourceEditorName" : null,
+    "resourceName" : "f3"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "applicationDefinition" : {
+      "_nextAssetId" : 1,
+      "assetsBundles" : [ ],
+      "assetsPathAndContent" : [ ],
+      "buildSteps" : [ ],
+      "command" : null,
+      "containerUsersToChangeId" : [ ],
+      "copyWhenStartedPathAndContentFiles" : [ ],
+      "entrypoint" : null,
+      "environments" : { },
+      "executeWhenStartedCommands" : [ ],
+      "from" : "ubuntu:16.04",
+      "hostToIpMapping" : [ ],
+      "portsEndpoint" : { },
+      "portsExposed" : { },
+      "portsRedirect" : [ ],
       "runAs" : null,
       "services" : [ ],
       "udpPortsExposed" : { },
@@ -106,6 +142,62 @@
     "resourceName" : "notattached"
   },
   "resourceType" : "Application"
+}, {
+  "resource" : {
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-f1",
+    "time" : "* * * * * *",
+    "uid" : "uid-f1",
+    "workingDirectory" : null
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-f1indirect",
+    "time" : "* * * * * *",
+    "uid" : "uid-f1indirect",
+    "workingDirectory" : null
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001, but application on f3",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001, but application on f3",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-f3",
+    "time" : "* * * * * *",
+    "uid" : "uid-f3",
+    "workingDirectory" : null
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "command" : "/bin/sleep 10m",
+    "description" : "A not attached cron job",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "A not attached cron job",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-notattached",
+    "time" : "* * * * * *",
+    "uid" : "uid-notattached",
+    "workingDirectory" : "/tmp"
+  },
+  "resourceType" : "CronJob"
 }, {
   "resource" : {
     "meta" : { },
@@ -134,6 +226,16 @@
     "resourceDescription" : "",
     "resourceEditorName" : null,
     "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "meta" : { },
+    "name" : "f003.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f003.node.example.com"
   },
   "resourceType" : "Domain"
 }, {
@@ -328,6 +430,17 @@
   "resourceType" : "Machine"
 }, {
   "resource" : {
+    "meta" : { },
+    "name" : "f003.node.example.com",
+    "publicIp" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "f003.node.example.com",
+    "resourceEditorName" : null,
+    "resourceName" : "f003.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
     "hashedPassword" : null,
     "homeFolder" : "/home/root",
     "id" : 0,
@@ -409,6 +522,22 @@
 }, {
   "resource" : {
     "hashedPassword" : null,
+    "homeFolder" : "/home/f3",
+    "id" : 70006,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f3",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f3",
+    "resourceEditorName" : null,
+    "resourceName" : "f3",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
     "homeFolder" : "/home/indirectlyattached",
     "id" : 70001,
     "keepClearPassword" : false,
@@ -419,6 +548,22 @@
     "resourceDescription" : "/home/indirectlyattached",
     "resourceEditorName" : "Unix User",
     "resourceName" : "indirectlyattached",
+    "shell" : "/bin/bash"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/indirectlyattached2",
+    "id" : 70005,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "indirectlyattached2",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/indirectlyattached2",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "indirectlyattached2",
     "shell" : "/bin/bash"
   },
   "resourceType" : "Unix User"

@@ -18,10 +18,50 @@
   "resource" : {
     "internalId" : "--SET--",
     "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f003",
+    "resourceName" : "f3"
+  },
+  "resourceType" : "Application"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
     "resourceDescription" : "A not attached application",
     "resourceName" : "notattached"
   },
   "resourceType" : "Application"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f001",
+    "resourceName" : "uid-f1"
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceName" : "uid-f1indirect"
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "Attached to machine f001, but application on f3",
+    "resourceName" : "uid-f3"
+  },
+  "resourceType" : "CronJob"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "A not attached cron job",
+    "resourceName" : "uid-notattached"
+  },
+  "resourceType" : "CronJob"
 }, {
   "resource" : {
     "internalId" : "--SET--",
@@ -44,6 +84,14 @@
     "resourceEditorName" : null,
     "resourceDescription" : "",
     "resourceName" : "f002.node.example.com"
+  },
+  "resourceType" : "Domain"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "",
+    "resourceName" : "f003.node.example.com"
   },
   "resourceType" : "Domain"
 }, {
@@ -122,6 +170,14 @@
   "resource" : {
     "internalId" : "--SET--",
     "resourceEditorName" : null,
+    "resourceDescription" : "f003.node.example.com",
+    "resourceName" : "f003.node.example.com"
+  },
+  "resourceType" : "Machine"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : null,
     "resourceDescription" : "/home/root",
     "resourceName" : "root"
   },
@@ -161,9 +217,25 @@
 }, {
   "resource" : {
     "internalId" : "--SET--",
+    "resourceEditorName" : null,
+    "resourceDescription" : "/home/f3",
+    "resourceName" : "f3"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
     "resourceEditorName" : "Unix User",
     "resourceDescription" : "/home/indirectlyattached",
     "resourceName" : "indirectlyattached"
+  },
+  "resourceType" : "Unix User"
+}, {
+  "resource" : {
+    "internalId" : "--SET--",
+    "resourceEditorName" : "Unix User",
+    "resourceDescription" : "/home/indirectlyattached2",
+    "resourceName" : "indirectlyattached2"
   },
   "resourceType" : "Unix User"
 }, {

@@ -31,6 +31,7 @@ import com.foilen.infra.plugin.v1.core.service.internal.InternalChangeService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.application.Application;
+import com.foilen.infra.resource.cronjob.CronJob;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
@@ -78,6 +79,7 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
     public static final String API_USER_MACHINE_ID_F001 = "MF001";
     public static final String API_USER_MACHINE_ID_F002 = "MF002";
+    public static final String API_USER_MACHINE_ID_F003 = "MF003";
 
     public static final String API_USER_ID_ADMIN = "AADMIN";
     public static final String API_USER_ID_USER_ALPHA = "AUSER";
@@ -154,6 +156,7 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
         createUnixUsers();
         createApplications();
+        createCronJobs();
 
         logger.info("End CREATE ALL");
     }
@@ -171,16 +174,59 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
 
         Application aNotAttached = createApplication("notattached", "A not attached application");
         Application f1 = createApplication("f1", "Attached to machine f001");
+        Application f3 = createApplication("f3", "Attached to machine f003");
         Application f1Indirect = createApplication("f1indirect", "Attached to machine f001 and attaching another unixuser");
 
         ChangesContext changes = new ChangesContext(ipResourceService);
         changes.resourceAdd(aNotAttached);
         changes.resourceAdd(f1);
+        changes.resourceAdd(f3);
         changes.linkAdd(f1, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
         changes.linkAdd(f1, LinkTypeConstants.RUN_AS, findUnixUser("f1"));
         changes.resourceAdd(f1Indirect);
         changes.linkAdd(f1Indirect, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
         changes.linkAdd(f1Indirect, LinkTypeConstants.RUN_AS, findUnixUser("indirectlyattached"));
+        changes.linkAdd(f3, LinkTypeConstants.INSTALLED_ON, new Machine("f003.node.example.com"));
+        changes.linkAdd(f3, LinkTypeConstants.RUN_AS, findUnixUser("f3"));
+        internalChangeService.changesExecute(changes);
+
+    }
+
+    protected CronJob createCronJob(String uid, String description, String time, String command, String workingDirectory) {
+        CronJob cronJob = new CronJob();
+        cronJob.setUid(uid);
+        cronJob.setDescription(description);
+        cronJob.setTime(time);
+        cronJob.setCommand(command);
+        cronJob.setWorkingDirectory(workingDirectory);
+        return cronJob;
+    }
+
+    protected void createCronJobs() {
+
+        logger.info("createCronJobs");
+
+        CronJob aNotAttached = createCronJob("uid-notattached", "A not attached cron job", "* * * * * *", "/bin/sleep 10m", "/tmp");
+        CronJob f1 = createCronJob("uid-f1", "Attached to machine f001", "* * * * * *", "/bin/sleep 10m", null);
+
+        CronJob f1Indirect = createCronJob("uid-f1indirect", "Attached to machine f001 and attaching another unixuser", "* * * * * *", "/bin/sleep 10m", null);
+
+        CronJob f3 = createCronJob("uid-f3", "Attached to machine f001, but application on f3", "* * * * * *", "/bin/sleep 10m", null);
+
+        ChangesContext changes = new ChangesContext(ipResourceService);
+        changes.resourceAdd(aNotAttached);
+        changes.resourceAdd(f1);
+        changes.resourceAdd(f3);
+        changes.linkAdd(f1, LinkTypeConstants.USES, new Application("f1"));
+        changes.linkAdd(f1, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
+        changes.linkAdd(f1, LinkTypeConstants.RUN_AS, findUnixUser("f1"));
+        changes.resourceAdd(f1Indirect);
+        changes.linkAdd(f1Indirect, LinkTypeConstants.USES, new Application("f1"));
+        changes.linkAdd(f1Indirect, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
+        changes.linkAdd(f1Indirect, LinkTypeConstants.RUN_AS, findUnixUser("indirectlyattached2"));
+        changes.linkAdd(f3, LinkTypeConstants.USES, new Application("f3"));
+        changes.linkAdd(f3, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
+        changes.linkAdd(f3, LinkTypeConstants.RUN_AS, findUnixUser("f3"));
         internalChangeService.changesExecute(changes);
 
     }
@@ -193,10 +239,12 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
         machine.getMeta().put(MetaConstants.META_OWNER, OWNER_SHARED);
         changes.resourceAdd(machine);
         changes.resourceAdd(new Machine("f002.node.example.com"));
+        changes.resourceAdd(new Machine("f003.node.example.com"));
         internalChangeService.changesExecute(changes);
 
         userApiMachineRepository.save(new UserApiMachine(API_USER_MACHINE_ID_F001, API_PASSWORD, API_PASSWORD_HASH, "f001.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
         userApiMachineRepository.save(new UserApiMachine(API_USER_MACHINE_ID_F002, API_PASSWORD, API_PASSWORD_HASH, "f002.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
+        userApiMachineRepository.save(new UserApiMachine(API_USER_MACHINE_ID_F003, API_PASSWORD, API_PASSWORD_HASH, "f003.node.example.com", DateTools.addDate(Calendar.DAY_OF_YEAR, 30)));
     }
 
     protected void createMachineStatistics() {
@@ -370,14 +418,18 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
         UnixUser uuF1 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "f1", "/home/f1", "/bin/bash", PASSWORD_HASH_QWERTY);
         UnixUser uuF2 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "f2", "/home/f2", "/bin/bash", null);
         UnixUser uuF12 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "f12", "/home/f12", "/bin/bash", PASSWORD_HASH_QWERTY);
-        setResourceEditor(UnixUserEditor.EDITOR_NAME, uuNotAttached, uuIndirectlyAttached, uuF1, uuF2, uuF12);
+        UnixUser uuIndirectlyAttached2 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "indirectlyattached2", "/home/indirectlyattached2", "/bin/bash", null);
+        UnixUser uuF3 = new UnixUser(UnixUserAvailableIdHelper.getNextAvailableId(), "f3", "/home/f3", "/bin/bash", null);
+        setResourceEditor(UnixUserEditor.EDITOR_NAME, uuNotAttached, uuIndirectlyAttached, uuIndirectlyAttached2, uuF1, uuF2, uuF12);
 
         ChangesContext changes = new ChangesContext(ipResourceService);
         changes.resourceAdd(root);
         changes.resourceAdd(uuNotAttached);
         changes.resourceAdd(uuIndirectlyAttached);
+        changes.resourceAdd(uuIndirectlyAttached2);
         changes.resourceAdd(uuF1);
         changes.resourceAdd(uuF2);
+        changes.resourceAdd(uuF3);
         changes.resourceAdd(uuF12);
         changes.linkAdd(uuF1, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
         changes.linkAdd(uuF12, LinkTypeConstants.INSTALLED_ON, new Machine("f001.node.example.com"));
