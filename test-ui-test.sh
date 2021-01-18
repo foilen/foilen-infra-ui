@@ -45,7 +45,7 @@ cat > $FOLDER_DATA/config.json << _EOF
 	"mailAlertsTo" : "admin@localhost",
 	"mailFrom" : "infra-ui@localhost",
 	
-	"mongoUri" : "mongodb://127.0.0.1:27085",
+	"mongoUri" : "mongodb://172.17.0.1:27085/foilen-ui-test",
 	
 	"loginConfigDetails" : {
 		"appId" : "BC805427E1",
@@ -65,8 +65,7 @@ docker run -ti \
   --user $USER_ID \
   --volume $FOLDER_PLUGINS_JARS:/plugins \
   --volume $FOLDER_DATA:/data \
-  --publish 8080:8080 \
-  --link ${INSTANCE}:mysql \
+  --publish 8888:8080 \
   foilen-infra-ui:master-SNAPSHOT \
   --mode TEST
 

@@ -21,17 +21,6 @@ public class InfraUiConfig {
     private String baseUrl;
     private long infiniteLoopTimeoutInMs = 120000;
 
-    // MySql
-    @Nullable
-    private String mysqlHostName;
-    private int mysqlPort = 3306;
-    @Nullable
-    private String mysqlDatabaseName = "foilen_infra";
-    @Nullable
-    private String mysqlDatabaseUserName;
-    @Nullable
-    private String mysqlDatabasePassword;
-
     // Mongo
     private String mongoUri;
 
@@ -102,26 +91,6 @@ public class InfraUiConfig {
         return mongoUri;
     }
 
-    public String getMysqlDatabaseName() {
-        return mysqlDatabaseName;
-    }
-
-    public String getMysqlDatabasePassword() {
-        return mysqlDatabasePassword;
-    }
-
-    public String getMysqlDatabaseUserName() {
-        return mysqlDatabaseUserName;
-    }
-
-    public String getMysqlHostName() {
-        return mysqlHostName;
-    }
-
-    public int getMysqlPort() {
-        return mysqlPort;
-    }
-
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -168,26 +137,6 @@ public class InfraUiConfig {
 
     public void setMongoUri(String mongoUri) {
         this.mongoUri = mongoUri;
-    }
-
-    public void setMysqlDatabaseName(String mysqlDatabaseName) {
-        this.mysqlDatabaseName = mysqlDatabaseName;
-    }
-
-    public void setMysqlDatabasePassword(String mysqlDatabasePassword) {
-        this.mysqlDatabasePassword = mysqlDatabasePassword;
-    }
-
-    public void setMysqlDatabaseUserName(String mysqlDatabaseUserName) {
-        this.mysqlDatabaseUserName = mysqlDatabaseUserName;
-    }
-
-    public void setMysqlHostName(String mysqlHostName) {
-        this.mysqlHostName = mysqlHostName;
-    }
-
-    public void setMysqlPort(int mysqlPort) {
-        this.mysqlPort = mysqlPort;
     }
 
 }

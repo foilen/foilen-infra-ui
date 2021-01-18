@@ -88,16 +88,6 @@ public class InfraUiApp {
                 infraUiConfig = JsonTools.readFromFile(configFile, InfraUiConfig.class);
             }
 
-            // Override some database configuration if provided via environment
-            String overrideMysqlHostName = System.getenv("MYSQL_PORT_3306_TCP_ADDR");
-            if (!Strings.isNullOrEmpty(overrideMysqlHostName)) {
-                infraUiConfig.setMysqlHostName(overrideMysqlHostName);
-            }
-            String overrideMysqlPort = System.getenv("MYSQL_PORT_3306_TCP_PORT");
-            if (!Strings.isNullOrEmpty(overrideMysqlPort)) {
-                infraUiConfig.setMysqlPort(Integer.valueOf(overrideMysqlPort));
-            }
-
             // Override misc configuration if provided via environment
             String overrideInfiniteLoopTimeoutInMs = System.getenv("INFINITE_LOOP_TIMEOUT_IN_MS");
             if (!Strings.isNullOrEmpty(overrideInfiniteLoopTimeoutInMs)) {
@@ -134,10 +124,6 @@ public class InfraUiApp {
 
             // Run the upgrader
             logger.info("[UPGRADE] Begin");
-            if (!Strings.isNullOrEmpty(infraUiConfig.getMysqlHostName())) {
-                logger.info("[UPGRADE] Has MySql");
-                sources.add(InfraUiUpgradesMysqlSpringConfig.class);
-            }
 
             sources.add(MongoDbSpringConfig.class);
             sources.add(InfraUiMongoDbExtraSpringConfig.class);

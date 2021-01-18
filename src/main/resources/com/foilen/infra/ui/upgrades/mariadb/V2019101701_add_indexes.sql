@@ -1,9 +1,0 @@
-create index if not exists audit_item_action_id on audit_item (action, id desc);
-create index if not exists audit_item_link_type_id on audit_item (link_type, id desc);
-create index if not exists audit_item_resource_first_type_id on audit_item (resource_first_type, id desc);
-create index if not exists audit_item_resource_second_type_id on audit_item (resource_second_type, id desc);
-create index if not exists audit_item_tag_name_id on audit_item (tag_name, id desc);
-create index if not exists audit_item_timestamp_id on audit_item (timestamp, id desc);
-create index if not exists audit_item_tx_id_id on audit_item (tx_id, id desc);
-create index if not exists audit_item_user_name_id on audit_item (user_name, id desc);
-create index if not exists audit_item_user_type_id on audit_item (user_type, id desc);

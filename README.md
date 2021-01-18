@@ -12,15 +12,11 @@ Some configuration options can be overridden with the environment variables:
 
 * `CONFIG_FILE` : The path to the config file
 * `PLUGINS_JARS` : The path to the jars containing the plugings
-* `MYSQL_PORT_3306_TCP_ADDR` : To change `mysqlHostName` (used by Docker Links)
-* `MYSQL_PORT_3306_TCP_PORT` : To change `mysqlPort` (used by Docker Links)
 * `INFINITE_LOOP_TIMEOUT_IN_MS` : To change `infiniteLoopTimeoutInMs`
 
 ## Configuration file
 
 You need to create a json configuration file that maps the object InfraUiConfig.
-
-The MySQL part is optional. It is only useful for the migration between MySQL to MongoDB. Once migrated, it is no more needed.
 
 Here is an example of the content:
 
@@ -37,12 +33,6 @@ Here is an example of the content:
 	
 	"mailAlertsTo" : "admin@localhost",
 	"mailFrom" : "infra-ui@localhost",
-	
-	"mysqlHostName" : "127.0.0.1",
-	"mysqlPort" : 3306,
-	"mysqlDatabaseName" : "infra_ui",
-	"mysqlDatabaseUserName" : "infra_ui",
-	"mysqlDatabasePassword" : "7b6618c64f538a7b181e24642",
 	
 	"mongoUri" : "mongodb://root:ABC@172.17.0.1:27017/foilen-ui-test",
 	
@@ -87,5 +77,5 @@ When done, cleanup by stopping the DB: `docker stop infra-ui-mongodb` .
 
 ## Swagger
 
-You can see the API documentation here: http://localhost:8080/swagger-ui.html
+You can see the API documentation here: http://localhost:8888/swagger-ui.html
 

@@ -45,10 +45,6 @@ dependencies {
   compile "com.foilen:foilen-infra-system-core-system-mongodb:$foilenInfraSystemVersion"
   compileOnly "com.foilen:foilen-infra-plugins-core:$foilenInfraPluginsCoreVersion"
 
-  // Databases
-  compile "org.mariadb.jdbc:mariadb-java-client"
-  compile "org.springframework.boot:spring-boot-starter-jdbc"
-  
   // Emails
   compile 'com.sun.mail:javax.mail:1.6.2'
   compile 'javax.activation:activation:1.1.1'

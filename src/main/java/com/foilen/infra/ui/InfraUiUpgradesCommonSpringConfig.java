@@ -20,7 +20,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.foilen.infra.plugin.core.system.mongodb.upgrader.MongoDbUpgraderConstants;
 import com.foilen.infra.plugin.v1.core.service.TranslationService;
@@ -29,7 +28,6 @@ import com.foilen.infra.ui.services.PaginationServiceImpl;
 import com.foilen.infra.ui.upgrades.mongodb.tmp.TmpTranslationServiceImpl;
 import com.foilen.smalltools.upgrader.UpgraderTools;
 import com.foilen.smalltools.upgrader.tasks.UpgradeTask;
-import com.foilen.smalltools.upgrader.trackers.DatabaseUpgraderTracker;
 import com.foilen.smalltools.upgrader.trackers.MongoDbUpgraderTracker;
 import com.mongodb.client.MongoClient;
 
@@ -40,9 +38,6 @@ public class InfraUiUpgradesCommonSpringConfig {
     public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
-    @Autowired(required = false)
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private MongoClient mongoClient;
@@ -73,9 +68,6 @@ public class InfraUiUpgradesCommonSpringConfig {
         upgraderTools.setSortByClassName(false);
         Collections.sort(tasks, (o1, o2) -> o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName()));
 
-        if (jdbcTemplate != null) {
-            upgraderTools.addUpgraderTracker("db", new DatabaseUpgraderTracker(jdbcTemplate));
-        }
         upgraderTools.addUpgraderTracker(MongoDbUpgraderConstants.TRACKER, new MongoDbUpgraderTracker(mongoClient, databaseName));
         return upgraderTools;
     }

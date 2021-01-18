@@ -1,5 +1,5 @@
 {
-	"baseUrl": "http://127.0.0.1:8080",
+	"baseUrl": "http://127.0.0.1:8888",
 	"infiniteLoopTimeoutInMs": 120000,
 	
 	"mongoUri": "mongodb://127.0.0.1:27085/foilen-ui-test",
