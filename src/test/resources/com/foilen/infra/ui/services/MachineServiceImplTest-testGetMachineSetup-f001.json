@@ -6,7 +6,6 @@
       "runAs" : 70002
     },
     "description" : "Attached to machine f001",
-    "executionPolicy" : "ALWAYS_ON",
     "name" : "f1"
   }, {
     "applicationDefinition" : {
@@ -15,7 +14,6 @@
       "runAs" : 70001
     },
     "description" : "Attached to machine f001 and attaching another unixuser",
-    "executionPolicy" : "ALWAYS_ON",
     "name" : "f1indirect"
   } ],
   "cronJobs" : [ {
