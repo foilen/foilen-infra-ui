@@ -221,7 +221,9 @@ public class PluginResourceController extends AbstractBasics {
                 String editorName = resource.getResourceEditorName();
                 List<String> editorNames = ipPluginService.getResourceEditorNamesByResourceType(resource.getClass());
                 if (editorName == null) {
-                    if (!editorNames.isEmpty()) {
+                    if (editorNames.isEmpty()) {
+                        modelAndView.setViewName(VIEW_BASE_PATH + "/rawView");
+                    } else {
                         editorName = editorNames.get(0);
                     }
                 }
@@ -357,6 +359,33 @@ public class PluginResourceController extends AbstractBasics {
         }
         return modelAndView;
 
+    }
+
+    @GetMapping("rawView/{resourceId}")
+    public ModelAndView rawView(Authentication authentication, @PathVariable("resourceId") String resourceId, HttpServletRequest httpServletRequest, Locale locale) {
+
+        ModelAndView modelAndView = new ModelAndView(VIEW_BASE_PATH + "/rawResource");
+
+        try {
+            entitlementService.canViewResourcesOrFailUi(authentication.getName(), resourceId);
+
+            Optional<IPResource> editedResourceOptional = resourceService.resourceFind(resourceId);
+
+            if (editedResourceOptional.isPresent()) {
+
+                IPResource editedResource = editedResourceOptional.get();
+
+                modelAndView.addObject("resourceJson", JsonTools.prettyPrintWithoutNulls(editedResource));
+            } else {
+                modelAndView.setViewName("error/single-partial");
+                modelAndView.addObject("error", "error.resourceNotFound");
+            }
+        } catch (UiException e) {
+            modelAndView.setViewName("error/single-partial");
+            modelAndView.addObject("error", messageSource.getMessage(e.getMessage(), e.getParams(), locale));
+        }
+
+        return modelAndView;
     }
 
     @ResponseBody

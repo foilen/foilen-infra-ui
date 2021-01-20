@@ -77,6 +77,12 @@ function addTopErrorIfMissing(form) {
   }
 }
 
+// Load the resource raw viewer
+function updateResourceRawViewer(div) {
+  var resourceId = div.data('resourceId');
+  div.load(baseUrl + '/rawView/' + resourceId);
+}
+
 // Load the resource editor
 function updateResourceEditor(form, config) {
 
@@ -170,6 +176,10 @@ jQuery(document).ready(function(){
       window.location.href = baseUrl + '/edit/' + successResourceId;
     }
   });
+});
+
+jQuery(document).ready(function(){
+  updateResourceRawViewer(jQuery('#rawResource'));
 });
 
 //Create/Edit ListInputTextFieldPageItem
