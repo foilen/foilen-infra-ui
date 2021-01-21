@@ -81,6 +81,7 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/Chart.bundle.js");
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra.js");
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra-charts.js");
+        bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/js-cookie-2.2.1.min.js");
 
         bundleResourceResolver.addBundleResource("all-vendors.css", "/WEB-INF/infra/ui/resources/ui2/css/vendors/bootstrap-4.3.1.min.css");
         bundleResourceResolver.addBundleResource("all-vendors.css", "/WEB-INF/infra/ui/resources/ui2/css/vendors/vis-network-6.1.1.min.css");

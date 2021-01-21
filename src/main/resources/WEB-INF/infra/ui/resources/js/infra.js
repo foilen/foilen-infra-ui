@@ -222,6 +222,12 @@ function updateResourceFieldPageItems(context) {
   jQuery('.ResourcesFieldPageItem', context).each(function() {
     updateResourcesFieldPageItem(jQuery(this));
   });
+
+  // Persist selected owner
+  jQuery('select[name="_owner"]', context).change(function() {
+    var select = jQuery(this)
+    Cookies.set("FCLOUD_DEFAULT_OWNER", select.val())
+  });
 }
 
 var dialogDepth = 0;

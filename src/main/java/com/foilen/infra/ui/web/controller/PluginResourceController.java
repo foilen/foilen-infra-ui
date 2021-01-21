@@ -9,6 +9,7 @@
  */
 package com.foilen.infra.ui.web.controller;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -63,6 +65,7 @@ import com.foilen.mvc.ui.UiSuccessErrorView;
 import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
+import com.foilen.smalltools.tools.StringTools;
 import com.foilen.smalltools.tuple.Tuple2;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
@@ -94,17 +97,32 @@ public class PluginResourceController extends AbstractBasics {
     private UserPermissionsService userPermissionsService;
 
     @SuppressWarnings("unchecked")
-    private void addOwnerField(String userId, PageDefinition pageDefinition, Locale locale, IPResource editedResource) {
+    private void addOwnerField(Cookie[] cookies, String userId, PageDefinition pageDefinition, Locale locale, IPResource editedResource) {
         SelectOptionsPageItem ownerField = new SelectOptionsPageItem();
         ownerField.setLabel(messageSource.getMessage("term.owner", null, locale));
         ownerField.setFieldName("_owner");
 
         Set<String> potentialOwners = userPermissionsService.findOwnersThatUserCanCreateAs(userId);
         if (editedResource == null) {
-            // It is a new resource -> use the first one available
-            Optional<String> desiredOwner = potentialOwners.stream().sorted().findFirst();
-            if (desiredOwner.isPresent()) {
-                ownerField.setFieldValue(desiredOwner.get());
+
+            // It is a new resource
+
+            // -> Use the one on the cookie if present
+            Optional<String> defaultInCookieOptional = Arrays.asList(cookies).stream() //
+                    .filter(c -> StringTools.safeEquals(c.getName(), "FCLOUD_DEFAULT_OWNER")) //
+                    .map(c -> c.getValue()) //
+                    .filter(value -> potentialOwners.contains(value)) //
+                    .findFirst();
+            if (defaultInCookieOptional.isPresent()) {
+                ownerField.setFieldValue(defaultInCookieOptional.get());
+            }
+
+            // -> use the first one available
+            if (ownerField.getFieldValue() == null) {
+                Optional<String> desiredOwner = potentialOwners.stream().sorted().findFirst();
+                if (desiredOwner.isPresent()) {
+                    ownerField.setFieldValue(desiredOwner.get());
+                }
             }
         } else {
             // There is a resource -> use the current owner of it
@@ -159,7 +177,7 @@ public class PluginResourceController extends AbstractBasics {
             pageDefinition.addPageItem(csrfField);
 
             // Available owners and selected
-            addOwnerField(authentication.getName(), pageDefinition, locale, null);
+            addOwnerField(httpServletRequest.getCookies(), authentication.getName(), pageDefinition, locale, null);
 
             modelAndView.addObject("pageDefinition", pageDefinition);
         } else {
@@ -285,7 +303,7 @@ public class PluginResourceController extends AbstractBasics {
                 pageDefinition.addPageItem(csrfField);
 
                 // Available owners and selected
-                addOwnerField(authentication.getName(), pageDefinition, locale, editedResource);
+                addOwnerField(httpServletRequest.getCookies(), authentication.getName(), pageDefinition, locale, editedResource);
 
                 modelAndView.addObject("pageDefinition", pageDefinition);
             } else {
