@@ -19,7 +19,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return ("redirect:/pluginresources/list");
+        return ("redirect:/index.html#/resources");
     }
 
 }

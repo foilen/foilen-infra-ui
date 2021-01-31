@@ -1,0 +1,67 @@
+{
+  "content" : [ {
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "homeFolder" : "/home/f1",
+    "id" : 70002,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f1",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f1",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f1",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/f2",
+    "id" : 70003,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f2",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f2",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f2",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
+    "homeFolder" : "/home/f12",
+    "id" : 70004,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f12",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f12",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f12",
+    "shell" : "/bin/bash"
+  } ],
+  "empty" : false,
+  "first" : true,
+  "last" : true,
+  "number" : 0,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 0,
+    "pageNumber" : 0,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 3,
+  "totalPages" : 1
+}

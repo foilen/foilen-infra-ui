@@ -1,0 +1,74 @@
+{
+  "content" : [ {
+    "bool" : true,
+    "date" : 946702800000,
+    "doubleNumber" : 1.0,
+    "enumeration" : "A",
+    "floatNumber" : 1.0,
+    "integerNumber" : 1,
+    "longNumber" : 1,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t1_aaa, enumeration=A, date=Sat Jan 01 00:00:00 EST 2000, integerNumber=1, longNumber=1, doubleNumber=1.0, floatNumber=1.0, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, two]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t1_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "two" ],
+    "text" : "t1_aaa"
+  }, {
+    "bool" : false,
+    "date" : 959832000000,
+    "doubleNumber" : 1.5,
+    "enumeration" : "C",
+    "floatNumber" : 7.3,
+    "integerNumber" : 5,
+    "longNumber" : 8,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t2_aaa, enumeration=C, date=Thu Jun 01 00:00:00 EDT 2000, integerNumber=5, longNumber=8, doubleNumber=1.5, floatNumber=7.3, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, three]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t2_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "three" ],
+    "text" : "t2_aaa"
+  } ],
+  "empty" : false,
+  "first" : true,
+  "last" : true,
+  "number" : 0,
+  "numberOfElements" : 2,
+  "pageable" : {
+    "offset" : 0,
+    "pageNumber" : 0,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 2,
+  "totalPages" : 1
+}

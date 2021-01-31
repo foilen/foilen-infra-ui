@@ -7,6 +7,9 @@ const routes = [
     path : '/audits',
     component : AuditsList
   }, {
+    path : '/resources',
+    component : ResourcesList
+  }, {
     path : '/ownerRules',
     component : OwnerRulesList
   }, {

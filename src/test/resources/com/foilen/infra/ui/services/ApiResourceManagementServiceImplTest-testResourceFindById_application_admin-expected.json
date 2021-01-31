@@ -9,6 +9,7 @@
           "resourceDescription" : "Attached to machine f001",
           "resourceName" : "uid-f1"
         },
+        "resourceId" : "--SET--",
         "resourceType" : "CronJob"
       }
     }, {
@@ -20,6 +21,7 @@
           "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
           "resourceName" : "uid-f1indirect"
         },
+        "resourceId" : "--SET--",
         "resourceType" : "CronJob"
       }
     } ],
@@ -32,6 +34,7 @@
           "resourceDescription" : "f001.node.example.com",
           "resourceName" : "f001.node.example.com"
         },
+        "resourceId" : "--SET--",
         "resourceType" : "Machine"
       }
     }, {
@@ -43,6 +46,7 @@
           "resourceDescription" : "/home/f1",
           "resourceName" : "f1"
         },
+        "resourceId" : "--SET--",
         "resourceType" : "Unix User"
       }
     } ],
@@ -72,8 +76,6 @@
         },
         "description" : "Attached to machine f001",
         "domainNames" : [ ],
-        "executionCronDetails" : null,
-        "executionPolicy" : "ALWAYS_ON",
         "meta" : { },
         "name" : "f1",
         "resourceCategory" : "INFRASTRUCTURE",
@@ -81,6 +83,7 @@
         "resourceEditorName" : null,
         "resourceName" : "f1"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Application"
     }
   },

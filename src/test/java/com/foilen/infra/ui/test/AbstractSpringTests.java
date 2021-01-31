@@ -11,12 +11,15 @@ package com.foilen.infra.ui.test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -52,6 +55,7 @@ import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
 import com.foilen.smalltools.restapi.model.AbstractApiBaseWithError;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.tools.AbstractBasics;
+import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.SecureRandomTools;
 import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoClient;
@@ -127,6 +131,13 @@ public abstract class AbstractSpringTests extends AbstractBasics {
                 throw e;
             }
         }
+    }
+
+    protected Object cleanup(Page<IPResource> page) {
+        @SuppressWarnings("unchecked")
+        SortedMap<String, Object> cloned = JsonTools.clone(page, TreeMap.class);
+        mapsToSortedMaps(cloned);
+        return cloned;
     }
 
     private void cleanupDocument(Object document) {
@@ -214,6 +225,18 @@ public abstract class AbstractSpringTests extends AbstractBasics {
 
     protected List<UserHuman> findAllUserHumans() {
         return userHumanRepository.findAll(Sort.by("userId"));
+    }
+
+    protected void mapsToSortedMaps(Map<String, Object> root) {
+        for (String key : root.keySet()) {
+            Object value = root.get(key);
+            if (value instanceof Map && !(value instanceof SortedMap)) {
+                @SuppressWarnings("unchecked")
+                TreeMap<String, Object> cloned = JsonTools.clone(value, TreeMap.class);
+                mapsToSortedMaps(cloned);
+                root.put(key, cloned);
+            }
+        }
     }
 
     protected void setApiAuth(String userId) {

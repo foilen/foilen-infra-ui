@@ -51,6 +51,14 @@ You can then specify the full path of that file as the *configFile* argument whe
 
 # Development
 
+## Text messages
+
+The translations are in:
+- /src/main/resources/WEB-INF/infra/ui/messages/messages_en.properties
+- /src/main/resources/WEB-INF/infra/ui/messages/messages_fr.properties
+
+And when you add more, you can easily sort them by running `SortMessagesApp.launch`.
+
 ## TEST in Eclipse
 
 To be able to execute the application in Eclipse, you first need to download all the plugins jars:

@@ -1,0 +1,81 @@
+{
+  "content" : [ {
+    "applicationDefinition" : {
+      "_nextAssetId" : 1,
+      "assetsBundles" : [ ],
+      "assetsPathAndContent" : [ ],
+      "buildSteps" : [ ],
+      "command" : null,
+      "containerUsersToChangeId" : [ ],
+      "copyWhenStartedPathAndContentFiles" : [ ],
+      "entrypoint" : null,
+      "environments" : { },
+      "executeWhenStartedCommands" : [ ],
+      "from" : "ubuntu:16.04",
+      "hostToIpMapping" : [ ],
+      "portsEndpoint" : { },
+      "portsExposed" : { },
+      "portsRedirect" : [ ],
+      "runAs" : 70001,
+      "services" : [ ],
+      "udpPortsExposed" : { },
+      "volumes" : [ ],
+      "workingDirectory" : null
+    },
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "domainNames" : [ ],
+    "meta" : { },
+    "name" : "f1indirect",
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceEditorName" : null,
+    "resourceName" : "f1indirect"
+  }, {
+    "command" : "/bin/sleep 10m",
+    "description" : "A not attached cron job",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "A not attached cron job",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-notattached",
+    "time" : "* * * * * *",
+    "uid" : "uid-notattached",
+    "workingDirectory" : "/tmp"
+  }, {
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-f1",
+    "time" : "* * * * * *",
+    "uid" : "uid-f1",
+    "workingDirectory" : null
+  } ],
+  "empty" : false,
+  "first" : false,
+  "last" : false,
+  "number" : 1,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 3,
+    "pageNumber" : 1,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 30,
+  "totalPages" : 10
+}

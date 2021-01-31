@@ -19,10 +19,12 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.foilen.infra.api.model.resource.PartialLinkDetails;
 import com.foilen.infra.api.model.resource.ResourceBucket;
+import com.foilen.infra.api.model.resource.ResourceBucketsWithPagination;
 import com.foilen.infra.api.model.resource.ResourceDetails;
 import com.foilen.infra.api.model.resource.ResourceTypeDetails;
 import com.foilen.infra.api.request.RequestChanges;
@@ -40,6 +42,7 @@ import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.repositories.PluginResourceInUiRepository;
 import com.foilen.mvc.ui.UiException;
+import com.foilen.smalltools.restapi.model.ApiPagination;
 import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.StringTools;
@@ -78,70 +81,70 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             position.set(0);
             changes.getResourcesToUpdate().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource resourcePk = getPersistedResourceByPk("resourcesToUpdate.resourcePk", posContext, it.getResourcePk(), formResult);
+                IPResource resourceInitial = getPersistedResource("resourcesToUpdate.resource", posContext, it.getResource(), formResult);
                 IPResource resource = convert("resourcesToUpdate.updatedResource", posContext, it.getUpdatedResource(), formResult);
-                if (resourcePk != null && resource != null) {
-                    changesContext.resourceUpdate(resourcePk, resource);
+                if (resourceInitial != null && resource != null) {
+                    changesContext.resourceUpdate(resourceInitial, resource);
                 }
             });
             position.set(0);
-            changes.getResourcesToDeletePk().forEach(it -> {
+            changes.getResourcesToDelete().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource resourcePk = getPersistedResourceByPk("resourcesToDeletePk", posContext, it, formResult);
-                if (resourcePk != null) {
-                    changesContext.resourceDelete(resourcePk);
+                IPResource resource = getPersistedResource("resourcesToDelete", posContext, it, formResult);
+                if (resource != null) {
+                    changesContext.resourceDelete(resource);
                 }
             });
 
             position.set(0);
             changes.getLinksToAdd().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource fromResourcePk = convert("linksToAdd.fromResourcePk", posContext, it.getFromResourcePk(), formResult);
+                IPResource fromResource = convert("linksToAdd.fromResource", posContext, it.getFromResource(), formResult);
                 String linkType = it.getLinkType();
                 if (Strings.isNullOrEmpty(linkType)) {
                     formResult.getGlobalErrors().add("[linksToAdd.linkType/" + posContext + "] Is mandatory");
                 }
-                IPResource toResourcePk = convert("linksToAdd.toResourcePk", posContext, it.getToResourcePk(), formResult);
-                if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
-                    changesContext.linkAdd(fromResourcePk, linkType, toResourcePk);
+                IPResource toResource = convert("linksToAdd.toResource", posContext, it.getToResource(), formResult);
+                if (fromResource != null && toResource != null && !Strings.isNullOrEmpty(linkType)) {
+                    changesContext.linkAdd(fromResource, linkType, toResource);
                 }
             });
             position.set(0);
             changes.getLinksToDelete().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource fromResourcePk = convert("linksToDelete.fromResourcePk", posContext, it.getFromResourcePk(), formResult);
+                IPResource fromResource = convert("linksToDelete.fromResource", posContext, it.getFromResource(), formResult);
                 String linkType = it.getLinkType();
                 if (Strings.isNullOrEmpty(linkType)) {
                     formResult.getGlobalErrors().add("[linksToAdd.linkType/" + posContext + "] Is mandatory");
                 }
-                IPResource toResourcePk = convert("linksToDelete.toResourcePk", posContext, it.getToResourcePk(), formResult);
-                if (fromResourcePk != null && toResourcePk != null && !Strings.isNullOrEmpty(linkType)) {
-                    changesContext.linkDelete(fromResourcePk, linkType, toResourcePk);
+                IPResource toResource = convert("linksToDelete.toResource", posContext, it.getToResource(), formResult);
+                if (fromResource != null && toResource != null && !Strings.isNullOrEmpty(linkType)) {
+                    changesContext.linkDelete(fromResource, linkType, toResource);
                 }
             });
 
             position.set(0);
             changes.getTagsToAdd().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource resourcePk = convert("tagsToAdd.resourcePk", posContext, it.getResourcePk(), formResult);
+                IPResource resource = convert("tagsToAdd.resource", posContext, it.getResource(), formResult);
                 String tagName = it.getTagName();
                 if (Strings.isNullOrEmpty(tagName)) {
                     formResult.getGlobalErrors().add("[tagsToAdd.tagName/" + posContext + "] Is mandatory");
                 }
-                if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
-                    changesContext.tagAdd(resourcePk, tagName);
+                if (resource != null && !Strings.isNullOrEmpty(tagName)) {
+                    changesContext.tagAdd(resource, tagName);
                 }
             });
             position.set(0);
             changes.getTagsToDelete().forEach(it -> {
                 int posContext = position.getAndIncrement();
-                IPResource resourcePk = convert("tagsToDelete.resourcePk", posContext, it.getResourcePk(), formResult);
+                IPResource resource = convert("tagsToDelete.resource", posContext, it.getResource(), formResult);
                 String tagName = it.getTagName();
                 if (Strings.isNullOrEmpty(tagName)) {
                     formResult.getGlobalErrors().add("[tagsToDelete.tagName/" + posContext + "] Is mandatory");
                 }
-                if (resourcePk != null && !Strings.isNullOrEmpty(tagName)) {
-                    changesContext.tagDelete(resourcePk, tagName);
+                if (resource != null && !Strings.isNullOrEmpty(tagName)) {
+                    changesContext.tagDelete(resource, tagName);
                 }
             });
 
@@ -192,7 +195,9 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
         // Deserialize
         try {
-            return (IPResource) JsonTools.clone(resourceDetails.getResource(), resourceClass);
+            IPResource resource = (IPResource) JsonTools.clone(resourceDetails.getResource(), resourceClass);
+            resource.setInternalId(resourceDetails.getResourceId());
+            return resource;
         } catch (Exception e) {
             formResult.getGlobalErrors().add(fullContext + "could not deserialize the resource as type [" + resourceType + "]");
             return null;
@@ -227,9 +232,9 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             limitedResource.put("resourceName", resource.getResourceName());
             limitedResource.put("resourceDescription", resource.getResourceDescription());
             limitedResource.put("resourceEditorName", resource.getResourceEditorName());
-            return new ResourceDetails(resourceType, limitedResource);
+            return new ResourceDetails(resource.getInternalId(), resourceType, limitedResource);
         } else {
-            return new ResourceDetails(resourceType, resource);
+            return new ResourceDetails(resource.getInternalId(), resourceType, resource);
         }
     }
 
@@ -240,17 +245,66 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
         return resourceBucket;
     }
 
-    private IPResource getPersistedResourceByPk(String context, int posContext, ResourceDetails resourcePkDetails, FormResult formResult) {
-        IPResource resourcePk = convert(context, posContext, resourcePkDetails, formResult);
-        if (resourcePk == null) {
+    private IPResource getPersistedResource(String context, int posContext, ResourceDetails resourceDetails, FormResult formResult) {
+
+        // Get by id
+        if (!Strings.isNullOrEmpty(resourceDetails.getResourceId())) {
+            Optional<IPResource> optional = resourceService.resourceFind(resourceDetails.getResourceId());
+            if (!optional.isPresent()) {
+                formResult.getGlobalErrors().add("[" + context + "/" + posContext + "] The resource does not exist");
+                return null;
+            }
+            return optional.get();
+        }
+
+        // Search by PK
+        IPResource resource = convert(context, posContext, resourceDetails, formResult);
+        if (resource == null) {
             return null;
         }
-        Optional<IPResource> optional = resourceService.resourceFindByPk(resourcePk);
+
+        Optional<IPResource> optional = resourceService.resourceFindByPk(resource);
         if (!optional.isPresent()) {
             formResult.getGlobalErrors().add("[" + context + "/" + posContext + "] The resource does not exist");
             return null;
         }
         return optional.get();
+    }
+
+    @Override
+    public ResponseResourceAppliedChanges resourceDelete(String userId, String resourceId) {
+        RequestChanges changes = new RequestChanges();
+        changes.getResourcesToDelete().add(new ResourceDetails(resourceId, null));
+        return applyChanges(userId, changes);
+    }
+
+    @Override
+    public ResourceBucketsWithPagination resourceFindAll(String userId, int pageId, String search, boolean onlyWithEditor) {
+
+        ResourceBucketsWithPagination result = new ResourceBucketsWithPagination();
+
+        // Parameters
+        if (pageId < 1) {
+            throw new UiException("error.pageStart1");
+        }
+
+        wrapExecution(result, () -> {
+
+            result.setSearch(search);
+            result.setOnlyWithEditor(onlyWithEditor);
+
+            Page<IPResource> page = resourceManagementService.resourceFindAll(userId, pageId, search, onlyWithEditor);
+
+            result.setItems(page.stream() //
+                    .map(resource -> createResourceBucket(resource, false)) //
+                    .collect(Collectors.toList()));
+
+            result.setPagination(new ApiPagination(page));
+
+        });
+
+        return result;
+
     }
 
     @Override
@@ -392,7 +446,7 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
                             it.getResourceType(), //
                             it.isEmbedded(), //
                             it.getPrimaryKeyProperties().stream().sorted().collect(Collectors.toList()), //
-                            it.getSearchableProperties().stream().sorted().collect(Collectors.toList()))) //
+                            it.getPropertyNames().stream().collect(Collectors.toList()))) //
                     .collect(Collectors.toList()));
         });
 

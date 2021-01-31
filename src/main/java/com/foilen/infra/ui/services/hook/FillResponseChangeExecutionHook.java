@@ -59,10 +59,10 @@ public class FillResponseChangeExecutionHook extends AbstractBasics implements C
             auditItem.setAction(AuditAction.valueOf(it.getAction()));
 
             if (it.getResourceFirst() != null) {
-                auditItem.setResourceFirst(new ResourceDetailsSmall(it.getResourceFirstType(), getResourceName(it.getResourceFirst())));
+                auditItem.setResourceFirst(new ResourceDetailsSmall(getResourceId(it.getResourceFirst()), it.getResourceFirstType(), getResourceName(it.getResourceFirst())));
             }
             if (it.getResourceSecond() != null) {
-                auditItem.setResourceSecond(new ResourceDetailsSmall(it.getResourceSecondType(), getResourceName(it.getResourceSecond())));
+                auditItem.setResourceSecond(new ResourceDetailsSmall(getResourceId(it.getResourceSecond()), it.getResourceSecondType(), getResourceName(it.getResourceSecond())));
             }
 
             auditItem.setLinkType(it.getLinkType());
@@ -72,6 +72,14 @@ public class FillResponseChangeExecutionHook extends AbstractBasics implements C
             responseResourceAppliedChanges.getAuditItems().getItems().add(auditItem);
         });
         responseResourceAppliedChanges.getAuditItems().setPagination(new ApiPagination(auditPage));
+    }
+
+    private String getResourceId(Object resource) {
+        String resourceId = "N/A";
+        if (resource instanceof IPResource) {
+            resourceId = ((IPResource) resource).getInternalId();
+        }
+        return resourceId;
     }
 
     private String getResourceName(Object resource) {

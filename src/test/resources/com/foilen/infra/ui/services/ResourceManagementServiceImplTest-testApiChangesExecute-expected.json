@@ -4,10 +4,12 @@
       "action" : "ADD",
       "linkType" : "MANAGES",
       "resourceFirst" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com / A",
         "resourceType" : "Dns Entry"
       },
       "resourceSecond" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com",
         "resourceType" : "Domain"
       },
@@ -16,10 +18,12 @@
       "action" : "ADD",
       "linkType" : "MANAGES",
       "resourceFirst" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com",
         "resourceType" : "Machine"
       },
       "resourceSecond" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com / A",
         "resourceType" : "Dns Entry"
       },
@@ -28,10 +32,12 @@
       "action" : "ADD",
       "linkType" : "MANAGES",
       "resourceFirst" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com",
         "resourceType" : "Machine"
       },
       "resourceSecond" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com",
         "resourceType" : "Domain"
       },
@@ -40,10 +46,12 @@
       "action" : "ADD",
       "linkType" : "SUBDOMAIN",
       "resourceFirst" : {
+        "resourceId" : "--SET--",
         "resourceName" : "example.com",
         "resourceType" : "Domain"
       },
       "resourceSecond" : {
+        "resourceId" : "--SET--",
         "resourceName" : "localhost.example.com",
         "resourceType" : "Domain"
       },

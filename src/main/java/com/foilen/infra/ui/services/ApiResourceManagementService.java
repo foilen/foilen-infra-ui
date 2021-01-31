@@ -9,6 +9,7 @@
  */
 package com.foilen.infra.ui.services;
 
+import com.foilen.infra.api.model.resource.ResourceBucketsWithPagination;
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
@@ -28,6 +29,10 @@ public interface ApiResourceManagementService {
      * @return the result
      */
     ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes);
+
+    ResponseResourceAppliedChanges resourceDelete(String userId, String resourceId);
+
+    ResourceBucketsWithPagination resourceFindAll(String userId, int pageId, String search, boolean onlyWithEditor);
 
     ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch);
 

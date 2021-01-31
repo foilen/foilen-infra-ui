@@ -11,6 +11,8 @@ package com.foilen.infra.ui.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.v1.core.context.ChangesContext;
 import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
@@ -19,6 +21,8 @@ import com.foilen.infra.plugin.v1.model.resource.IPResource;
 public interface ResourceManagementService {
 
     void changesExecute(ChangesContext changesContext, String defaultOwner, ResponseResourceAppliedChanges responseResourceAppliedChanges);
+
+    Page<IPResource> resourceFindAll(String userId, int pageId, String search, boolean onlyWithEditor);
 
     /**
      * Find all the resources that match the query that the user can view.

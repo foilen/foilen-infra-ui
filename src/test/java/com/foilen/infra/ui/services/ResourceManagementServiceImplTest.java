@@ -21,10 +21,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.foilen.infra.api.model.audit.AuditItemSmall;
+import com.foilen.infra.api.model.resource.ResourceDetailsSmall;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
 import com.foilen.infra.plugin.core.system.junits.JunitsHelper;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.PluginResourceRepository;
@@ -44,6 +48,7 @@ import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.infra.ui.visual.ResourceTypeAndDetails;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
+import com.foilen.smalltools.tools.StringTools;
 import com.google.common.collect.ComparisonChain;
 
 public class ResourceManagementServiceImplTest extends AbstractSpringTests {
@@ -65,6 +70,20 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
 
     public ResourceManagementServiceImplTest() {
         super(true);
+    }
+
+    private void clearInternalId(AuditItemSmall auditItemSmall) {
+        clearInternalId(auditItemSmall.getResourceFirst());
+        clearInternalId(auditItemSmall.getResourceSecond());
+    }
+
+    private void clearInternalId(ResourceDetailsSmall resourceDetails) {
+        if (resourceDetails == null) {
+            return;
+        }
+        if (resourceDetails.getResourceId() != null) {
+            resourceDetails.setResourceId("--SET--");
+        }
     }
 
     @Override
@@ -91,13 +110,11 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
         changesContext.resourceAdd(new Machine("localhost.example.com", "127.0.0.1"));
         ResponseResourceAppliedChanges responseResourceAppliedChanges = new ResponseResourceAppliedChanges();
         resourceManagementService.changesExecute(changesContext, null, responseResourceAppliedChanges);
-
         responseResourceAppliedChanges.setExecutionTimeInMsByActionHandler(sortAndSet1Long(responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler()));
 
+        // Cleanup anything not deterministic
         Assert.assertNotNull(responseResourceAppliedChanges.getTxId());
         responseResourceAppliedChanges.setTxId("was set");
-
-        Collections.sort(responseResourceAppliedChanges.getAuditItems().getItems(), (a, b) -> JsonTools.compactPrintWithoutNulls(a).compareTo(JsonTools.compactPrintWithoutNulls(b)));
 
         responseResourceAppliedChanges.setExecutionTimeInMsByActionHandler(new TreeMap<>(responseResourceAppliedChanges.getExecutionTimeInMsByActionHandler()));
         responseResourceAppliedChanges.setUpdateCountByResourceId(new TreeMap<>(responseResourceAppliedChanges.getUpdateCountByResourceId()));
@@ -111,7 +128,14 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
                 executionTimeInMsByActionHandler.remove(key);
             }
         });
-        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute-expected.json", getClass(), responseResourceAppliedChanges);
+        responseResourceAppliedChanges.getAuditItems().getItems().forEach(i -> clearInternalId(i));
+
+        // Sort for assert
+        Collections.sort(responseResourceAppliedChanges.getAuditItems().getItems(),
+                (a, b) -> StringTools.safeComparisonNullFirst(JsonTools.cloneAsSortedMap(a).toString(), JsonTools.cloneAsSortedMap(b).toString()));
+
+        // Assert
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testApiChangesExecute-expected.json", getClass(), JsonTools.cloneAsSortedMap(responseResourceAppliedChanges));
 
     }
 
@@ -188,6 +212,90 @@ public class ResourceManagementServiceImplTest extends AbstractSpringTests {
 
         AssertTools.assertJsonComparison(Collections.emptyList(), resourcesTypeAndDetails);
 
+    }
+
+    @Test
+    public void testResourceFindAllBasic_admin() {
+
+        // Only page
+        Page<IPResource> resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 1, null, false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 2, null, false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-2-expected.json", getClass(), cleanup(resources));
+
+        // Search
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 1, "node", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-search-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 2, "node", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-search-2-expected.json", getClass(), cleanup(resources));
+
+        // Search owner
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 1, "alpha", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-search-owner-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 2, "alpha", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-search-owner-2-expected.json", getClass(), cleanup(resources));
+
+        // Editors
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 1, null, true);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-editors-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 2, null, true);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-editors-2-expected.json", getClass(), cleanup(resources));
+
+        // Search & Editors
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ADMIN, 1, "f", true);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_admin-search-editors-1-expected.json", getClass(), cleanup(resources));
+
+    }
+
+    @Test
+    public void testResourceFindAllBasic_alphaUser() {
+
+        Page<IPResource> resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 1, null, false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 2, null, false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-2-expected.json", getClass(), cleanup(resources));
+
+        // Search
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 1, "aaa", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-search-1-expected.json", getClass(), cleanup(resources));
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 2, "aaa", false);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-search-2-expected.json", getClass(), cleanup(resources));
+
+        // Editors
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 1, null, true);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-editors-1-expected.json", getClass(), cleanup(resources));
+
+        // Search & Editors
+        resources = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_ALPHA, 1, "f", true);
+        AssertTools.assertJsonComparison("ResourceManagementServiceImplTest-testResourceFindAllBasic_alphaUser-search-editors-1-expected.json", getClass(), cleanup(resources));
+
+    }
+
+    @Test
+    public void testResourceFindAllBasic_nopermUser() {
+
+        Page<IPResource> resourcesTypeAndDetails = testResourceFindAllBasicForUser(FakeDataServiceImpl.USER_ID_NOPERM, 1, null, false);
+
+        AssertTools.assertJsonComparison(new PageImpl<>(Collections.emptyList()), resourcesTypeAndDetails);
+
+    }
+
+    private Page<IPResource> testResourceFindAllBasicForUser(String userId, int pageId, String search, boolean onlyWithEditor) {
+
+        paginationServiceImpl.setItemsPerPage(3);
+
+        // Change all junits to owned by alpha
+        ChangesContext changes = new ChangesContext(resourceService);
+        internalServicesContext.getInternalIPResourceService().resourceFindAll().stream() //
+                .filter(it -> it instanceof JunitResource) //
+                .forEach(it -> {
+                    it.getMeta().put(MetaConstants.META_OWNER, FakeDataServiceImpl.OWNER_ALPHA);
+                    changes.resourceUpdate(it);
+                });
+        internalChangeService.changesExecute(changes);
+
+        // Execute
+        return resourceManagementService.resourceFindAll(userId, pageId, search, onlyWithEditor);
     }
 
     private List<ResourceTypeAndDetails> testResourceFindAllForUser(String userId) {

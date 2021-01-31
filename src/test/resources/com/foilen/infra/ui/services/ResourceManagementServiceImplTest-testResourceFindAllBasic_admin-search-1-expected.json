@@ -1,0 +1,49 @@
+{
+  "content" : [ {
+    "meta" : { },
+    "name" : "f001.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f001.node.example.com"
+  }, {
+    "meta" : { },
+    "name" : "f002.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f002.node.example.com"
+  }, {
+    "meta" : { },
+    "name" : "f003.node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "f003.node.example.com"
+  } ],
+  "empty" : false,
+  "first" : true,
+  "last" : false,
+  "number" : 0,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 0,
+    "pageNumber" : 0,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 7,
+  "totalPages" : 3
+}

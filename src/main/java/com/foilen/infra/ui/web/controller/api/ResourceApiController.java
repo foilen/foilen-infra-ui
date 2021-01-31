@@ -12,13 +12,16 @@ package com.foilen.infra.ui.web.controller.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.foilen.infra.api.model.resource.ResourceBucketsWithPagination;
 import com.foilen.infra.api.request.RequestChanges;
 import com.foilen.infra.api.request.RequestResourceSearch;
 import com.foilen.infra.api.response.ResponseResourceAppliedChanges;
@@ -37,6 +40,20 @@ public class ResourceApiController {
     @PostMapping("applyChanges")
     public ResponseResourceAppliedChanges applyChanges(Authentication authentication, @RequestBody RequestChanges changes) {
         return apiResourceManagementService.applyChanges(authentication.getName(), changes);
+    }
+
+    @DeleteMapping("/{resourceId}")
+    public ResponseResourceAppliedChanges resourceDelete(Authentication authentication, @PathVariable("resourceId") String resourceId) {
+        return apiResourceManagementService.resourceDelete(authentication.getName(), resourceId);
+    }
+
+    @GetMapping()
+    public ResourceBucketsWithPagination resourceFindAll(Authentication authentication, //
+            @RequestParam(defaultValue = "1") int pageId, //
+            @RequestParam(required = false) String search, //
+            @RequestParam(required = false, defaultValue = "false") boolean onlyWithEditor //
+    ) {
+        return apiResourceManagementService.resourceFindAll(authentication.getName(), pageId, search, onlyWithEditor);
     }
 
     @PostMapping("resourceFindAll")

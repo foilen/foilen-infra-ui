@@ -1,0 +1,40 @@
+<div class="row">
+
+  <div class="col-12">
+
+    <div class="form-group">
+      <input type="text" class="form-control" v-model="queries.search" v-bind:placeholder="$t('term.search')" v-on:keyup.enter="refresh(1)" />
+    </div>
+    <div class="form-check">
+      <input type="checkbox" id="onlyWithEditor" class="form-check-input" v-model="queries.onlyWithEditor" v-on:change="refresh(1)" />
+      <label class="form-check-label" for="onlyWithEditor">{{ $t('term.onlyWithEditor') }}</label>
+    </div>
+    <pagination class="float-right" v-bind:pagination="pagination" v-on:changePage="refresh($event.pageId)"></pagination>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('resources.type') }}</th>
+          <th scope="col">{{ $t('resources.name') }}</th>
+          <th scope="col">{{ $t('resources.description') }}</th>
+          <th scope="col">{{ $t('term.owner') }}</th>
+          <th scope="col" width="200px">{{ $t('term.actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in items">
+          <td>{{item.resourceDetails.resourceType}}</td>
+          <td>{{item.resourceDetails.resource.resourceName}}</td>
+          <td>{{item.resourceDetails.resource.resourceDescription}}</td>
+          <td>{{item.resourceDetails.resource.meta.UI_OWNER}}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" v-bind:href="'/pluginresources/edit/' + item.resourceDetails.resourceId">{{ $t('button.edit') }}</a>
+            <button class="btn btn-sm btn-danger" v-on:click="deleteOne(item)">{{ $t('button.delete') }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.foilen.infra.api.model.audit.AuditAction;
 import com.foilen.infra.api.model.audit.AuditType;
 import com.foilen.infra.api.model.resource.ResourceDetails;
+import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.smalltools.tools.AbstractBasics;
 
@@ -34,10 +35,10 @@ public class AuditItemConverter extends AbstractBasics implements Converter<Audi
         target.setUserType(source.getUserType());
         target.setUserName(source.getUserName());
         if (source.getResourceFirstType() != null) {
-            target.setResourceFirst(new ResourceDetails(source.getResourceFirstType(), source.getResourceFirst()));
+            target.setResourceFirst(toResourceDetails(source.getResourceFirstType(), source.getResourceFirst()));
         }
         if (source.getResourceSecondType() != null) {
-            target.setResourceSecond(new ResourceDetails(source.getResourceSecondType(), source.getResourceSecond()));
+            target.setResourceSecond(toResourceDetails(source.getResourceSecondType(), source.getResourceSecond()));
         }
         target.setLinkType(source.getLinkType());
         target.setTagName(source.getTagName());
@@ -48,6 +49,18 @@ public class AuditItemConverter extends AbstractBasics implements Converter<Audi
         target.setDocumentTo(source.getDocumentTo());
 
         return target;
+    }
+
+    private ResourceDetails toResourceDetails(String resourceType, Object resource) {
+        String resourceId = null;
+
+        if (resource instanceof IPResource) {
+            IPResource ipResource = (IPResource) resource;
+            resourceId = ipResource.getInternalId();
+        }
+
+        ResourceDetails resourceDetails = new ResourceDetails(resourceId, resourceType, resource);
+        return resourceDetails;
     }
 
 }

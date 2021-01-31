@@ -83,6 +83,9 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
 
     @SuppressWarnings("unchecked")
     private void clearInternalId(ResourceDetails resourceDetails) {
+        if (resourceDetails.getResourceId() != null) {
+            resourceDetails.setResourceId("--SET--");
+        }
         if (resourceDetails.getResource() instanceof Map) {
             Map<String, Object> resource = (Map<String, Object>) resourceDetails.getResource();
             if (resource.containsKey("internalId")) {
@@ -246,12 +249,12 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
         urlRedirection.getMeta().put(MetaConstants.META_OWNER, FakeDataServiceImpl.OWNER_ALPHA);
         urlRedirection.setHttpRedirectToUrl("https://myredir.foilen-lab.com");
         urlRedirection.setHttpIsPermanent(true);
-        changes.getResourcesToAdd().add(new ResourceDetails(UrlRedirection.RESOURCE_TYPE, urlRedirection));
+        changes.getResourcesToAdd().add(new ResourceDetails(null, UrlRedirection.RESOURCE_TYPE, urlRedirection));
 
         changes.getLinksToAdd().add(new LinkDetails( //
-                new ResourceDetails(UrlRedirection.RESOURCE_TYPE, urlRedirection), //
+                new ResourceDetails(null, UrlRedirection.RESOURCE_TYPE, urlRedirection), //
                 LinkTypeConstants.INSTALLED_ON, //
-                new ResourceDetails(Machine.RESOURCE_TYPE, new Machine(machineName))));
+                new ResourceDetails(null, Machine.RESOURCE_TYPE, new Machine(machineName))));
 
         ResponseResourceAppliedChanges responseResourceAppliedChanges = apiResourceManagementService.applyChanges(userId, changes);
         if (!responseResourceAppliedChanges.isSuccess()) {
@@ -328,6 +331,7 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
 
         // Clear the changing id
         return resourceDetailsStream.peek(r -> {
+            clearInternalId(r);
             Map<String, Object> resource = (Map<String, Object>) r.getResource();
             if (resource.containsKey("internalId")) {
                 resource.put("internalId", "--SET--");
@@ -340,6 +344,9 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
 
         List<ResourceDetails> resourcesTypeAndDetails = testResourceFindAllWithDetailsForUser(FakeDataServiceImpl.USER_ID_ADMIN);
 
+        // Clear the changing ids
+        resourcesTypeAndDetails.forEach(i -> clearInternalId(i));
+
         AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindAllWithDetails_admin-expected.json", getClass(), resourcesTypeAndDetails);
 
     }
@@ -348,6 +355,9 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
     public void testResourceFindAllWithDetails_alphaUser() {
 
         List<ResourceDetails> resourcesTypeAndDetails = testResourceFindAllWithDetailsForUser(FakeDataServiceImpl.USER_ID_ALPHA);
+
+        // Clear the changing ids
+        resourcesTypeAndDetails.forEach(i -> clearInternalId(i));
 
         AssertTools.assertJsonComparison("ApiResourceManagementServiceImplTest-testResourceFindAllWithDetails_alphaUser-expected.json", getClass(), resourcesTypeAndDetails);
 
@@ -402,6 +412,7 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
         // Clear the changing id
         return resourceDetailsStream.peek(r -> {
 
+            clearInternalId(r);
             if (r.getResource() instanceof Map) {
                 Map<String, Object> resource = (Map<String, Object>) r.getResource();
                 if (resource.containsKey("internalId")) {
@@ -420,10 +431,7 @@ public class ApiResourceManagementServiceImplTest extends AbstractSpringTests {
     public void testResourceFindAllWithoutOwner() {
         ResponseResourceBuckets result = apiResourceManagementService.resourceFindAllWithoutOwner(FakeDataServiceImpl.USER_ID_ADMIN);
         result.getItems().forEach(r -> {
-            AbstractIPResource resource = (AbstractIPResource) r.getResourceDetails().getResource();
-            if (resource.getInternalId() != null) {
-                resource.setInternalId("--SET--");
-            }
+            clearInternalId(r.getResourceDetails());
         });
         AssertTools.assertJsonComparisonWithoutNulls("ApiResourceManagementServiceImplTest-testResourceFindAllWithoutOwner.json", getClass(), result);
     }

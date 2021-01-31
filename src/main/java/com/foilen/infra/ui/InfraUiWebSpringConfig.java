@@ -99,12 +99,13 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vis-network-6.1.1.min.js");
 
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/errors.js");
-        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-home.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-audits.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-home.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-ownerRules.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-resources.js");
+        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-roles.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-userApis.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-userHumans.js");
-        bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-roles.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/components.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/app.js");
 

@@ -1,0 +1,97 @@
+{
+  "content" : [ {
+    "bool" : true,
+    "date" : 946702800000,
+    "doubleNumber" : 1.0,
+    "enumeration" : "A",
+    "floatNumber" : 1.0,
+    "integerNumber" : 1,
+    "longNumber" : 1,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t1_aaa, enumeration=A, date=Sat Jan 01 00:00:00 EST 2000, integerNumber=1, longNumber=1, doubleNumber=1.0, floatNumber=1.0, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, two]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t1_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "two" ],
+    "text" : "t1_aaa"
+  }, {
+    "bool" : false,
+    "date" : 959832000000,
+    "doubleNumber" : 1.5,
+    "enumeration" : "C",
+    "floatNumber" : 7.3,
+    "integerNumber" : 5,
+    "longNumber" : 8,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=t2_aaa, enumeration=C, date=Thu Jun 01 00:00:00 EDT 2000, integerNumber=5, longNumber=8, doubleNumber=1.5, floatNumber=7.3, bool=false, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[one, three]]",
+    "resourceEditorName" : null,
+    "resourceName" : "t2_aaa",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ "one", "three" ],
+    "text" : "t2_aaa"
+  }, {
+    "bool" : true,
+    "date" : 954565200000,
+    "doubleNumber" : 77.6,
+    "enumeration" : "B",
+    "floatNumber" : 3.1,
+    "integerNumber" : 80,
+    "longNumber" : 4,
+    "meta" : {
+      "UI_OWNER" : "alpha"
+    },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "JunitResource [text=zz, enumeration=B, date=Sat Apr 01 00:00:00 EST 2000, integerNumber=80, longNumber=4, doubleNumber=77.6, floatNumber=3.1, bool=true, setDates=[], setDoubles=[], setEnumerations=[], setFloats=[], setLongs=[], setIntegers=[], setTexts=[]]",
+    "resourceEditorName" : null,
+    "resourceName" : "zz",
+    "setDates" : [ ],
+    "setDoubles" : [ ],
+    "setEnumerations" : [ ],
+    "setFloats" : [ ],
+    "setIntegers" : [ ],
+    "setLongs" : [ ],
+    "setTexts" : [ ],
+    "text" : "zz"
+  } ],
+  "empty" : false,
+  "first" : false,
+  "last" : false,
+  "number" : 1,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 3,
+    "pageNumber" : 1,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 7,
+  "totalPages" : 3
+}

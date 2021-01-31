@@ -8,6 +8,7 @@
         "resourceDescription" : "",
         "resourceName" : "example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Domain"
     }
   }, {
@@ -30,6 +31,7 @@
         "setTexts" : [ ],
         "text" : "example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     }
   }, {
@@ -41,6 +43,7 @@
         "resourceDescription" : "",
         "resourceName" : "f001.node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Domain"
     }
   }, {
@@ -52,6 +55,7 @@
         "resourceDescription" : "f002.node.example.com",
         "resourceName" : "f002.node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Machine"
     }
   }, {
@@ -63,6 +67,7 @@
         "resourceDescription" : "",
         "resourceName" : "f002.node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Domain"
     }
   }, {
@@ -74,6 +79,7 @@
         "resourceDescription" : "f003.node.example.com",
         "resourceName" : "f003.node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Machine"
     }
   }, {
@@ -85,6 +91,7 @@
         "resourceDescription" : "",
         "resourceName" : "f003.node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Domain"
     }
   }, {
@@ -102,6 +109,7 @@
         "resourceName" : "f1",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -128,13 +136,13 @@
         },
         "description" : "Attached to machine f001",
         "domainNames" : [ ],
-        "executionPolicy" : "ALWAYS_ON",
         "meta" : { },
         "name" : "f1",
         "resourceCategory" : "INFRASTRUCTURE",
         "resourceDescription" : "Attached to machine f001",
         "resourceName" : "f1"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Application"
     }
   }, {
@@ -152,6 +160,7 @@
         "resourceName" : "f12",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -178,13 +187,13 @@
         },
         "description" : "Attached to machine f001 and attaching another unixuser",
         "domainNames" : [ ],
-        "executionPolicy" : "ALWAYS_ON",
         "meta" : { },
         "name" : "f1indirect",
         "resourceCategory" : "INFRASTRUCTURE",
         "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
         "resourceName" : "f1indirect"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Application"
     }
   }, {
@@ -201,6 +210,7 @@
         "resourceName" : "f2",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -216,6 +226,7 @@
         "resourceName" : "f3",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -242,13 +253,13 @@
         },
         "description" : "Attached to machine f003",
         "domainNames" : [ ],
-        "executionPolicy" : "ALWAYS_ON",
         "meta" : { },
         "name" : "f3",
         "resourceCategory" : "INFRASTRUCTURE",
         "resourceDescription" : "Attached to machine f003",
         "resourceName" : "f3"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Application"
     }
   }, {
@@ -265,6 +276,7 @@
         "resourceName" : "indirectlyattached",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -281,6 +293,7 @@
         "resourceName" : "indirectlyattached2",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -292,6 +305,7 @@
         "resourceDescription" : "",
         "resourceName" : "node.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Domain"
     }
   }, {
@@ -308,6 +322,7 @@
         "resourceName" : "notattached",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Unix User"
     }
   }, {
@@ -333,13 +348,13 @@
         },
         "description" : "A not attached application",
         "domainNames" : [ ],
-        "executionPolicy" : "ALWAYS_ON",
         "meta" : { },
         "name" : "notattached",
         "resourceCategory" : "INFRASTRUCTURE",
         "resourceDescription" : "A not attached application",
         "resourceName" : "notattached"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Application"
     }
   }, {
@@ -355,6 +370,7 @@
         "resourceName" : "root",
         "shell" : "/bin/bash"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "System Unix User"
     }
   }, {
@@ -380,6 +396,7 @@
         "setTexts" : [ "one", "two" ],
         "text" : "t1_aaa"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     }
   }, {
@@ -405,6 +422,7 @@
         "setTexts" : [ "one", "three" ],
         "text" : "t2_aaa"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     }
   }, {
@@ -419,6 +437,7 @@
         "time" : "* * * * * *",
         "uid" : "uid-f1"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "CronJob"
     }
   }, {
@@ -433,6 +452,7 @@
         "time" : "* * * * * *",
         "uid" : "uid-f1indirect"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "CronJob"
     }
   }, {
@@ -447,6 +467,7 @@
         "time" : "* * * * * *",
         "uid" : "uid-f3"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "CronJob"
     }
   }, {
@@ -462,6 +483,7 @@
         "uid" : "uid-notattached",
         "workingDirectory" : "/tmp"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "CronJob"
     }
   }, {
@@ -484,6 +506,7 @@
         "setTexts" : [ ],
         "text" : "www.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     },
     "tags" : [ "asite", "tag1" ]
@@ -507,6 +530,7 @@
         "setTexts" : [ ],
         "text" : "www.example.com"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     },
     "tags" : [ "asite" ]
@@ -533,6 +557,7 @@
         "setTexts" : [ ],
         "text" : "zz"
       },
+      "resourceId" : "--SET--",
       "resourceType" : "Junit"
     }
   } ],

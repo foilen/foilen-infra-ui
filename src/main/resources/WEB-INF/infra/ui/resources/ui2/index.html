@@ -51,7 +51,7 @@
           </li>
 
           <li class="nav-item"><a href="/plugin/list" class="nav-link" >{{ $t('menu.plugin') }}</a></li>
-          <li class="nav-item"><a href="/pluginresources/list" class="nav-link" >{{ $t('menu.pluginresources') }}</a></li>
+          <li class="nav-item"><router-link class="nav-link" to="/resources" v-bind:class="{active: $route.path == '/resources'}">{{ $t('menu.resources') }}</router-link></li>
           
           <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $t('menu.users') }}</a>
             <div class="dropdown-menu" aria-labelledby="userDropdown">

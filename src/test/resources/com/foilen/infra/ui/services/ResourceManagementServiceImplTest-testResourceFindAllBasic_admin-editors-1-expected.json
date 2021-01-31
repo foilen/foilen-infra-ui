@@ -1,0 +1,67 @@
+{
+  "content" : [ {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/notattached",
+    "id" : 70000,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "notattached",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/notattached",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "notattached",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/indirectlyattached",
+    "id" : 70001,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "indirectlyattached",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/indirectlyattached",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "indirectlyattached",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/indirectlyattached2",
+    "id" : 70005,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "indirectlyattached2",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/indirectlyattached2",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "indirectlyattached2",
+    "shell" : "/bin/bash"
+  } ],
+  "empty" : false,
+  "first" : true,
+  "last" : false,
+  "number" : 0,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 0,
+    "pageNumber" : 0,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 6,
+  "totalPages" : 2
+}

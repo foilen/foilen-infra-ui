@@ -1,0 +1,53 @@
+{
+  "content" : [ {
+    "meta" : { },
+    "name" : "node.example.com",
+    "resourceCategory" : "NET",
+    "resourceDescription" : "",
+    "resourceEditorName" : null,
+    "resourceName" : "node.example.com"
+  }, {
+    "meta" : {
+      "UI_OWNER" : "shared"
+    },
+    "name" : "f001.node.example.com",
+    "publicIp" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "f001.node.example.com",
+    "resourceEditorName" : null,
+    "resourceName" : "f001.node.example.com"
+  }, {
+    "meta" : { },
+    "name" : "f002.node.example.com",
+    "publicIp" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "f002.node.example.com",
+    "resourceEditorName" : null,
+    "resourceName" : "f002.node.example.com"
+  } ],
+  "empty" : false,
+  "first" : false,
+  "last" : false,
+  "number" : 1,
+  "numberOfElements" : 3,
+  "pageable" : {
+    "offset" : 3,
+    "pageNumber" : 1,
+    "pageSize" : 3,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
+  "size" : 3,
+  "sort" : {
+    "empty" : false,
+    "sorted" : true,
+    "unsorted" : false
+  },
+  "totalElements" : 7,
+  "totalPages" : 3
+}
