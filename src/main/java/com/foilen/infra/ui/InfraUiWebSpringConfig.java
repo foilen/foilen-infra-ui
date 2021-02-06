@@ -40,6 +40,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan({ "com.foilen.infra.ui.web" })
 public class InfraUiWebSpringConfig implements WebMvcConfigurer {
 
+    private static final String VENDOR_DIST = "/WEB-INF/infra/ui/resources/ui2/vendor/dist/";
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(addUserInDatabaseInterceptor());
@@ -68,7 +70,8 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
             chain.addResolver(new CachingResourceResolver(new ConcurrentMapCache("bundles")));
         }
         BundleResourceResolver bundleResourceResolver = new BundleResourceResolver().setCache(isProd) //
-                .setGenerateGzip(true);
+                .setGenerateGzip(true) //
+                .setAppendLineReturnBetweenFiles(true);
         bundleResourceResolver.addBundleResource("all.css", "/META-INF/resources/webjars/bootstrap/3.3.7-1/css/bootstrap.css");
         bundleResourceResolver.addBundleResource("all.css", "/META-INF/resources/webjars/bootstrap/3.3.7-1/css/bootstrap-theme.css");
         bundleResourceResolver.addBundleResource("all.css", "/WEB-INF/infra/ui/resources/css/infra.css");
@@ -81,22 +84,21 @@ public class InfraUiWebSpringConfig implements WebMvcConfigurer {
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/Chart.bundle.js");
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra.js");
         bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/js/infra-charts.js");
-        bundleResourceResolver.addBundleResource("all.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/js-cookie-2.2.1.min.js");
+        bundleResourceResolver.addBundleResource("all.js", VENDOR_DIST + "js.cookie.js");
 
-        bundleResourceResolver.addBundleResource("all-vendors.css", "/WEB-INF/infra/ui/resources/ui2/css/vendors/bootstrap-4.3.1.min.css");
-        bundleResourceResolver.addBundleResource("all-vendors.css", "/WEB-INF/infra/ui/resources/ui2/css/vendors/vis-network-6.1.1.min.css");
+        bundleResourceResolver.addBundleResource("all-vendors.css", VENDOR_DIST + "css/bootstrap.min.css");
+        bundleResourceResolver.addBundleResource("all-vendors.css", VENDOR_DIST + "vis-network.min.css");
 
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/jquery-3.4.1.min.js");
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/js-cookie-2.2.1.min.js");
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/bootstrap-4.3.1.bundle.min.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "jquery.min.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "js.cookie.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "js/bootstrap.min.js");
         if (isProd) {
-            bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vue-2.6.10.min.js");
+            bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "vue.min.js");
         } else {
-            bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vue-2.6.10-dev.js");
+            bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "vue.js");
         }
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vue-router-3.1.3.js");
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vue-i18n-8.15.0.js");
-        bundleResourceResolver.addBundleResource("all-vendors.js", "/WEB-INF/infra/ui/resources/ui2/js/vendors/vis-network-6.1.1.min.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "vue-router.js");
+        bundleResourceResolver.addBundleResource("all-vendors.js", VENDOR_DIST + "vue-i18n.min.js");
 
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/errors.js");
         bundleResourceResolver.addBundleResource("all-app.js", "/WEB-INF/infra/ui/resources/ui2/js/views-audits.js");

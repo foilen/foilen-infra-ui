@@ -1,0 +1,13 @@
+{
+	"name": "ui",
+	"version": "1.0.0",
+	"dependencies": {
+		"bootstrap": "4",
+		"jquery": "3",
+		"js-cookie": "2",
+		"vis-network": "6",
+		"vue": "2",
+		"vue-i18n": "8",
+		"vue-router": "3"
+	}
+}

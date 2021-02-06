@@ -59,6 +59,14 @@ The translations are in:
 
 And when you add more, you can easily sort them by running `SortMessagesApp.launch`.
 
+## To modify UI vendor libraries  
+
+Edit `src/main/resources/WEB-INF/infra/ui/resources/ui2/vendor/package.json`.
+
+Run `./update-ui-libraries.sh`.
+
+If you are adding or removing dependencies, you can then edit `InfraUiWebSpringConfig`.
+
 ## TEST in Eclipse
 
 To be able to execute the application in Eclipse, you first need to download all the plugins jars:
