@@ -1,11 +1,4 @@
-buildscript {
-  repositories {
-    mavenLocal()
-    jcenter()
-  }
-}
 plugins {
-  id "com.jfrog.bintray" version "$bintrayVersion"
   id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
   id 'org.springframework.boot' version "$springBootVersion"
 }
@@ -18,11 +11,7 @@ version = System.getenv('VERSION')?:'master-SNAPSHOT'
 
 repositories {
   mavenLocal()
-  jcenter()
   mavenCentral()
-  maven {
-    url 'https://dl.bintray.com/foilen/maven'
-  }
 }
 
 sourceCompatibility = 11
@@ -85,11 +74,6 @@ dependencies {
   testCompile "com.foilen:foilen-infra-resource-example-failing:$foilenInfraResourceExampleFailingVersion"
   
 }
-
-test {
-  useJUnitPlatform()
-}
-
 
 apply plugin: 'application'
 mainClassName = 'com.foilen.infra.ui.InfraUiApp'

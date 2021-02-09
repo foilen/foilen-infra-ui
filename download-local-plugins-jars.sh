@@ -25,5 +25,5 @@ docker run -ti \
 
 # Download H2 Driver
 if [ ! -f $FOLDER_PLUGINS_JARS/h2.jar ] ; then
-	wget http://jcenter.bintray.com/com/h2database/h2/1.4.197/h2-1.4.197.jar -O $FOLDER_PLUGINS_JARS/h2.jar
+	wget https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar -O $FOLDER_PLUGINS_JARS/h2.jar
 fi
