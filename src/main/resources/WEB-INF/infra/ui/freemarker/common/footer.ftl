@@ -10,6 +10,11 @@
     </footer>
 
   </div>
+  
+  <!-- Extra JS -->
+  <#list externalJsScripts as externalJsScript>
+    <script type="text/javascript" src="${externalJsScript}"></script>
+  </#list>
 
 </body>
 </html>

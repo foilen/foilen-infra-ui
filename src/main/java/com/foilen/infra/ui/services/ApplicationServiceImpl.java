@@ -12,6 +12,7 @@ package com.foilen.infra.ui.services;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,9 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
     private IPResourceService resourceService;
     @Autowired
     private UserHumanRepository userHumanRepository;
+
+    @Value("#{infraUiConfig.getExternalJsScripts()}")
+    private Map<String, List<String>> externalJsScripts;
 
     private Map<String, Object> translations = new TreeMap<>();
     private List<String> resourceTypes;
@@ -82,6 +87,7 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
                 .setLang(LocaleContextHolder.getLocale().getLanguage()) //
                 .setTranslations(translations) //
                 .setResourceTypes(resourceTypes) //
+                .setExternalJsScripts(externalJsScripts) //
         ;
 
         // Logged in user
@@ -124,6 +130,11 @@ public class ApplicationServiceImpl extends AbstractBasics implements Applicatio
                 .map(it -> it.getResourceType()) //
                 .sorted() //
                 .collect(Collectors.toList());
+
+        // JS
+        if (externalJsScripts == null) {
+            externalJsScripts = Collections.emptyMap();
+        }
 
     }
 

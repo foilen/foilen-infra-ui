@@ -24,6 +24,8 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -47,9 +49,12 @@ import com.foilen.smalltools.tools.SpringTools;
 import com.foilen.springconfig.MailConfig;
 import com.google.common.base.Strings;
 
+@Configuration
 public class InfraUiApp {
 
     static private final Logger logger = LoggerFactory.getLogger(InfraUiApp.class);
+
+    static private InfraUiConfig infraUiConfig;
 
     public static void main(String[] args) {
 
@@ -81,7 +86,7 @@ public class InfraUiApp {
             if (Strings.isNullOrEmpty(configFile)) {
                 configFile = environment.getProperty("CONFIG_FILE");
             }
-            InfraUiConfig infraUiConfig;
+
             if (Strings.isNullOrEmpty(configFile)) {
                 infraUiConfig = new InfraUiConfig();
             } else {
@@ -161,6 +166,8 @@ public class InfraUiApp {
             // Run the main app
             logger.info("[MAIN APP] Will start the main app");
             sources.clear();
+
+            sources.add(InfraUiApp.class);
 
             sources.add(MailConfig.class);
 
@@ -274,6 +281,11 @@ public class InfraUiApp {
                 System.setProperty("infraUi." + propertyName, propertyValue.toString());
             }
         }
+    }
+
+    @Bean
+    public InfraUiConfig infraUiConfig() {
+        return infraUiConfig;
     }
 
 }

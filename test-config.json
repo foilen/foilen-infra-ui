@@ -19,5 +19,14 @@
 		"certText": null
 	},
 	"loginCookieSignatureSalt": "AAA",
-	"csrfSalt": "BBB"
+	"csrfSalt": "BBB",
+	
+	"externalJsScripts": {
+		"en": [
+			"https://www.foilen.com/wp-content/themes/foilen/banner/banner-en.js"
+		],
+		"fr": [
+			"https://www.foilen.com/wp-content/themes/foilen/banner/banner-fr.js"
+		]
+	}
 }

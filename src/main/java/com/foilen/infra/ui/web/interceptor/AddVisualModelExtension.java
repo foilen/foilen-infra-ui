@@ -10,6 +10,7 @@
 package com.foilen.infra.ui.web.interceptor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.foilen.infra.ui.visual.MenuEntry;
 import com.foilen.smalltools.tools.FileTools;
@@ -40,6 +44,9 @@ public class AddVisualModelExtension extends AbstractCommonHandlerInterceptor {
 
     @Autowired
     private MenuEntry rootMenuEntry;
+
+    @Value("#{infraUiConfig.getExternalJsScripts()}")
+    private Map<String, List<String>> externalJsScripts;
 
     private MenuEntry findEntryStartsWith(List<Tuple2<String, MenuEntry>> menuStartsWith, String uri) {
 
@@ -103,6 +110,11 @@ public class AddVisualModelExtension extends AbstractCommonHandlerInterceptor {
         topMenustartsWith.sort(sorting);
         leftMenustartsWith.sort(sorting);
 
+        // JS
+        if (externalJsScripts == null) {
+            externalJsScripts = Collections.emptyMap();
+        }
+
     }
 
     @Override
@@ -141,6 +153,14 @@ public class AddVisualModelExtension extends AbstractCommonHandlerInterceptor {
                 }
 
             }
+
+            // Extra JS
+            LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+            List<String> scripts = externalJsScripts.get(localeResolver.resolveLocale(request).getLanguage());
+            if (scripts == null) {
+                scripts = Collections.emptyList();
+            }
+            modelAndView.addObject("externalJsScripts", scripts);
         }
 
     }

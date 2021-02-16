@@ -9,6 +9,10 @@
  */
 package com.foilen.infra.ui;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -43,12 +47,19 @@ public class InfraUiConfig {
     // Security
     private String csrfSalt;
 
+    // Extra
+    private Map<String, List<String>> externalJsScripts = new HashMap<>();
+
     public String getBaseUrl() {
         return baseUrl;
     }
 
     public String getCsrfSalt() {
         return csrfSalt;
+    }
+
+    public Map<String, List<String>> getExternalJsScripts() {
+        return externalJsScripts;
     }
 
     public long getInfiniteLoopTimeoutInMs() {
@@ -97,6 +108,10 @@ public class InfraUiConfig {
 
     public void setCsrfSalt(String csrfSalt) {
         this.csrfSalt = csrfSalt;
+    }
+
+    public void setExternalJsScripts(Map<String, List<String>> externalJsScripts) {
+        this.externalJsScripts = externalJsScripts;
     }
 
     public void setInfiniteLoopTimeoutInMs(long infiniteLoopTimeoutInMs) {

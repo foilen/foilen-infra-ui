@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
+import com.foilen.infra.resource.infraconfig.model.InfraUiConfig;
 import com.foilen.infra.ui.test.mock.EmailServiceMock;
 import com.foilen.infra.ui.test.mock.FakeDataService;
 import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
@@ -40,6 +41,11 @@ public class ConfigUiTestConfig {
     @Bean
     public FoilenLoginService foilenLoginServiceMock() {
         return new FoilenLoginServiceMock();
+    }
+
+    @Bean
+    public InfraUiConfig infraUiConfig() {
+        return new InfraUiConfig();
     }
 
     @Bean

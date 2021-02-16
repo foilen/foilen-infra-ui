@@ -42,7 +42,16 @@ Here is an example of the content:
 		"certFile" : null,
 		"certText" : null
 	},
-	"loginCookieSignatureSalt" : "fa7c8c64f538931381e245661"
+	"loginCookieSignatureSalt" : "fa7c8c64f538931381e245661",
+	
+	"externalJsScripts": {
+		"en": [
+			"https://www.foilen.com/wp-content/themes/foilen/banner/banner-en.js"
+		],
+		"fr": [
+			"https://www.foilen.com/wp-content/themes/foilen/banner/banner-fr.js"
+		]
+	}
 }
 ```
 
