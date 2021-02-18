@@ -61,7 +61,6 @@ dependencies {
 
   // Test
   testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
-  testCompile "com.h2database:h2"
   testCompileOnly 'junit:junit'
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
