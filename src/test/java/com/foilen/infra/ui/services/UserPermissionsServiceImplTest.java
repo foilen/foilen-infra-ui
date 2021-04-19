@@ -15,8 +15,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
-import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.test.asserts.AssertTools;
 
 public class UserPermissionsServiceImplTest extends AbstractSpringTests {

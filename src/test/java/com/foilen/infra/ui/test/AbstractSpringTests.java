@@ -38,6 +38,7 @@ import com.foilen.infra.ui.InfraUiConfig;
 import com.foilen.infra.ui.InfraUiMongoDbExtraSpringConfig;
 import com.foilen.infra.ui.InfraUiSpringConfig;
 import com.foilen.infra.ui.InfraUiSystemSpringConfig;
+import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.repositories.AuditItemRepository;
 import com.foilen.infra.ui.repositories.RoleRepository;
 import com.foilen.infra.ui.repositories.UserApiRepository;
@@ -47,11 +48,11 @@ import com.foilen.infra.ui.repositories.documents.Role;
 import com.foilen.infra.ui.repositories.documents.UserApi;
 import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.infra.ui.services.PaginationServiceImpl;
-import com.foilen.infra.ui.test.mock.FakeDataService;
 import com.foilen.infra.ui.upgrades.mongodb.AbstractMongoUpgradeTask;
 import com.foilen.infra.ui.upgrades.mongodb.V2020041901_Ui_CollectionsAndIndexes_UserPermissions;
 import com.foilen.login.spring.client.security.FoilenAuthentication;
 import com.foilen.login.spring.client.security.FoilenLoginUserDetails;
+import com.foilen.login.stub.spring.LoginClientSpringStubConfig;
 import com.foilen.smalltools.restapi.model.AbstractApiBaseWithError;
 import com.foilen.smalltools.restapi.model.ApiError;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -63,7 +64,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, InfraUiMongoDbExtraSpringConfig.class, MongoDbSpringConfig.class, InfraUiSystemSpringConfig.class })
+@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, InfraUiMongoDbExtraSpringConfig.class, MongoDbSpringConfig.class, InfraUiSystemSpringConfig.class,
+        LoginClientSpringStubConfig.class })
 @ActiveProfiles("JUNIT")
 public abstract class AbstractSpringTests extends AbstractBasics {
 

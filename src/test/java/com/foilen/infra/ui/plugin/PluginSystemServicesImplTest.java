@@ -28,15 +28,17 @@ import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
 import com.foilen.infra.ui.InfraUiMongoDbExtraSpringConfig;
 import com.foilen.infra.ui.InfraUiSpringConfig;
 import com.foilen.infra.ui.InfraUiSystemSpringConfig;
+import com.foilen.infra.ui.localonly.FakeDataService;
 import com.foilen.infra.ui.test.ConfigUiTestConfig;
-import com.foilen.infra.ui.test.mock.FakeDataService;
+import com.foilen.login.stub.spring.LoginClientSpringStubConfig;
 import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, InfraUiMongoDbExtraSpringConfig.class, MongoDbSpringConfig.class, InfraUiSystemSpringConfig.class })
+@ContextConfiguration(classes = { ConfigUiTestConfig.class, InfraUiSpringConfig.class, InfraUiMongoDbExtraSpringConfig.class, MongoDbSpringConfig.class, InfraUiSystemSpringConfig.class,
+        LoginClientSpringStubConfig.class })
 @ActiveProfiles("JUNIT")
 public class PluginSystemServicesImplTest extends AbstractIPResourceServiceTest {
 

@@ -36,7 +36,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.context.support.StandardServletEnvironment;
 
 import com.foilen.infra.plugin.core.system.mongodb.spring.MongoDbSpringConfig;
-import com.foilen.infra.ui.testonly.FoilenLoginSecurityFakeUserConfig;
+import com.foilen.infra.ui.localonly.FoilenLoginSecurityFakeUserConfig;
 import com.foilen.infra.ui.web.security.ApiSecurityConfig;
 import com.foilen.login.spring.client.security.FoilenLoginSecurityConfig;
 import com.foilen.login.stub.spring.client.security.FoilenLoginSecurityStubConfig;
@@ -110,6 +110,7 @@ public class InfraUiApp {
                 JsonTools.writeToFile(loginConfigFile, infraUiConfig.getLoginConfigDetails());
                 System.setProperty("login.cookieSignatureSalt", infraUiConfig.getLoginCookieSignatureSalt());
                 System.setProperty("login.configFile", loginConfigFile.getAbsolutePath());
+            case "LOCAL":
             case "TEST":
                 System.setProperty("spring.data.mongodb.uri", infraUiConfig.getMongoUri());
                 String database = new JdbcUriTools("jdbc:" + infraUiConfig.getMongoUri()).getDatabase();
@@ -193,6 +194,8 @@ public class InfraUiApp {
 
             // Beans per mode
             switch (mode) {
+            case "LOCAL":
+                sources.add(InfraUiLocalOnlySpringConfig.class);
             case "TEST":
                 sources.add(FoilenLoginSecurityStubConfig.class);
                 sources.add(FoilenLoginSecurityFakeUserConfig.class);

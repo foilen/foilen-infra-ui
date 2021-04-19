@@ -412,8 +412,10 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
             if (resourceSearch.getProperties() != null) {
                 resourceSearch.getProperties().forEach((name, value) -> {
                     Class<?> propertyType = resourceBeanWrapper.getPropertyType(name);
-                    if (conversionService.canConvert(value.getClass(), propertyType)) {
-                        value = conversionService.convert(value, propertyType);
+                    if (value != null) {
+                        if (conversionService.canConvert(value.getClass(), propertyType)) {
+                            value = conversionService.convert(value, propertyType);
+                        }
                     }
                     query.propertyEquals(name, value);
                 });

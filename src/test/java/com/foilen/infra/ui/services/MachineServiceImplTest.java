@@ -24,8 +24,8 @@ import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
+import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
-import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.test.asserts.AssertTools;
 import com.foilen.smalltools.tools.JsonTools;
 

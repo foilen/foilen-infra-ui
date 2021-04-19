@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import com.foilen.infra.plugin.core.system.mongodb.repositories.MessageRepositor
 import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.Message;
 import com.foilen.infra.plugin.core.system.mongodb.repositories.documents.models.MessageLevel;
 import com.foilen.infra.ui.repositories.UserApiMachineRepository;
+import com.foilen.infra.ui.repositories.documents.UserApiMachine;
 import com.foilen.smalltools.email.EmailService;
 import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -64,8 +66,13 @@ public class AlertManagementServiceImpl extends AbstractBasics implements AlertM
             return formResult;
         }
 
-        String machineName = userApiMachineRepository.findById(userId).get().getMachineName();
-        messageRepository.save(new Message(MessageLevel.INFO, new Date(), machineName, subject, content));
+        // Change the sender's name for the machine name if it is one
+        String sender = userId;
+        Optional<UserApiMachine> optionalUserApiMachine = userApiMachineRepository.findById(userId);
+        if (optionalUserApiMachine.isPresent()) {
+            sender = optionalUserApiMachine.get().getMachineName();
+        }
+        messageRepository.save(new Message(MessageLevel.INFO, new Date(), sender, subject, content));
 
         return formResult;
     }

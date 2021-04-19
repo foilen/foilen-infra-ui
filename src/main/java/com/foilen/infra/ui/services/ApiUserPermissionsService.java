@@ -50,6 +50,8 @@ public interface ApiUserPermissionsService {
 
     UserApiWithPagination userApiFindAll(String userId, int pageId, String search);
 
+    FormResult userHumanCreateByEmail(String userId, String userEmail);
+
     FormResult userHumanEdit(String userId, String userHumanId, UserRoleEditForm form);
 
     UserHumanWithPagination userHumanFindAll(String userId, int pageId, String search);

@@ -1,6 +1,37 @@
 <div class="row">
 
   <div class="col-12">
+  
+    <button type="button" class="btn btn-success" v-on:click="createShow()">{{ $t('button.create') }}</button>
+  
+    <div class="modal fade" id="createModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createModalLabel">{{ $t('button.create') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <error-results v-bind:formResult="formResult"></error-results>
+
+            <div class="form-group">
+              <label for="email">{{ $t('term.email') }}</label> <input type="text" class="form-control" v-model="form.userEmail" autocomplete="off">
+              <div class="text-danger" v-if="formResult.validationErrorsByField && formResult.validationErrorsByField.userEmail">
+                <p v-for="errorCode in formResult.validationErrorsByField.userEmail">{{ $t(errorCode) }}</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ $t('button.close') }}</button>
+            <button type="button" class="btn btn-primary" v-on:click="create()">{{ $t('button.create') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" id="editModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl" role="document">

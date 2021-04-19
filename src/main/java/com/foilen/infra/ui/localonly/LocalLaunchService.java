@@ -7,24 +7,28 @@
     http://opensource.org/licenses/MIT
 
  */
-package com.foilen.infra.ui.test.mock;
+package com.foilen.infra.ui.localonly;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LocalLaunchService {
 
+    @Autowired
     private FakeDataService fakeDataService;
-
-    public LocalLaunchService(FakeDataService fakeDataService) {
-        this.fakeDataService = fakeDataService;
-    }
+    @Autowired
+    private FoilenLoginSecurityFakeUserConfig foilenLoginSecurityFakeUserConfig;
 
     @Order(3)
     @EventListener
     public void createTheData(ContextRefreshedEvent event) {
+        fakeDataService.clearAll();
         fakeDataService.createAll();
+        foilenLoginSecurityFakeUserConfig.init();
     }
 
 }

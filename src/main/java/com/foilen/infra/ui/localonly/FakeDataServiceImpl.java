@@ -7,7 +7,7 @@
     http://opensource.org/licenses/MIT
 
  */
-package com.foilen.infra.ui.test.mock;
+package com.foilen.infra.ui.localonly;
 
 import java.util.ArrayList;
 import java.util.Calendar;

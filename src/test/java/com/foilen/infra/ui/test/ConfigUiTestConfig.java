@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import com.foilen.infra.resource.infraconfig.model.InfraUiConfig;
+import com.foilen.infra.ui.localonly.FakeDataService;
+import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.mock.EmailServiceMock;
-import com.foilen.infra.ui.test.mock.FakeDataService;
-import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.login.spring.services.FoilenLoginService;
 import com.foilen.smalltools.tools.CharsetTools;
 

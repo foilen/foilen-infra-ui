@@ -42,6 +42,8 @@ import com.foilen.infra.ui.repositories.documents.OwnerRule;
 import com.foilen.infra.ui.repositories.documents.Role;
 import com.foilen.infra.ui.repositories.documents.UserApi;
 import com.foilen.infra.ui.repositories.documents.UserHuman;
+import com.foilen.login.api.LoginClient;
+import com.foilen.login.api.to.FoilenLoginUser;
 import com.foilen.mvc.ui.UiException;
 import com.foilen.smalltools.restapi.model.FormResult;
 import com.foilen.smalltools.tools.JsonTools;
@@ -55,9 +57,11 @@ import com.google.common.collect.ComparisonChain;
 public class ApiUserPermissionsServiceImpl extends AbstractApiService implements ApiUserPermissionsService {
 
     @Autowired
-    private IPResourceService resourceService;
+    private LoginClient loginClient;
     @Autowired
     private OwnerRuleRepository ownerRuleRepository;
+    @Autowired
+    private IPResourceService resourceService;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -522,6 +526,52 @@ public class ApiUserPermissionsServiceImpl extends AbstractApiService implements
         });
 
         return results;
+    }
+
+    @Override
+    public FormResult userHumanCreateByEmail(String userId, String userEmail) {
+
+        FormResult result = new FormResult();
+
+        wrapExecution(result, () -> {
+
+            // Permission
+            entitlementService.isAdminOrFailUi(userId);
+
+            // Check if already present
+            Optional<UserHuman> existingUserHumanO = userHumanRepository.findByEmail(userEmail);
+            if (existingUserHumanO.isPresent()) {
+                addValidationError(result, "userEmail", "error.alreadyExists");
+            }
+
+            if (!result.isSuccess()) {
+                return;
+            }
+
+            // Retrieve from login service
+            FoilenLoginUser loginUser = loginClient.createOrFindByEmail(userEmail);
+
+            UserHuman userHuman = new UserHuman();
+            userHuman.setUserId(loginUser.getUserId());
+            userHuman.setEmail(loginUser.getEmail());
+
+            existingUserHumanO = userHumanRepository.findById(loginUser.getUserId());
+            if (existingUserHumanO.isPresent()) {
+                addValidationError(result, "userEmail", "error.alreadyExists");
+            }
+
+            if (!result.isSuccess()) {
+                return;
+            }
+
+            // Save
+            userHuman = userHumanRepository.save(userHuman);
+            auditingService.documentAdd(userId, userHuman);
+
+        });
+
+        return result;
+
     }
 
     @Override

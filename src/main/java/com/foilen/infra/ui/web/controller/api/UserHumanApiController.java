@@ -33,6 +33,11 @@ public class UserHumanApiController {
     @Autowired
     private ApiUserPermissionsService apiUserPermissionsService;
 
+    @PostMapping("/createByEmail/{userEmail}")
+    public FormResult userHumanCreateByEmail(Authentication authentication, @PathVariable("userEmail") String userEmail) {
+        return apiUserPermissionsService.userHumanCreateByEmail(authentication.getName(), userEmail);
+    }
+
     @PostMapping("/{userId}/roles")
     public FormResult userHumanEdit(Authentication authentication, @PathVariable("userId") String userId, @RequestBody UserRoleEditForm form) {
         return apiUserPermissionsService.userHumanEdit(authentication.getName(), userId, form);

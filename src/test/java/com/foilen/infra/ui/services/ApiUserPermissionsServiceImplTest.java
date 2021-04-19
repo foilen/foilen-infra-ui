@@ -27,8 +27,8 @@ import com.foilen.infra.api.model.user.UserRoleEditForm;
 import com.foilen.infra.plugin.v1.model.resource.LinkTypeConstants;
 import com.foilen.infra.resource.application.Application;
 import com.foilen.infra.resource.machine.Machine;
+import com.foilen.infra.ui.localonly.FakeDataServiceImpl;
 import com.foilen.infra.ui.test.AbstractSpringTests;
-import com.foilen.infra.ui.test.mock.FakeDataServiceImpl;
 import com.foilen.smalltools.test.asserts.AssertDiff;
 import com.foilen.smalltools.test.asserts.AssertTools;
 
