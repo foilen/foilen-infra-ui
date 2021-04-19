@@ -24,53 +24,53 @@ eclipse {
 }
 
 configurations {
-  testCompile.extendsFrom compileOnly
+  testImplementation.extendsFrom compileOnly
 }
 
 dependencies {
 
   // Internal API
-  compile ("com.foilen:foilen-infra-api:$foilenInfraApiVersion")
-  compile "com.foilen:foilen-infra-system-core-system-mongodb:$foilenInfraSystemVersion"
+  implementation("com.foilen:foilen-infra-api:$foilenInfraApiVersion")
+  implementation"com.foilen:foilen-infra-system-core-system-mongodb:$foilenInfraSystemVersion"
   compileOnly "com.foilen:foilen-infra-plugins-core:$foilenInfraPluginsCoreVersion"
 
   // Emails
-  compile 'com.sun.mail:javax.mail:1.6.2'
-  compile 'javax.activation:activation:1.1.1'
+  implementation'com.sun.mail:javax.mail:1.6.2'
+  implementation'javax.activation:activation:1.1.1'
 
   // Web
-  compile "com.foilen:foilen-login-api:$foilenLoginApiVersion"
-  compile "org.springframework.boot:spring-boot-starter-freemarker"
-  compile "org.springframework.boot:spring-boot-starter-web"
-  compile "org.webjars:bootstrap:3.3.7-1"
-  compile "org.webjars:typeaheadjs:0.11.1"
+  implementation"com.foilen:foilen-login-api:$foilenLoginApiVersion"
+  implementation"org.springframework.boot:spring-boot-starter-freemarker"
+  implementation"org.springframework.boot:spring-boot-starter-web"
+  implementation"org.webjars:bootstrap:3.3.7-1"
+  implementation"org.webjars:typeaheadjs:0.11.1"
 
   // Spring
-  compile "io.springfox:springfox-swagger-ui:$springFoxSwaggerVersion"
-  compile "io.springfox:springfox-swagger2:$springFoxSwaggerVersion"
-  compile "org.springframework:spring-context"
-  compile "org.springframework.retry:spring-retry"
-  compile 'org.springframework.security:spring-security-web'
+  implementation"io.springfox:springfox-swagger-ui:$springFoxSwaggerVersion"
+  implementation"io.springfox:springfox-swagger2:$springFoxSwaggerVersion"
+  implementation"org.springframework:spring-context"
+  implementation"org.springframework.retry:spring-retry"
+  implementation'org.springframework.security:spring-security-web'
 
   // Misc
-  compile "args4j:args4j:$argsVersion"
-  compile 'com.google.code.findbugs:jsr305:3.0.0'
-  compile 'org.apache.commons:commons-text:1.6'
-  compile "javax.xml.bind:jaxb-api"
-  compile 'org.quartz-scheduler:quartz'
+  implementation"args4j:args4j:$argsVersion"
+  implementation'com.google.code.findbugs:jsr305:3.0.0'
+  implementation'org.apache.commons:commons-text:1.6'
+  implementation"javax.xml.bind:jaxb-api"
+  implementation'org.quartz-scheduler:quartz'
 
   // Test
-  testCompile "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
+  testImplementation "com.foilen:foilen-infra-system-core-system-junits:$foilenInfraSystemVersion"
   testCompileOnly 'junit:junit'
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
-  testCompile 'org.junit.platform:junit-platform-commons'
-  testCompile 'org.junit.platform:junit-platform-engine'
-  testCompile "org.springframework:spring-test"
-  testCompile "org.springframework.boot:spring-boot-starter-test"
-  testCompile "com.foilen:foilen-infra-resource-testing-controller:$foilenInfraResourceTestingControllerVersion"
-  testCompile "com.foilen:foilen-infra-resource-example:$foilenInfraResourceExampleVersion"
-  testCompile "com.foilen:foilen-infra-resource-example-failing:$foilenInfraResourceExampleFailingVersion"
+  testImplementation 'org.junit.platform:junit-platform-commons'
+  testImplementation 'org.junit.platform:junit-platform-engine'
+  testImplementation "org.springframework:spring-test"
+  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation "com.foilen:foilen-infra-resource-testing-controller:$foilenInfraResourceTestingControllerVersion"
+  testImplementation "com.foilen:foilen-infra-resource-example:$foilenInfraResourceExampleVersion"
+  testImplementation "com.foilen:foilen-infra-resource-example-failing:$foilenInfraResourceExampleFailingVersion"
   
 }
 
