@@ -283,7 +283,7 @@ function updateResourceFieldPageItem(resource) {
     var dialog = jQuery('<form class="dialog"></form>');
     jQuery('body').append(dialog);
     ++dialogDepth;
-    dialog.css({top: dialogDepth + '0px', left: dialogDepth + '0px'});
+    dialog.css({top: (dialogDepth + 5) + '0px', left: dialogDepth + '0px'});
     
     dialog.data('buttonUpdate', buttonCreate);
     dialog.data('resourceType', resourceType);
@@ -437,7 +437,7 @@ function updateResourcesFieldPageItem(resource) {
     var dialog = jQuery('<form class="dialog"></form>');
     jQuery('body').append(dialog);
     ++dialogDepth;
-    dialog.css({top: dialogDepth + '0px', left: dialogDepth + '0px'});
+    dialog.css({top: (dialogDepth + 5) + '0px', left: dialogDepth + '0px'});
     
     dialog.data('buttonUpdate', buttonCreate);
     dialog.data('resourceType', resourceType);
