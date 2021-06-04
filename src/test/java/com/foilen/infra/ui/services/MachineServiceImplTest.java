@@ -56,6 +56,13 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
 
+        Assert.assertNotNull(machineSetup.getRedirectorNodeCert());
+        Assert.assertNotNull(machineSetup.getRedirectorNodeKey());
+        Assert.assertNotNull(machineSetup.getRedirectorCaCerts());
+        machineSetup.setRedirectorNodeCert("_SET_");
+        machineSetup.setRedirectorNodeKey("_SET_");
+        machineSetup.setRedirectorCaCerts(Collections.singletonList("_SET_"));
+
         // Sort some things
         Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
@@ -77,6 +84,13 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
 
+        Assert.assertNotNull(machineSetup.getRedirectorNodeCert());
+        Assert.assertNotNull(machineSetup.getRedirectorNodeKey());
+        Assert.assertNotNull(machineSetup.getRedirectorCaCerts());
+        machineSetup.setRedirectorNodeCert("_SET_");
+        machineSetup.setRedirectorNodeKey("_SET_");
+        machineSetup.setRedirectorCaCerts(Collections.singletonList("_SET_"));
+
         // Sort some things
         Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));
 
@@ -93,6 +107,13 @@ public class MachineServiceImplTest extends AbstractSpringTests {
         Assert.assertNotNull(machineSetup.getUiApiUserKey());
         machineSetup.setUiApiUserId("_SET_");
         machineSetup.setUiApiUserKey("_SET_");
+
+        Assert.assertNotNull(machineSetup.getRedirectorNodeCert());
+        Assert.assertNotNull(machineSetup.getRedirectorNodeKey());
+        Assert.assertNotNull(machineSetup.getRedirectorCaCerts());
+        machineSetup.setRedirectorNodeCert("_SET_");
+        machineSetup.setRedirectorNodeKey("_SET_");
+        machineSetup.setRedirectorCaCerts(Collections.singletonList("_SET_"));
 
         // Sort some things
         Collections.sort(machineSetup.getUnixUsers(), (a, b) -> a.getId().compareTo(b.getId()));

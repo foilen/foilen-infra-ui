@@ -39,6 +39,8 @@ import com.foilen.infra.resource.unixuser.UnixUserEditor;
 import com.foilen.infra.resource.unixuser.helper.UnixUserAvailableIdHelper;
 import com.foilen.infra.ui.MetaConstants;
 import com.foilen.infra.ui.repositories.AuditItemRepository;
+import com.foilen.infra.ui.repositories.CertAuthorityRepository;
+import com.foilen.infra.ui.repositories.CertNodeRepository;
 import com.foilen.infra.ui.repositories.MachineStatisticsRepository;
 import com.foilen.infra.ui.repositories.OwnerRuleRepository;
 import com.foilen.infra.ui.repositories.ReportExecutionRepository;
@@ -94,6 +96,10 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
     @Autowired
     private AuditItemRepository auditItemRepository;
     @Autowired
+    private CertAuthorityRepository certAuthorityRepository;
+    @Autowired
+    private CertNodeRepository certNodeRepository;
+    @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
     private IPResourceService ipResourceService;
@@ -124,6 +130,9 @@ public class FakeDataServiceImpl extends AbstractBasics implements FakeDataServi
         logger.info("Begin CLEAR ALL");
 
         reportExecutionRepository.deleteAll();
+
+        certAuthorityRepository.deleteAll();
+        certNodeRepository.deleteAll();
 
         ownerRuleRepository.deleteAll();
         roleRepository.deleteAll();

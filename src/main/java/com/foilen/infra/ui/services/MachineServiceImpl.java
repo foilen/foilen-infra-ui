@@ -34,7 +34,10 @@ import com.foilen.infra.resource.cronjob.CronJob;
 import com.foilen.infra.resource.machine.Machine;
 import com.foilen.infra.resource.unixuser.SystemUnixUser;
 import com.foilen.infra.resource.unixuser.UnixUser;
+import com.foilen.infra.ui.repositories.documents.CertAuthority;
+import com.foilen.infra.ui.repositories.documents.CertNode;
 import com.foilen.infra.ui.repositories.documents.UserApiMachine;
+import com.foilen.infra.ui.repositories.documents.models.CertAuthorityNames;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.JsonTools;
 import com.foilen.smalltools.tools.StringTools;
@@ -44,15 +47,17 @@ import com.foilen.smalltools.tools.StringTools;
 public class MachineServiceImpl extends AbstractBasics implements MachineService {
 
     @Autowired
-    private UserApiService userApiService;
+    private CertificateService certificateService;
+    @Autowired
+    private EntitlementService entitlementService;
     @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
     private IPResourceService ipResourceService;
     @Autowired
-    private EntitlementService entitlementService;
-    @Autowired
     private ResourceManagementService resourceManagementService;
+    @Autowired
+    private UserApiService userApiService;
 
     @Value("${infraUi.baseUrl}")
     private String uiApiBaseUrl;
@@ -79,6 +84,13 @@ public class MachineServiceImpl extends AbstractBasics implements MachineService
         machineSetup.setUiApiCert(uiApiCert);
         machineSetup.setUiApiUserId(apiUser.getUserId());
         machineSetup.setUiApiUserKey(apiUser.getUserKey());
+
+        // Redirection
+        List<CertAuthority> certAuthorities = certificateService.findOrCreateAuthorityByName(CertAuthorityNames.REDIRECTOR);
+        CertNode localCertificate = certificateService.findOrCreateNodeByCertAuthorityAndCommonName(CertAuthorityNames.REDIRECTOR, machineName);
+        machineSetup.setRedirectorCaCerts(certAuthorities.stream().map(CertAuthority::getCertificateText).collect(Collectors.toList()));
+        machineSetup.setRedirectorNodeCert(localCertificate.getCertificateText());
+        machineSetup.setRedirectorNodeKey(localCertificate.getPrivateKeyText());
 
         // Retrieve what is installed on this machine
         List<Application> applications = ipResourceService.linkFindAllByFromResourceClassAndLinkTypeAndToResource(Application.class, LinkTypeConstants.INSTALLED_ON, machine);

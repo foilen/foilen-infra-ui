@@ -107,6 +107,8 @@ public abstract class AbstractSpringTests extends AbstractBasics {
         // Create collections
         MongoClient mongoClient = MongoClients.create(mongoUri);
         addCollection(mongoClient, databaseName, "auditItem");
+        addCollection(mongoClient, databaseName, "certAuthority");
+        addCollection(mongoClient, databaseName, "certNode");
         addCollection(mongoClient, databaseName, "machineStatistics");
         addCollection(mongoClient, databaseName, "message");
         addCollection(mongoClient, databaseName, "ownerRule");

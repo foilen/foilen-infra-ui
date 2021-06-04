@@ -24,6 +24,7 @@ import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
 
 public abstract class AbstractMongoUpgradeTask extends AbstractBasics implements UpgradeTask {
 
@@ -44,6 +45,19 @@ public abstract class AbstractMongoUpgradeTask extends AbstractBasics implements
                 throw e;
             }
         }
+    }
+
+    @SafeVarargs
+    protected final void addIndex(String collectionName, IndexOptions indexOptions, Tuple2<String, Object>... keys) {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+
+        logger.info("Create index for collection {} , with keys {}", collectionName, keys);
+        MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
+        Document keysDocument = new Document();
+        for (Tuple2<String, Object> key : keys) {
+            keysDocument.put(key.getA(), key.getB());
+        }
+        collection.createIndex(keysDocument, indexOptions);
     }
 
     @SafeVarargs

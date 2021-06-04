@@ -9,18 +9,15 @@
  */
 package com.foilen.infra.ui.tasks;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.foilen.infra.ui.services.MachineStatisticsService;
+import com.foilen.smalltools.tools.AbstractBasics;
 
 @Component
-public class RotateStatsTask {
-
-    private final static Logger logger = LoggerFactory.getLogger(RotateStatsTask.class);
+public class RotateStatsTask extends AbstractBasics {
 
     @Autowired
     private MachineStatisticsService machineStatisticsService;
