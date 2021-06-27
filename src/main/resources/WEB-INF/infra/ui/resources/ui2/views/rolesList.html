@@ -165,7 +165,7 @@
       </thead>
       <tbody>
         <tr v-for="item in items">
-          <td><a v-on:click="editShow(item)">{{item.name}}</a></td>
+          <td>{{item.name}}</td>
           <td>
             <button class="btn btn-sm btn-primary" v-on:click="editShow(item)">{{ $t('button.edit') }}</button>
             <button class="btn btn-sm btn-danger" v-on:click="deleteOne(item)">{{ $t('button.delete') }}</button>
