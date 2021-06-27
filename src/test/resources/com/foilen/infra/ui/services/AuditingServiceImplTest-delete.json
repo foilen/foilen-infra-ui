@@ -7,24 +7,28 @@
   "resourceFirst" : {
     "details" : "127.0.0.1",
     "meta" : { },
-    "mxPriority" : 10,
     "name" : "d3.example.com",
+    "port" : 0,
+    "priority" : 10,
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
     "resourceName" : "d3.example.com / A",
-    "type" : "A"
+    "type" : "A",
+    "weight" : 1
   },
   "resourceSecondType" : "Dns Entry",
   "resourceSecond" : {
     "details" : "127.0.0.1",
     "meta" : { },
-    "mxPriority" : 10,
     "name" : "d2.example.com",
+    "port" : 0,
+    "priority" : 10,
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
     "resourceEditorName" : "Manual DnsEntry",
     "resourceName" : "d2.example.com / A",
-    "type" : "A"
+    "type" : "A",
+    "weight" : 1
   },
   "linkType" : "USES"
 }, {
@@ -35,12 +39,14 @@
   "resourceFirst" : {
     "details" : "127.0.0.1",
     "meta" : { },
-    "mxPriority" : 10,
     "name" : "d3.example.com",
+    "port" : 0,
+    "priority" : 10,
     "resourceCategory" : "NET",
     "resourceDescription" : "127.0.0.1",
     "resourceName" : "d3.example.com / A",
-    "type" : "A"
+    "type" : "A",
+    "weight" : 1
   },
   "tagName" : "super"
 } ]
