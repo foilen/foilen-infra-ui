@@ -1,13 +1,8 @@
 {
   "content" : [ {
-    "id" : "1",
-    "timestamp" : 957157200000,
-    "txId" : "tx2",
-    "explicitChange" : true,
-    "type" : "RESOURCE",
     "action" : "ADD",
-    "userType" : "SYSTEM",
-    "resourceFirstType" : "Junit",
+    "explicitChange" : true,
+    "id" : "1",
     "resourceFirst" : {
       "bool" : false,
       "longNumber" : 0,
@@ -23,17 +18,16 @@
       "setLongs" : [ ],
       "setTexts" : [ ],
       "text" : "r3"
-    }
-  }, {
-    "id" : "0",
-    "timestamp" : 946706400000,
-    "txId" : "tx1",
-    "explicitChange" : true,
-    "type" : "RESOURCE",
-    "action" : "ADD",
-    "userType" : "USER",
-    "userName" : "12345",
+    },
     "resourceFirstType" : "Junit",
+    "timestamp" : 957157200000,
+    "txId" : "tx2",
+    "type" : "RESOURCE",
+    "userType" : "SYSTEM"
+  }, {
+    "action" : "ADD",
+    "explicitChange" : true,
+    "id" : "0",
     "resourceFirst" : {
       "bool" : false,
       "longNumber" : 0,
@@ -49,18 +43,36 @@
       "setLongs" : [ ],
       "setTexts" : [ ],
       "text" : "r1"
-    }
+    },
+    "resourceFirstType" : "Junit",
+    "timestamp" : 946706400000,
+    "txId" : "tx1",
+    "type" : "RESOURCE",
+    "userName" : "12345",
+    "userType" : "USER"
   } ],
   "empty" : false,
   "first" : true,
   "last" : true,
   "number" : 0,
   "numberOfElements" : 2,
+  "pageable" : {
+    "offset" : 0,
+    "pageNumber" : 0,
+    "pageSize" : 2,
+    "paged" : true,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "unpaged" : false
+  },
   "size" : 2,
   "sort" : {
+    "empty" : false,
     "sorted" : true,
-    "unsorted" : false,
-    "empty" : false
+    "unsorted" : false
   },
   "totalElements" : 2,
   "totalPages" : 1

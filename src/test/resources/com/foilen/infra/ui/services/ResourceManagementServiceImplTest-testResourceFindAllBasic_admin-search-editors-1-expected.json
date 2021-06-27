@@ -13,19 +13,6 @@
     "resourceName" : "f1",
     "shell" : "/bin/bash"
   }, {
-    "hashedPassword" : null,
-    "homeFolder" : "/home/f2",
-    "id" : 70003,
-    "keepClearPassword" : false,
-    "meta" : { },
-    "name" : "f2",
-    "password" : null,
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "/home/f2",
-    "resourceEditorName" : "Unix User",
-    "resourceName" : "f2",
-    "shell" : "/bin/bash"
-  }, {
     "hashedPassword" : "$6$rrH5iqhf$u3IId7XXX7HhG3O2NlSXIyLSSQ3NCbmpyWVcZV/NiqpCnf1ryQnXcE./Dr5A5rehosGm/ppFPFssCD5U4dfkB.",
     "homeFolder" : "/home/f12",
     "id" : 70004,
@@ -37,6 +24,19 @@
     "resourceDescription" : "/home/f12",
     "resourceEditorName" : "Unix User",
     "resourceName" : "f12",
+    "shell" : "/bin/bash"
+  }, {
+    "hashedPassword" : null,
+    "homeFolder" : "/home/f2",
+    "id" : 70003,
+    "keepClearPassword" : false,
+    "meta" : { },
+    "name" : "f2",
+    "password" : null,
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "/home/f2",
+    "resourceEditorName" : "Unix User",
+    "resourceName" : "f2",
     "shell" : "/bin/bash"
   } ],
   "empty" : false,

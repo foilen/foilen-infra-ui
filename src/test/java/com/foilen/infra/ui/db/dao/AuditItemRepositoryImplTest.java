@@ -70,7 +70,7 @@ public class AuditItemRepositoryImplTest extends AbstractSpringTests {
         @SuppressWarnings("unchecked")
         TreeMap<String, Object> map = JsonTools.clone(items, TreeMap.class);
         map.remove("pageable");
-        return map;
+        return JsonTools.cloneAsSortedMap(items);
     }
 
     @Test

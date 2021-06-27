@@ -16,31 +16,20 @@
       "portsEndpoint" : { },
       "portsExposed" : { },
       "portsRedirect" : [ ],
-      "runAs" : 70001,
+      "runAs" : null,
       "services" : [ ],
       "udpPortsExposed" : { },
       "volumes" : [ ],
       "workingDirectory" : null
     },
-    "description" : "Attached to machine f001 and attaching another unixuser",
+    "description" : "A not attached application",
     "domainNames" : [ ],
     "meta" : { },
-    "name" : "f1indirect",
+    "name" : "notattached",
     "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceDescription" : "A not attached application",
     "resourceEditorName" : null,
-    "resourceName" : "f1indirect"
-  }, {
-    "command" : "/bin/sleep 10m",
-    "description" : "A not attached cron job",
-    "meta" : { },
-    "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "A not attached cron job",
-    "resourceEditorName" : null,
-    "resourceName" : "uid-notattached",
-    "time" : "* * * * * *",
-    "uid" : "uid-notattached",
-    "workingDirectory" : "/tmp"
+    "resourceName" : "notattached"
   }, {
     "command" : "/bin/sleep 10m",
     "description" : "Attached to machine f001",
@@ -51,6 +40,17 @@
     "resourceName" : "uid-f1",
     "time" : "* * * * * *",
     "uid" : "uid-f1",
+    "workingDirectory" : null
+  }, {
+    "command" : "/bin/sleep 10m",
+    "description" : "Attached to machine f001 and attaching another unixuser",
+    "meta" : { },
+    "resourceCategory" : "INFRASTRUCTURE",
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
+    "resourceEditorName" : null,
+    "resourceName" : "uid-f1indirect",
+    "time" : "* * * * * *",
+    "uid" : "uid-f1indirect",
     "workingDirectory" : null
   } ],
   "empty" : false,

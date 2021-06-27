@@ -112,7 +112,7 @@ public class ResourceManagementServiceImpl extends AbstractBasics implements Res
             return new PageImpl<>(Collections.emptyList());
         }
 
-        Pageable pageable = PageRequest.of(pageId - 1, paginationService.getItemsPerPage(), Direction.ASC, "type", "resource.resourceName", "resource.resourceDescription");
+        Pageable pageable = PageRequest.of(pageId - 1, paginationService.getItemsPerPage(), Direction.ASC, "type", "resourceName", "resourceDescription");
         Page<PluginResource> page = pluginResourceRepository.findAll(pageable, mongoQuery -> {
 
             // Entitlement

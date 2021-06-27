@@ -16,20 +16,20 @@
       "portsEndpoint" : { },
       "portsExposed" : { },
       "portsRedirect" : [ ],
-      "runAs" : null,
+      "runAs" : 70002,
       "services" : [ ],
       "udpPortsExposed" : { },
       "volumes" : [ ],
       "workingDirectory" : null
     },
-    "description" : "A not attached application",
+    "description" : "Attached to machine f001",
     "domainNames" : [ ],
     "meta" : { },
-    "name" : "notattached",
+    "name" : "f1",
     "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "A not attached application",
+    "resourceDescription" : "Attached to machine f001",
     "resourceEditorName" : null,
-    "resourceName" : "notattached"
+    "resourceName" : "f1"
   }, {
     "applicationDefinition" : {
       "_nextAssetId" : 1,
@@ -47,20 +47,20 @@
       "portsEndpoint" : { },
       "portsExposed" : { },
       "portsRedirect" : [ ],
-      "runAs" : 70002,
+      "runAs" : 70001,
       "services" : [ ],
       "udpPortsExposed" : { },
       "volumes" : [ ],
       "workingDirectory" : null
     },
-    "description" : "Attached to machine f001",
+    "description" : "Attached to machine f001 and attaching another unixuser",
     "domainNames" : [ ],
     "meta" : { },
-    "name" : "f1",
+    "name" : "f1indirect",
     "resourceCategory" : "INFRASTRUCTURE",
-    "resourceDescription" : "Attached to machine f001",
+    "resourceDescription" : "Attached to machine f001 and attaching another unixuser",
     "resourceEditorName" : null,
-    "resourceName" : "f1"
+    "resourceName" : "f1indirect"
   }, {
     "applicationDefinition" : {
       "_nextAssetId" : 1,
