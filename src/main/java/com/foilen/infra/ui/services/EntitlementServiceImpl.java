@@ -72,6 +72,11 @@ public class EntitlementServiceImpl implements EntitlementService {
     }
 
     @Override
+    public void canImpersonateOrFailUi(String userId) {
+        isAdminOrFailUi(userId);
+    }
+
+    @Override
     public boolean canManageAllMachines(String userId) {
         return isAdmin(userId);
     }

@@ -18,11 +18,14 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foilen.infra.api.request.RequestAuditItem;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.infra.ui.services.PaginationService;
 import com.foilen.smalltools.tools.AbstractBasics;
@@ -67,6 +70,9 @@ public class AuditItemRepositoryImpl extends AbstractBasics implements AuditItem
         notNullValue(query, "userType", request.getUserType());
         notNullValue(query, "userName", request.getUserName());
 
+        notNullValue(query, "impersonatorUserType", request.getImpersonatorUserType());
+        notNullValue(query, "impersonatorUserName", request.getImpersonatorUserName());
+
         notNullValue(query, "resourceFirstType", request.getResourceFirstType());
         notNullValue(query, "resourceSecondType", request.getResourceSecondType());
 
@@ -91,6 +97,17 @@ public class AuditItemRepositoryImpl extends AbstractBasics implements AuditItem
         if (!textValue.isEmpty()) {
             query.addCriteria(Criteria.where(field).is(value));
         }
+    }
+
+    @Override
+    public void updateImpersonatorByTxId(String txId, String impersonatorUserName, AuditUserType impersonatorUserType) {
+
+        Query query = Query.query(Criteria.where("txId").is(txId));
+        UpdateDefinition update = Update //
+                .update("impersonatorUserType", impersonatorUserType) //
+                .set("impersonatorUserName", impersonatorUserName);
+        mongoOperations.updateMulti(query, update, AuditItem.class);
+
     }
 
 }

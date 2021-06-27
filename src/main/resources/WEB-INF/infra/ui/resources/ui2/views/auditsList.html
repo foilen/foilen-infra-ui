@@ -15,6 +15,8 @@
           <th scope="col"><table-header-search v-bind:title="$t('term.action')" v-model="queries.action" v-on:input="refresh(1)" width="67px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.userType')" v-model="queries.userType" v-on:input="refresh(1)" width="77px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.userId')" v-model="queries.userName" v-on:input="refresh(1)" width="86px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.impersonatorUserType')" v-model="queries.impersonatorUserType" v-on:input="refresh(1)" width="77px"> </table-header-search></th>
+          <th scope="col"><table-header-search v-bind:title="$t('term.impersonatorUserName')" v-model="queries.impersonatorUserName" v-on:input="refresh(1)" width="86px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.tagName')" v-model="queries.tagName" v-on:input="refresh(1)" width="76px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.resourceFirstType')" v-model="queries.resourceFirstType" v-on:input="refresh(1)" width="153px"> </table-header-search></th>
           <th scope="col"><table-header-search v-bind:title="$t('term.linkType')" v-model="queries.linkType" v-on:input="refresh(1)" width="117px"> </table-header-search></th>
@@ -33,6 +35,8 @@
           <td>{{item.action}}</td>
           <td>{{item.userType}}</td>
           <td>{{item.userName}}</td>
+          <td>{{item.impersonatorUserType}}</td>
+          <td>{{item.impersonatorUserName}}</td>
           <td>{{item.tagName}}</td>
           <td>{{item.resourceFirst?item.resourceFirst.resourceType:''}}</td>
           <td>{{item.linkType}}</td>

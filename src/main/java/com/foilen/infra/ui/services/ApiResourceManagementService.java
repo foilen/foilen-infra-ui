@@ -30,13 +30,21 @@ public interface ApiResourceManagementService {
      */
     ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes);
 
+    ResponseResourceAppliedChanges applyChangesAs(String userId, String impersonateUserId, RequestChanges changes);
+
     ResponseResourceAppliedChanges resourceDelete(String userId, String resourceId);
 
     ResourceBucketsWithPagination resourceFindAll(String userId, int pageId, String search, boolean onlyWithEditor);
 
     ResponseResourceBuckets resourceFindAll(String userId, RequestResourceSearch resourceSearch);
 
+    ResourceBucketsWithPagination resourceFindAllAs(String userId, String impersonateUserId, int pageId, String search, boolean onlyWithEditor);
+
+    ResponseResourceBuckets resourceFindAllAs(String userId, String impersonateUserId, RequestResourceSearch resourceSearch);
+
     ResponseResourceBuckets resourceFindAllWithDetails(String userId, RequestResourceSearch resourceSearch);
+
+    ResponseResourceBuckets resourceFindAllWithDetailsAs(String userId, String impersonateUserId, RequestResourceSearch resourceSearch);
 
     ResponseResourceBuckets resourceFindAllWithoutOwner(String userId);
 

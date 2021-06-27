@@ -13,8 +13,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.security.core.Authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractUser {
@@ -68,5 +70,9 @@ public abstract class AbstractUser {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public abstract Authentication toAuthentication();
+
+    public abstract AuditUserType toUserType();
 
 }

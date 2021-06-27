@@ -43,11 +43,25 @@ import com.google.common.base.Strings;
 public class AuditingServiceImpl extends AbstractBasics implements AuditingService {
 
     @Autowired
-    private AuditItemRepository auditItemDao;
+    private AuditItemRepository auditItemRepository;
     @Autowired
     private EntitlementService entitlementService;
     @Autowired
     private IPResourceService ipResourceService;
+
+    @Override
+    public void addImpersonatorToTransaction(String txId, String userId) {
+
+        // Get user details
+        AbstractUser user = entitlementService.getUser(userId);
+        AuditUserType userType = AuditUserType.SYSTEM;
+        if (user != null) {
+            userType = user.toUserType();
+        }
+
+        auditItemRepository.updateImpersonatorByTxId(txId, userId, userType);
+
+    }
 
     private AuditItem createAuditItem(AuditAction auditAction, //
             AuditUserType userType, String userName, //
@@ -120,7 +134,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(AuditAction.ADD, userType, userName, document);
         auditItem.setDocumentTo(document);
 
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
 
     }
 
@@ -143,7 +157,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(AuditAction.DELETE, userType, userName, document);
         auditItem.setDocumentFrom(document);
 
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
 
     }
 
@@ -167,13 +181,13 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         auditItem.setDocumentFrom(documentFrom);
         auditItem.setDocumentTo(documentTo);
 
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
 
     }
 
     @Override
     public Page<AuditItem> findAllByTxId(String txId, int pageId, int itemsPerPage) {
-        return auditItemDao.findAllByTxId(txId, PageRequest.of(pageId, itemsPerPage, Direction.ASC, "id"));
+        return auditItemRepository.findAllByTxId(txId, PageRequest.of(pageId, itemsPerPage, Direction.ASC, "id"));
     }
 
     @Override
@@ -181,7 +195,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.LINK, AuditAction.ADD, userType, userName);
         setResources(auditItem, fromResource, toResource);
         auditItem.setLinkType(linkType);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     @Override
@@ -189,28 +203,28 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.LINK, AuditAction.DELETE, userType, userName);
         setResources(auditItem, fromResource, toResource);
         auditItem.setLinkType(linkType);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     @Override
     public void resourceAdd(String txId, boolean explicitChange, AuditUserType userType, String userName, IPResource resource) {
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.RESOURCE, AuditAction.ADD, userType, userName);
         setResources(auditItem, resource);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     @Override
     public void resourceDelete(String txId, boolean explicitChange, AuditUserType userType, String userName, IPResource resource) {
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.RESOURCE, AuditAction.DELETE, userType, userName);
         setResources(auditItem, resource);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     @Override
     public void resourceUpdate(String txId, boolean explicitChange, AuditUserType userType, String userName, IPResource beforeResource, IPResource afterResource) {
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.RESOURCE, AuditAction.UPDATE, userType, userName);
         setResources(auditItem, beforeResource, afterResource);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     private void setResources(AuditItem auditItem, IPResource resourceFirst) {
@@ -233,7 +247,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.TAG, AuditAction.ADD, userType, userName);
         setResources(auditItem, resource);
         auditItem.setTagName(tagName);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
     @Override
@@ -241,7 +255,7 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         AuditItem auditItem = createAuditItem(txId, explicitChange, AuditType.TAG, AuditAction.DELETE, userType, userName);
         auditItem.setResourceFirst(resource);
         auditItem.setTagName(tagName);
-        auditItemDao.save(auditItem);
+        auditItemRepository.save(auditItem);
     }
 
 }

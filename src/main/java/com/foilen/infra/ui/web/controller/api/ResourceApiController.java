@@ -42,6 +42,11 @@ public class ResourceApiController {
         return apiResourceManagementService.applyChanges(authentication.getName(), changes);
     }
 
+    @PostMapping("as/{impersonateUserId}/applyChanges")
+    public ResponseResourceAppliedChanges applyChangesAs(Authentication authentication, @PathVariable String impersonateUserId, @RequestBody RequestChanges changes) {
+        return apiResourceManagementService.applyChangesAs(authentication.getName(), impersonateUserId, changes);
+    }
+
     @DeleteMapping("/{resourceId}")
     public ResponseResourceAppliedChanges resourceDelete(Authentication authentication, @PathVariable("resourceId") String resourceId) {
         return apiResourceManagementService.resourceDelete(authentication.getName(), resourceId);
@@ -61,9 +66,29 @@ public class ResourceApiController {
         return apiResourceManagementService.resourceFindAll(authentication.getName(), resourceSearch);
     }
 
+    @GetMapping("as/{impersonateUserId}")
+    public ResourceBucketsWithPagination resourceFindAllAs(Authentication authentication, //
+            @PathVariable String impersonateUserId, //
+            @RequestParam(defaultValue = "1") int pageId, //
+            @RequestParam(required = false) String search, //
+            @RequestParam(required = false, defaultValue = "false") boolean onlyWithEditor //
+    ) {
+        return apiResourceManagementService.resourceFindAllAs(authentication.getName(), impersonateUserId, pageId, search, onlyWithEditor);
+    }
+
+    @PostMapping("as/{impersonateUserId}/resourceFindAll")
+    public ResponseResourceBuckets resourceFindAllAs(Authentication authentication, @PathVariable String impersonateUserId, @RequestBody RequestResourceSearch resourceSearch) {
+        return apiResourceManagementService.resourceFindAllAs(authentication.getName(), impersonateUserId, resourceSearch);
+    }
+
     @PostMapping("resourceFindAllWithDetails")
     public ResponseResourceBuckets resourceFindAllWithDetails(Authentication authentication, @RequestBody RequestResourceSearch resourceSearch) {
         return apiResourceManagementService.resourceFindAllWithDetails(authentication.getName(), resourceSearch);
+    }
+
+    @PostMapping("as/{impersonateUserId}/resourceFindAllWithDetails")
+    public ResponseResourceBuckets resourceFindAllWithDetailsAs(Authentication authentication, @PathVariable String impersonateUserId, @RequestBody RequestResourceSearch resourceSearch) {
+        return apiResourceManagementService.resourceFindAllWithDetailsAs(authentication.getName(), impersonateUserId, resourceSearch);
     }
 
     @GetMapping("resourceFindAllWithoutOwner")

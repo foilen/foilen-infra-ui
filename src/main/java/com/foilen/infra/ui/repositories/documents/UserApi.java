@@ -13,7 +13,10 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
+import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
 import com.foilen.smalltools.tools.DateTools;
 
 @Document
@@ -80,6 +83,16 @@ public class UserApi extends AbstractUser {
     public UserApi setUserHashedKey(String userHashedKey) {
         this.userHashedKey = userHashedKey;
         return this;
+    }
+
+    @Override
+    public Authentication toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(getUserId(), null);
+    }
+
+    @Override
+    public AuditUserType toUserType() {
+        return AuditUserType.API;
     }
 
 }

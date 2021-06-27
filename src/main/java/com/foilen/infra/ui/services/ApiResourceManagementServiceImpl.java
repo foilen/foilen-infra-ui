@@ -20,6 +20,8 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.foilen.infra.api.model.resource.PartialLinkDetails;
@@ -41,6 +43,7 @@ import com.foilen.infra.plugin.v1.core.resource.IPResourceQuery;
 import com.foilen.infra.plugin.v1.core.service.IPResourceService;
 import com.foilen.infra.plugin.v1.model.resource.IPResource;
 import com.foilen.infra.ui.repositories.PluginResourceInUiRepository;
+import com.foilen.infra.ui.repositories.documents.AbstractUser;
 import com.foilen.mvc.ui.UiException;
 import com.foilen.smalltools.restapi.model.ApiPagination;
 import com.foilen.smalltools.restapi.model.FormResult;
@@ -65,6 +68,7 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
     @Override
     public ResponseResourceAppliedChanges applyChanges(String userId, RequestChanges changes) {
+
         ResponseResourceAppliedChanges formResult = new ResponseResourceAppliedChanges();
 
         wrapExecution(formResult, () -> {
@@ -160,6 +164,34 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
         });
 
         return formResult;
+    }
+
+    @Override
+    public ResponseResourceAppliedChanges applyChangesAs(String userId, String impersonateUserId, RequestChanges changes) {
+
+        entitlementService.canImpersonateOrFailUi(userId);
+
+        // Switch user
+        Authentication previousAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        AbstractUser impersonatedUser = entitlementService.getUser(impersonateUserId);
+        if (impersonatedUser == null) {
+            throw new UiException("error.userNotExist");
+        }
+        SecurityContextHolder.getContext().setAuthentication(impersonatedUser.toAuthentication());
+
+        try {
+
+            ResponseResourceAppliedChanges result = applyChanges(impersonateUserId, changes);
+            if (result.isSuccess()) {
+                auditingService.addImpersonatorToTransaction(result.getTxId(), userId);
+            }
+
+            return result;
+        } finally {
+            // Revert user
+            SecurityContextHolder.getContext().setAuthentication(previousAuthentication);
+        }
+
     }
 
     protected Class<?> classFromResourceType(String resourceType) {
@@ -332,6 +364,18 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
     }
 
     @Override
+    public ResourceBucketsWithPagination resourceFindAllAs(String userId, String impersonateUserId, int pageId, String search, boolean onlyWithEditor) {
+        entitlementService.canImpersonateOrFailUi(userId);
+        return resourceFindAll(impersonateUserId, pageId, search, onlyWithEditor);
+    }
+
+    @Override
+    public ResponseResourceBuckets resourceFindAllAs(String userId, String impersonateUserId, RequestResourceSearch resourceSearch) {
+        entitlementService.canImpersonateOrFailUi(userId);
+        return resourceFindAll(impersonateUserId, resourceSearch);
+    }
+
+    @Override
     public ResponseResourceBuckets resourceFindAllWithDetails(String userId, RequestResourceSearch resourceSearch) {
 
         ResponseResourceBuckets responseResourceBuckets = new ResponseResourceBuckets();
@@ -354,6 +398,12 @@ public class ApiResourceManagementServiceImpl extends AbstractApiService impleme
 
         return responseResourceBuckets;
 
+    }
+
+    @Override
+    public ResponseResourceBuckets resourceFindAllWithDetailsAs(String userId, String impersonateUserId, RequestResourceSearch resourceSearch) {
+        entitlementService.canImpersonateOrFailUi(userId);
+        return resourceFindAllWithDetails(impersonateUserId, resourceSearch);
     }
 
     @Override

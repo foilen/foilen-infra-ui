@@ -17,6 +17,8 @@ import com.foilen.infra.ui.repositories.documents.AuditItem;
 
 public interface AuditingService {
 
+    void addImpersonatorToTransaction(String txId, String userId);
+
     void documentAdd(String userName, Object document);
 
     void documentDelete(String userName, Object document);

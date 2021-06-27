@@ -34,6 +34,8 @@ public class AuditItemConverter extends AbstractBasics implements Converter<Audi
         target.setAction(AuditAction.valueOf(source.getAction()));
         target.setUserType(source.getUserType());
         target.setUserName(source.getUserName());
+        target.setImpersonatorUserType(source.getImpersonatorUserType());
+        target.setImpersonatorUserName(source.getImpersonatorUserName());
         if (source.getResourceFirstType() != null) {
             target.setResourceFirst(toResourceDetails(source.getResourceFirstType(), source.getResourceFirst()));
         }

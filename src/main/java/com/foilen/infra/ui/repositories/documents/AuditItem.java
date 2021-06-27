@@ -34,6 +34,9 @@ public class AuditItem {
     private String userType;
     private String userName;
 
+    private String impersonatorUserType;
+    private String impersonatorUserName;
+
     // Resources
     private String resourceFirstType;
     private Object resourceFirst;
@@ -74,6 +77,14 @@ public class AuditItem {
 
     public String getId() {
         return id;
+    }
+
+    public String getImpersonatorUserName() {
+        return impersonatorUserName;
+    }
+
+    public String getImpersonatorUserType() {
+        return impersonatorUserType;
     }
 
     public String getLinkType() {
@@ -156,6 +167,16 @@ public class AuditItem {
 
     public AuditItem setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public AuditItem setImpersonatorUserName(String impersonatorUserName) {
+        this.impersonatorUserName = impersonatorUserName;
+        return this;
+    }
+
+    public AuditItem setImpersonatorUserType(String impersonatorUserType) {
+        this.impersonatorUserType = impersonatorUserType;
         return this;
     }
 
