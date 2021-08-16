@@ -42,4 +42,5 @@ public interface CertificateService {
     CertNode findOrCreateNodeByCertAuthorityAndCommonName(String certAuthorityName, String commonName);
 
     void removeExpiredCertAuthoritiesAndCertNodes();
+
 }

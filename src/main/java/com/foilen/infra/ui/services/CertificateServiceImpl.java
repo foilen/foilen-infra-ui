@@ -12,7 +12,6 @@ package com.foilen.infra.ui.services;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,9 +57,7 @@ public class CertificateServiceImpl extends AbstractBasics implements Certificat
 
     @Override
     public void createFreshAuthoritiesForSoonExpiring() {
-        List<String> certAuthorityNamesToRefresh = certAuthorityRepository.findAllByEndDateBefore(DateTools.addDate(new Date(), Calendar.MONTH, 1)).stream() //
-                .map(CertAuthority::getName) //
-                .collect(Collectors.toList());
+        List<String> certAuthorityNamesToRefresh = certAuthorityRepository.findAllNameByLatestEndDateBefore(DateTools.addDate(new Date(), Calendar.MONTH, 1));
         for (String certAuthorityName : certAuthorityNamesToRefresh) {
             logger.info("Creating a fresh CA for {}", certAuthorityName);
             certAuthorityRepository.save(createCertAuthority(certAuthorityName));
@@ -154,7 +151,7 @@ public class CertificateServiceImpl extends AbstractBasics implements Certificat
         // CA
         List<CertAuthority> certAuthorities = certAuthorityRepository.findAllByEndDateBefore(new Date());
         for (CertAuthority certAuthority : certAuthorities) {
-            certNodeRepository.deleteAllByCertAuthorityName(certAuthority.getName());
+            certNodeRepository.deleteAllByCertAuthorityId(certAuthority.getId());
         }
         certAuthorityRepository.deleteAll(certAuthorities);
 

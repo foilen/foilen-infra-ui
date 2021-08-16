@@ -50,6 +50,17 @@ public class CertNode {
         this.endDate = endDate;
     }
 
+    public CertNode(String certAuthorityId, String certAuthorityName, String commonName, String publicKeyText, String privateKeyText, String certificateText, Date startDate, Date endDate) {
+        this.certAuthorityId = certAuthorityId;
+        this.certAuthorityName = certAuthorityName;
+        this.commonName = commonName;
+        this.publicKeyText = publicKeyText;
+        this.privateKeyText = privateKeyText;
+        this.certificateText = certificateText;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public String getCertAuthorityId() {
         return certAuthorityId;
     }

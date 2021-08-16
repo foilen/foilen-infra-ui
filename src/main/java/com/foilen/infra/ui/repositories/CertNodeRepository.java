@@ -19,7 +19,7 @@ import com.foilen.infra.ui.repositories.documents.CertNode;
 @Service
 public interface CertNodeRepository extends MongoRepository<CertNode, String> {
 
-    void deleteAllByCertAuthorityName(String certAuthorityName);
+    void deleteAllByCertAuthorityId(String certAuthorityName);
 
     void deleteAllByEndDateBefore(Date endDate);
 
