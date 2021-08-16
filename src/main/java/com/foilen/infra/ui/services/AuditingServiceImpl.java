@@ -10,6 +10,8 @@
 package com.foilen.infra.ui.services;
 
 import java.lang.reflect.Field;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanWrapper;
@@ -36,6 +38,7 @@ import com.foilen.infra.ui.repositories.documents.UserHuman;
 import com.foilen.smalltools.reflection.ReflectionTools;
 import com.foilen.smalltools.tools.AbstractBasics;
 import com.foilen.smalltools.tools.AssertTools;
+import com.foilen.smalltools.tools.DateTools;
 import com.google.common.base.Strings;
 
 @Service
@@ -113,6 +116,20 @@ public class AuditingServiceImpl extends AbstractBasics implements AuditingServi
         auditItem.setUserType(userType.name());
         auditItem.setUserName(userName);
         return auditItem;
+    }
+
+    @Override
+    public void deleteOlderThanAYear() {
+        deleteOlderThanAYear(new Date());
+    }
+
+    @Override
+    public void deleteOlderThanAYear(Date now) {
+        Date oneYearBefore = DateTools.addDate(now, Calendar.YEAR, -1);
+        long total = auditItemRepository.count();
+        logger.info("There are {} audits in total. Will remove all those before {}", total, DateTools.formatFull(oneYearBefore));
+        long count = auditItemRepository.deleteAllByTimestampLessThanEqual(oneYearBefore);
+        logger.info("Removed {} / {} audits", count, total);
     }
 
     @Override

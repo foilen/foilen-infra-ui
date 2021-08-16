@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.foilen.infra.ui.services.AuditingService;
 import com.foilen.infra.ui.services.UserApiService;
 import com.foilen.smalltools.tools.AbstractBasics;
 
 @Component
 public class CleanupTask extends AbstractBasics {
 
+    @Autowired
+    private AuditingService auditingService;
     @Autowired
     private UserApiService userApiService;
 
@@ -28,6 +31,14 @@ public class CleanupTask extends AbstractBasics {
         logger.info("Starting deleting expired API users");
         userApiService.deleteExpired();
         logger.info("Completed deleting expired API users");
+    }
+
+    // Every day
+    @Scheduled(fixedDelay = 24 * 60 * 60000)
+    public void cleanupAuditEntries() {
+        logger.info("Starting deleting audit entries that are older than 1 year");
+        auditingService.deleteOlderThanAYear();
+        logger.info("Completed deleting audit entries that are older than 1 year");
     }
 
 }

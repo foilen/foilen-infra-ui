@@ -9,6 +9,9 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +30,20 @@ import com.foilen.infra.ui.repositories.AuditItemRepository;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 import com.foilen.infra.ui.test.AbstractSpringTests;
 import com.foilen.smalltools.test.asserts.AssertTools;
+import com.foilen.smalltools.tools.DateTools;
 import com.foilen.smalltools.tools.JsonTools;
+import com.foilen.smalltools.tools.ThreadTools;
 
 public class AuditingServiceImplTest extends AbstractSpringTests {
 
     @Autowired
+    private AuditingService auditingService;
+    @Autowired
+    private AuditItemRepository auditItemRepository;
+    @Autowired
     private InternalChangeService internalChangeService;
     @Autowired
     private IPResourceService resourceService;
-    @Autowired
-    private AuditItemRepository auditItemDao;
 
     public AuditingServiceImplTest() {
         super(false);
@@ -61,7 +68,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Add
-        List<AuditItem> items = auditItemDao.findAll(sort).stream() //
+        List<AuditItem> items = auditItemRepository.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);
@@ -73,7 +80,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-add.json", getClass(), items);
 
         // Update
-        auditItemDao.deleteAll();
+        auditItemRepository.deleteAll();
         changes.clear();
 
         DnsEntry dnsEntry3 = new DnsEntry("d3.example.com", DnsEntryType.A, "127.0.0.1");
@@ -81,7 +88,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Update
-        items = auditItemDao.findAll(sort).stream() //
+        items = auditItemRepository.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);
@@ -93,7 +100,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-update.json", getClass(), items);
 
         // Delete links and tags
-        auditItemDao.deleteAll();
+        auditItemRepository.deleteAll();
         changes.clear();
 
         changes.tagDelete(dnsEntry3, "super");
@@ -101,7 +108,7 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
         internalChangeService.changesExecute(changes);
 
         // Assert Delete
-        items = auditItemDao.findAll(sort).stream() //
+        items = auditItemRepository.findAll(sort).stream() //
                 .map(it -> {
                     AuditItem cloned = JsonTools.clone(it);
                     cloned.setId(null);
@@ -111,6 +118,36 @@ public class AuditingServiceImplTest extends AbstractSpringTests {
                 }) //
                 .collect(Collectors.toList());
         AssertTools.assertJsonComparisonWithoutNulls("AuditingServiceImplTest-delete.json", getClass(), items);
+
+    }
+
+    @Test
+    public void testDeleteOlderThanAYear() {
+
+        // Create some
+        List<String> expected = new ArrayList<>();
+        for (int m = 0; m < 12; ++m) {
+            AuditItem entity = new AuditItem();
+            entity.setTimestamp(DateTools.addDate(Calendar.MONTH, -m));
+            entity.setTxId("keep-" + m);
+            auditItemRepository.save(entity);
+            expected.add("keep-" + m);
+        }
+        for (int m = 12; m < 24; ++m) {
+            AuditItem entity = new AuditItem();
+            entity.setTimestamp(DateTools.addDate(Calendar.MONTH, -m));
+            entity.setTxId("remove-" + m);
+            auditItemRepository.save(entity);
+        }
+
+        // Clean
+        ThreadTools.sleep(1000);
+        auditingService.deleteOlderThanAYear();
+
+        // Assert
+        List<String> actual = auditItemRepository.findAll().stream().map(AuditItem::getTxId).sorted().collect(Collectors.toList());
+        Collections.sort(expected);
+        AssertTools.assertJsonComparisonWithoutNulls(expected, actual);
 
     }
 

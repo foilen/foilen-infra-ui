@@ -9,6 +9,8 @@
  */
 package com.foilen.infra.ui.services;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 
 import com.foilen.infra.plugin.v1.core.eventhandler.changes.AuditUserType;
@@ -18,6 +20,10 @@ import com.foilen.infra.ui.repositories.documents.AuditItem;
 public interface AuditingService {
 
     void addImpersonatorToTransaction(String txId, String userId);
+
+    void deleteOlderThanAYear();
+
+    void deleteOlderThanAYear(Date now);
 
     void documentAdd(String userName, Object document);
 

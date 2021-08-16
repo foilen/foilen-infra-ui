@@ -9,6 +9,8 @@
  */
 package com.foilen.infra.ui.repositories;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,6 +18,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.foilen.infra.ui.repositories.documents.AuditItem;
 
 public interface AuditItemRepository extends MongoRepository<AuditItem, String>, AuditItemCustomRepository {
+
+    long deleteAllByTimestampLessThanEqual(Date timestamp);
 
     Page<AuditItem> findAllByTxId(String txId, Pageable page);
 
