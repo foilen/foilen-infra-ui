@@ -55,8 +55,8 @@ dependencies {
 
   // Misc
   implementation"args4j:args4j:$argsVersion"
-  implementation'com.google.code.findbugs:jsr305:3.0.0'
-  implementation'org.apache.commons:commons-text:1.6'
+  implementation'com.google.code.findbugs:jsr305:3.0.2'
+  implementation'org.apache.commons:commons-text:1.9'
   implementation"javax.xml.bind:jaxb-api"
   implementation'org.quartz-scheduler:quartz'
 
